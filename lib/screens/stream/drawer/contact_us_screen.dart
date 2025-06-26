@@ -44,7 +44,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final padding = constraints.maxWidth * 0.04;
-            final fieldHeight = constraints.maxHeight * 0.07;
+            final fieldHeight = constraints.maxHeight * 0.04;
             final fontSize = constraints.maxWidth * 0.035;
             final labelFont = constraints.maxWidth * 0.035;
 
@@ -72,8 +72,11 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         ),
                         SizedBox(height: constraints.maxHeight * 0.03),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
+                            SizedBox(
+                              width:
+                                  (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
                                 label: 'First Name',
                                 controller: _controllers['First Name']!,
@@ -82,8 +85,10 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                 height: fieldHeight,
                               ),
                             ),
-                            SizedBox(width: padding * 0.5),
-                            Expanded(
+                            SizedBox(width: padding * 0.06),
+                            SizedBox(
+                              width:
+                                  (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
                                 label: 'Last Name',
                                 controller: _controllers['Last Name']!,
@@ -94,6 +99,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                             ),
                           ],
                         ),
+
                         for (final label in ['Email', 'Subject'])
                           _buildField(
                             label: label,
@@ -145,7 +151,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               Icon(
                 FontAwesomeIcons.bell,
                 size: media.width * 0.055,
-                color: Colors.black,
+                color: Color(0xff1865E8),
               ),
               if (hasNotification)
                 Positioned(
@@ -178,9 +184,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Message sent!')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Message sent!')));
           }
         },
         style: ElevatedButton.styleFrom(
@@ -208,7 +214,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     int maxLines = 1,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -231,8 +237,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                   return 'Please enter $label';
                 }
                 if (label == 'Email' &&
-                    !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$')
-                        .hasMatch(value)) {
+                    !RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$',
+                    ).hasMatch(value)) {
                   return 'Enter a valid email address';
                 }
                 return null;
@@ -240,8 +247,10 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 border: _inputBorder(),
                 focusedBorder: _inputBorder(color: const Color(0xff1865E8)),
                 errorBorder: _inputBorder(color: Colors.red),
