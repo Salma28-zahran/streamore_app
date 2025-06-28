@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:streamore_app/utils/billing_info_dialog.dart';
 
 class BillingTab extends StatefulWidget {
   const BillingTab({super.key});
@@ -27,12 +28,14 @@ class _BillingTabState extends State<BillingTab> {
             const SizedBox(height: 33),
             _buildPlanCard(context, fontSize),
             _buildProgressCard(
+              context: context,
               title: 'Storage',
               progress: 29 / (5 * 60),
               label: '29 minutes of 5 hours',
               fontSize: fontSize,
             ),
             _buildProgressCard(
+              context: context,
               title: 'Streaming and recording hours',
               progress: 29 / (20 * 60),
               label: '29 minutes of 20 hours',
@@ -58,7 +61,7 @@ class _BillingTabState extends State<BillingTab> {
                   side: BorderSide(color: Theme.of(context).primaryColor),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 ),
-                onPressed: () {},
+                onPressed: () => showEditBillingInfoDialog(context),
                 icon: Icon(
                   Icons.edit,
                   size: 14,
@@ -177,7 +180,11 @@ class _BillingTabState extends State<BillingTab> {
             'Subscription ends on July 30, 2025',
             style: GoogleFonts.poppins(
               fontSize: fontSize - 1,
-              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
+              color: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.color
+                  ?.withAlpha(204), 
             ),
           ),
         ],
@@ -186,6 +193,7 @@ class _BillingTabState extends State<BillingTab> {
   }
 
   Widget _buildProgressCard({
+    required BuildContext context,
     required String title,
     required double progress,
     required String label,
@@ -194,23 +202,25 @@ class _BillingTabState extends State<BillingTab> {
     return _BillingCard(
       title: title,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: fontSize,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-            ),
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: Theme.of(context).dividerColor.withOpacity(0.2),
-            color: Theme.of(context).primaryColor,
-          ),
-        ],
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text(
+      label,
+      style: GoogleFonts.poppins(
+        fontSize: fontSize,
+        color: Theme.of(context).textTheme.bodyLarge?.color,
       ),
+    ),
+    const SizedBox(height: 8),
+    LinearProgressIndicator(
+      value: progress,
+      backgroundColor: Theme.of(context).dividerColor.withAlpha(51),
+      color: Theme.of(context).primaryColor,
+    ),
+    const SizedBox(height: 12), 
+  ],
+),
+
     );
   }
 
@@ -240,7 +250,7 @@ class _BillingCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        border: Border.all(color: Theme.of(context).dividerColor),
+        border: Border.all(color:Color.fromARGB(255, 83, 80, 80)),
         borderRadius: BorderRadius.circular(3),
       ),
       child: Column(

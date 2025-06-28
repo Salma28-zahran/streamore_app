@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_onboarding_slider/background.dart';
 import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/on_boarding_screen.dart';
 import 'package:streamore_app/screens/auth/sign_in.dart';
