@@ -13,96 +13,95 @@ class _BillingTabState extends State<BillingTab> {
   bool _isAutoRenewEnabled = true;
 
   @override
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isSmall = size.width < 400;
     final fontSize = isSmall ? 12.0 : 13.0;
     final cardPadding = EdgeInsets.symmetric(horizontal: isSmall ? 16 : 23);
 
-    return SafeArea(
-      child: Padding(
-        padding: cardPadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 33),
-            _buildPlanCard(context, fontSize),
-            _buildProgressCard(
-              context: context,
-              title: 'Storage',
-              progress: 29 / (5 * 60),
-              label: '29 minutes of 5 hours',
-              fontSize: fontSize,
+    return SingleChildScrollView(
+      padding: cardPadding.copyWith(top: 33, bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPlanCard(context, fontSize),
+          _buildProgressCard(
+            context: context,
+            title: 'Storage',
+            progress: 29 / (5 * 60),
+            label: '29 minutes of 5 hours',
+            fontSize: fontSize,
+          ),
+          _buildProgressCard(
+            context: context,
+            title: 'Streaming and recording hours',
+            progress: 29 / (20 * 60),
+            label: '29 minutes of 20 hours',
+            fontSize: fontSize,
+          ),
+          _buildTextCard(
+            'Payment Method',
+            Text(
+              'Currency USD\$',
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+              ),
             ),
-            _buildProgressCard(
-              context: context,
-              title: 'Streaming and recording hours',
-              progress: 29 / (20 * 60),
-              label: '29 minutes of 20 hours',
-              fontSize: fontSize,
-            ),
-            _buildTextCard(
-              'Payment Method',
-              Text(
-                'Currency USD\$',
+          ),
+          _buildActionCard(
+            title: 'Billing Info',
+            action: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                side: BorderSide(color: Theme.of(context).primaryColor),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              ),
+              onPressed: () => showEditBillingInfoDialog(context),
+              icon: Icon(
+                Icons.edit,
+                size: 14,
+                color: Theme.of(context).primaryColor,
+              ),
+              label: Text(
+                'Edit info',
                 style: GoogleFonts.poppins(
                   fontSize: fontSize,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                ),
-              ),
-            ),
-            _buildActionCard(
-              title: 'Billing Info',
-              action: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  side: BorderSide(color: Theme.of(context).primaryColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                ),
-                onPressed: () => showEditBillingInfoDialog(context),
-                icon: Icon(
-                  Icons.edit,
-                  size: 14,
                   color: Theme.of(context).primaryColor,
-                ),
-                label: Text(
-                  'Edit info',
-                  style: GoogleFonts.poppins(
-                    fontSize: fontSize,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            _buildActionCard(
-              title: 'Invoices',
-              action: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).cardColor,
-                  foregroundColor: Theme.of(context).primaryColor,
-                  side: BorderSide(color: Theme.of(context).primaryColor),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  textStyle: GoogleFonts.poppins(
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  elevation: 0,
+          ),
+          _buildActionCard(
+            title: 'Invoices',
+            action: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).cardColor,
+                foregroundColor: Theme.of(context).primaryColor,
+                side: BorderSide(color: Theme.of(context).primaryColor),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Text('Load Invoices'),
+                textStyle: GoogleFonts.poppins(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.bold,
+                ),
+                elevation: 0,
               ),
+              child: const Text('Load Invoices'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
+  /// Builds the plan section with upgrade button and auto-renew switch
   Widget _buildPlanCard(BuildContext context, double fontSize) {
     return _BillingCard(
       title: 'Plan',
@@ -140,8 +139,8 @@ class _BillingTabState extends State<BillingTab> {
           ),
           const SizedBox(height: 8),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Auto-renew switch with custom styling
               Theme(
                 data: Theme.of(context).copyWith(
                   switchTheme: SwitchThemeData(
@@ -149,9 +148,11 @@ class _BillingTabState extends State<BillingTab> {
                     trackColor: WidgetStateProperty.resolveWith((states) {
                       return states.contains(WidgetState.selected)
                           ? Theme.of(context).primaryColor
-                          : Colors.grey;
+                          : Theme.of(context).dividerColor;
                     }),
-                    trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+                    trackOutlineColor: WidgetStateProperty.all(
+                      Colors.transparent,
+                    ),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
@@ -164,7 +165,7 @@ class _BillingTabState extends State<BillingTab> {
                 ),
               ),
               const SizedBox(width: 6),
-              Flexible(
+              Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
@@ -180,11 +181,9 @@ class _BillingTabState extends State<BillingTab> {
             'Subscription ends on July 30, 2025',
             style: GoogleFonts.poppins(
               fontSize: fontSize - 1,
-              color: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.color
-                  ?.withAlpha(204), 
+              color: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.color?.withAlpha(204), // 0.8 opacity
             ),
           ),
         ],
@@ -192,6 +191,7 @@ class _BillingTabState extends State<BillingTab> {
     );
   }
 
+  /// Builds a card with a progress bar and description text
   Widget _buildProgressCard({
     required BuildContext context,
     required String title,
@@ -202,37 +202,41 @@ class _BillingTabState extends State<BillingTab> {
     return _BillingCard(
       title: title,
       child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      label,
-      style: GoogleFonts.poppins(
-        fontSize: fontSize,
-        color: Theme.of(context).textTheme.bodyLarge?.color,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: fontSize,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: Theme.of(
+              context,
+            ).dividerColor.withAlpha(51), // ~20% opacity
+            color: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(height: 12),
+        ],
       ),
-    ),
-    const SizedBox(height: 8),
-    LinearProgressIndicator(
-      value: progress,
-      backgroundColor: Theme.of(context).dividerColor.withAlpha(51),
-      color: Theme.of(context).primaryColor,
-    ),
-    const SizedBox(height: 12), 
-  ],
-),
-
     );
   }
 
+  /// Creates a billing card with a title and any widget child content
   Widget _buildTextCard(String title, Widget child) {
     return _BillingCard(title: title, child: child);
   }
 
+  /// Creates a billing card with a title and an action button (trailing)
   Widget _buildActionCard({required String title, required Widget action}) {
     return _BillingCard(title: title, trailing: action);
   }
 }
 
+/// Reusable styled container for billing sections
 class _BillingCard extends StatelessWidget {
   final String title;
   final Widget? child;
@@ -250,8 +254,8 @@ class _BillingCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        border: Border.all(color:Color.fromARGB(255, 83, 80, 80)),
-        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: Theme.of(context).dividerColor),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
