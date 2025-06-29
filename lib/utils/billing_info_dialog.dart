@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -28,141 +29,165 @@ void showEditBillingInfoDialog(BuildContext context) {
 
   showDialog(
     context: context,
-    builder: (context) => Dialog(
-      backgroundColor: fillColor,
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                'Edit Billing Info',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: baseTextColor,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: _buildLabeledField(
-                    'Name',
-                    inputDecoration,
-                    theme,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  flex: 2,
-                  child: _buildLabeledField(
-                    'VAT/Tax ID',
-                    inputDecoration,
-                    theme,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildLabeledField('Address', inputDecoration, theme),
-            const SizedBox(height: 12),
-            _buildLabeledField('', inputDecoration, theme),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildLabeledField(
-                    'City',
-                    inputDecoration,
-                    theme,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildLabeledField(
-                    'Region',
-                    inputDecoration,
-                    theme,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildLabeledField(
-                    'Postal Code',
-                    inputDecoration,
-                    theme,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Column(
+    builder:
+        (context) => Dialog(
+          backgroundColor: fillColor,
+          insetPadding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Country/Region',
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: baseTextColor,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                DropdownButtonFormField<String>(
-                  items: const [
-                    DropdownMenuItem(value: 'C', child: Text('Cairo')),
-                    DropdownMenuItem(value: 'A', child: Text('Alex')),
-                  ],
-                  onChanged: (value) {},
-                  decoration: inputDecoration.copyWith(
-                    hintText: 'Select your country',
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 13,
-                      color: theme.hintColor,
+                Center(
+                  child: Text(
+                    'Edit Billing Info',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: baseTextColor,
                     ),
                   ),
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: baseTextColor,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: _buildLabeledField('Name', inputDecoration, theme),
+                    ),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      flex: 2,
+                      child: _buildLabeledField(
+                        'VAT/Tax ID',
+                        inputDecoration,
+                        theme,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildLabeledField('Address', inputDecoration, theme),
+                const SizedBox(height: 12),
+                _buildLabeledField('', inputDecoration, theme),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildLabeledField('City', inputDecoration, theme),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildLabeledField(
+                        'Region',
+                        inputDecoration,
+                        theme,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildLabeledField(
+                        'Postal Code',
+                        inputDecoration,
+                        theme,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Country/Region',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: baseTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: Text(
+                          'Select your country',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: theme.hintColor,
+                          ),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'C', child: Text('Cairo')),
+                          DropdownMenuItem(value: 'A', child: Text('Alex')),
+                        ],
+                        onChanged: (value) {},
+                        buttonStyleData: ButtonStyleData(
+                          height: 44,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: borderColor),
+                            color: fillColor,
+                          ),
+                          elevation: 0,
+                        ),
+                        iconStyleData: IconStyleData(
+                          icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                          iconSize: 20,
+                          iconEnabledColor: theme.iconTheme.color,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: fillColor,
+                            border: Border.all(color: borderColor),
+                          ),
+                          offset: const Offset(0, 4),
+                          maxHeight: 200,
+                        ),
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          color: baseTextColor,
+                        ),
+                        menuItemStyleData: MenuItemStyleData(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(
+                      'Save Info',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: Text(
-                  'Save Info',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
-    ),
   );
 }
 

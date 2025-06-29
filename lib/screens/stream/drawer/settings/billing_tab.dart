@@ -58,7 +58,7 @@ class _BillingTabState extends State<BillingTab> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 side: BorderSide(color: Theme.of(context).primaryColor),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1), // comment 2
               ),
               onPressed: () => showEditBillingInfoDialog(context),
               icon: Icon(
@@ -122,7 +122,7 @@ class _BillingTabState extends State<BillingTab> {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16 , vertical: 6), // comment 3
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(3),
                 ),
@@ -251,7 +251,7 @@ class _BillingCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2), // comment 1
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         border: Border.all(color: Theme.of(context).dividerColor),
