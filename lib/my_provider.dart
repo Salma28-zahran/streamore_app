@@ -27,4 +27,13 @@ class MyProvider extends ChangeNotifier {
     themeMode = themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
+  String _selectedFont = 'Inter';
+
+  String get selectedFont => _selectedFont;
+
+  void setSelectedFont(String font) {
+    _selectedFont = font;
+    notifyListeners();
+  }
+
 }

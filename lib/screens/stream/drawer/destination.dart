@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
@@ -10,6 +11,8 @@ class Destination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool hasNotification = false;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -21,17 +24,35 @@ class Destination extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 22,
             color:
-                Theme.of(
-                  context,
-                ).appBarTheme.foregroundColor,
+            Theme.of(
+              context,
+            ).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.notification_add,
-              color: Theme.of(context).primaryColorDark,
+            child: Stack(
+              children: [
+                Icon(
+                  FontAwesomeIcons.bell,
+                  color: Theme.of(context).primaryColorDark,
+                  size: 24,
+                ),
+                if (hasNotification)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],

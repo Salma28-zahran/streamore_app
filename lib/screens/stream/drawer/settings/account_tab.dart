@@ -30,7 +30,9 @@ class AccountTab extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
-                  color: isDark ? Color(0xff212b49) : Color(0xff5E5E66),
+                  color: isDark ?
+                  Colors.white
+                      : Color(0xff5E5E66),
                 ),
               ),
               SizedBox(height: 10),
@@ -180,10 +182,11 @@ class AccountTab extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
-                  color: isDark ? Color(0xff212b49) : Color(0xff5E5E66),
-                ),
+                  color: isDark ?
+                  Colors.white
+                      : Color(0xff5E5E66), ),
               ),
-              SizedBox(height: 3),
+              SizedBox(height: 6),
               Container(
                 width: 100,
                 height: 28,
@@ -250,14 +253,15 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 9),
               Text(
-                "Permanently delete this account and remove all\n associated data",
+                "Permanently delete this account and remove all associated\n data",
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
-                  color: isDark ? Color(0xff212b49) : Color(0xff5E5E66),
-                ),
+                  color: isDark ?
+                  Colors.white
+                      : Color(0xff5E5E66),                ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 10),
 
               Container(
                 width: 100,

@@ -17,6 +17,9 @@ class Camera extends StatefulWidget {
 
 class _CameraState extends State<Camera> {
   bool _isOverlayEnabled = false;
+  bool _isOverlayEnabled2 = false;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,10 +161,10 @@ class _CameraState extends State<Camera> {
                 scaleX: 28 / 59,
                 scaleY: 13 / 34,
                 child: Switch(
-                  value: _isOverlayEnabled,
+                  value: _isOverlayEnabled2,
                   onChanged: (value) {
                     setState(() {
-                      _isOverlayEnabled = value;
+                      _isOverlayEnabled2 = value;
                     });
                   },
                 ),
