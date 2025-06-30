@@ -1,6 +1,4 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/theme_data.dart';
 import 'package:streamore_app/theme/theme.dart';
 
 class LightTheme extends BaseTheme{

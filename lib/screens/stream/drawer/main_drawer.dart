@@ -55,18 +55,20 @@ class _MainDrawerState extends State<MainDrawer> {
           children: [
             Icon(
               icon,
-              color: isSelected
-                  ? Theme.of(context).tabBarTheme.labelColor
-                  : Theme.of(context).tabBarTheme.unselectedLabelColor,
+              color:
+                  isSelected
+                      ? Theme.of(context).tabBarTheme.labelColor
+                      : Theme.of(context).tabBarTheme.unselectedLabelColor,
             ),
             const SizedBox(width: 16),
             Text(
               title,
               style: GoogleFonts.poppins(
                 fontSize: 16,
-                color: isSelected
-                    ? Theme.of(context).tabBarTheme.labelColor
-                    : Theme.of(context).tabBarTheme.unselectedLabelColor,
+                color:
+                    isSelected
+                        ? Theme.of(context).tabBarTheme.labelColor
+                        : Theme.of(context).tabBarTheme.unselectedLabelColor,
               ),
             ),
           ],
@@ -80,7 +82,9 @@ class _MainDrawerState extends State<MainDrawer> {
     var myprovider = Provider.of<MyProvider>(context);
 
     IconData themeIcon =
-    myprovider.themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode;
+        myprovider.themeMode == ThemeMode.dark
+            ? Icons.dark_mode
+            : Icons.light_mode;
 
     return Drawer(
       backgroundColor: Theme.of(context).cardColor,
@@ -102,11 +106,7 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
             ),
             const SizedBox(height: 5),
-            Image.asset(
-              "assets/images/my_acc.png",
-              width: 344,
-              height: 44,
-            ),
+            Image.asset("assets/images/my_acc.png", width: 344, height: 44),
             const SizedBox(height: 10),
             Divider(
               thickness: 1,
@@ -137,9 +137,10 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Contact Us",
                       style: GoogleFonts.montserrat(
-                        color: myprovider.themeMode == ThemeMode.dark
-                            ?  Colors.white
-                            :  const Color(0xffAFAFAF),
+                        color:
+                            myprovider.themeMode == ThemeMode.dark
+                                ? Colors.white
+                                : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -153,9 +154,10 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Help Center",
                       style: GoogleFonts.montserrat(
-                        color: myprovider.themeMode == ThemeMode.dark
-                            ?  Colors.white
-                            :  const Color(0xffAFAFAF),
+                        color:
+                            myprovider.themeMode == ThemeMode.dark
+                                ? Colors.white
+                                : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -164,7 +166,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ],
               ),
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 15),
 
             Padding(
               padding: const EdgeInsets.only(left: 39),
@@ -177,9 +179,10 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "News",
                       style: GoogleFonts.montserrat(
-                        color: myprovider.themeMode == ThemeMode.dark
-                            ?  Colors.white
-                            :  const Color(0xffAFAFAF),
+                        color:
+                            myprovider.themeMode == ThemeMode.dark
+                                ? Colors.white
+                                : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -194,9 +197,10 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Our Policies",
                       style: GoogleFonts.montserrat(
-                        color: myprovider.themeMode == ThemeMode.dark
-                            ?  Colors.white
-                            : const Color(0xffAFAFAF),
+                        color:
+                            myprovider.themeMode == ThemeMode.dark
+                                ? Colors.white
+                                : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
