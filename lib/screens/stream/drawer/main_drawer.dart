@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
 
 class MainDrawer extends StatefulWidget {
   static const String routeName = "/drawer";
@@ -131,7 +132,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/verify1');
+                      Navigator.pushNamed(context, ContactUsScreen.routeName);
                     },
                     child: Text(
                       "Contact Us",

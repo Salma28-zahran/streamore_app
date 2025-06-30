@@ -23,18 +23,22 @@ class _MembersState extends State<Members> {
 
   @override
   Widget build(BuildContext context) {
-    bool hasNotification = true;
+    bool hasNotification = false;
     return Scaffold(
       drawer: MainDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: true,
+
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           "Streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 22,
-            color: Theme.of(context).appBarTheme.foregroundColor,
+            color:
+            Theme.of(
+              context,
+            ).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
@@ -47,7 +51,6 @@ class _MembersState extends State<Members> {
                   color: Theme.of(context).primaryColorDark,
                   size: 24,
                 ),
-                // الشرط اللي يحدد إذا في إشعار
                 if (hasNotification)
                   Positioned(
                     right: 0,

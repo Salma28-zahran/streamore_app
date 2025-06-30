@@ -7,6 +7,7 @@ import 'package:streamore_app/screens/auth/sign_up.dart';
 import 'package:streamore_app/screens/auth/verify_email1.dart';
 import 'package:streamore_app/screens/auth/verify_email2.dart';
 import 'package:streamore_app/screens/auth/verify_email3.dart';
+import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/destination.dart';
 import 'package:streamore_app/screens/stream/drawer/library.dart';
 import 'package:streamore_app/screens/stream/drawer/members.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         Back.routeName:(context)=> const Back(),
         Lay.routeName:(context)=> const Lay(),
         Profile.routeName:(context)=> const Profile(),
+        ContactUsScreen.routeName:(context)=>const ContactUsScreen(),
 
 
 
