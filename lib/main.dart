@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         Camera.routeName:        (context) => const Camera(),
         Audio.routeName:         (context) => const Audio(),
         Back.routeName:          (context) => const Back(),
-        Lay.routeName:           (context) => const Lay(),
+        LayoutScreen.routeName:  (context) => const LayoutScreen(),
         Profile.routeName:       (context) => const Profile(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
       },
