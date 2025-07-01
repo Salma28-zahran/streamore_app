@@ -42,7 +42,7 @@ class _CommentsTabState extends State<CommentsTab> {
                     width: 357,
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.all(3),
-                    color: const Color(0xffEFEFEF),
+                    color: Theme.of(context).cardColor,
                     child: Text(
                       "Viewers’ comments will be shown here. Tap on a comment to show it on screen",
                       style: GoogleFonts.inter(fontSize: 10),
@@ -56,7 +56,8 @@ class _CommentsTabState extends State<CommentsTab> {
 
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
-            child: Row(
+            child:
+            Row(
               children: [
                 Transform.scale(
                   scaleX: 28 / 59,
@@ -68,6 +69,8 @@ class _CommentsTabState extends State<CommentsTab> {
                         _isOverlayEnabled = value;
                       });
                     },
+                    activeColor: Theme.of(context).colorScheme.primary,
+
                   ),
                 ),
 

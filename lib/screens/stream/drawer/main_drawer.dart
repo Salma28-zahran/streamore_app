@@ -55,20 +55,18 @@ class _MainDrawerState extends State<MainDrawer> {
           children: [
             Icon(
               icon,
-              color:
-                  isSelected
-                      ? Theme.of(context).tabBarTheme.labelColor
-                      : Theme.of(context).tabBarTheme.unselectedLabelColor,
+              color: isSelected
+                  ? Theme.of(context).tabBarTheme.labelColor
+                  : Theme.of(context).tabBarTheme.unselectedLabelColor,
             ),
             const SizedBox(width: 16),
             Text(
               title,
               style: GoogleFonts.poppins(
                 fontSize: 16,
-                color:
-                    isSelected
-                        ? Theme.of(context).tabBarTheme.labelColor
-                        : Theme.of(context).tabBarTheme.unselectedLabelColor,
+                color: isSelected
+                    ? Theme.of(context).tabBarTheme.labelColor
+                    : Theme.of(context).tabBarTheme.unselectedLabelColor,
               ),
             ),
           ],
@@ -80,11 +78,7 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     var myprovider = Provider.of<MyProvider>(context);
-
-    IconData themeIcon =
-        myprovider.themeMode == ThemeMode.dark
-            ? Icons.dark_mode
-            : Icons.light_mode;
+    bool isDark = myprovider.themeMode == ThemeMode.dark;
 
     return Drawer(
       backgroundColor: Theme.of(context).cardColor,
@@ -93,17 +87,36 @@ class _MainDrawerState extends State<MainDrawer> {
         child: Column(
           children: [
             // Header
-            Container(
-              color: Theme.of(context).cardColor,
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                "Streamore",
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  color: Theme.of(context).cardColor,
+                  padding: const EdgeInsets.all(16),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "Streamore",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 17),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<MyProvider>().changeTheme();
+                    },
+                    child: Icon(
+                      isDark ? Icons.wb_sunny : Icons.dark_mode,
+                      size: 25,
+                      color: isDark ? Colors.amber : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+
+              ],
             ),
             const SizedBox(height: 5),
             Image.asset("assets/images/my_acc.png", width: 344, height: 44),
@@ -124,7 +137,7 @@ class _MainDrawerState extends State<MainDrawer> {
             buildDrawerItem(5, FontAwesomeIcons.gift, "Referrals"),
             buildDrawerItem(6, Icons.settings_outlined, "Settings"),
 
-            const SizedBox(height: 198),
+            const Spacer(),
 
             Padding(
               padding: const EdgeInsets.only(left: 39),
@@ -137,10 +150,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Contact Us",
                       style: GoogleFonts.montserrat(
-                        color:
-                            myprovider.themeMode == ThemeMode.dark
-                                ? Colors.white
-                                : const Color(0xffAFAFAF),
+                        color: isDark ? Colors.white : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -154,10 +164,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Help Center",
                       style: GoogleFonts.montserrat(
-                        color:
-                            myprovider.themeMode == ThemeMode.dark
-                                ? Colors.white
-                                : const Color(0xffAFAFAF),
+                        color: isDark ? Colors.white : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -166,7 +173,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ],
               ),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
 
             Padding(
               padding: const EdgeInsets.only(left: 39),
@@ -179,17 +186,13 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "News",
                       style: GoogleFonts.montserrat(
-                        color:
-                            myprovider.themeMode == ThemeMode.dark
-                                ? Colors.white
-                                : const Color(0xffAFAFAF),
+                        color: isDark ? Colors.white : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   const SizedBox(width: 80),
-
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/verify1');
@@ -197,10 +200,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     child: Text(
                       "Our Policies",
                       style: GoogleFonts.montserrat(
-                        color:
-                            myprovider.themeMode == ThemeMode.dark
-                                ? Colors.white
-                                : const Color(0xffAFAFAF),
+                        color: isDark ? Colors.white : const Color(0xffAFAFAF),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
