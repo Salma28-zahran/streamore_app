@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/my_provider.dart';
@@ -18,7 +19,7 @@ class AccountTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Profile Info",
+                "profile_info".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
@@ -26,7 +27,7 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 5),
               Text(
-                "Edit profile to update your personal details and preferences",
+                "edit_profile_to_update_your_personal_details_and_preferences".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
@@ -54,7 +55,7 @@ class AccountTab extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Text(
-                    "Edit Profile",
+                    "edit_profile".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -65,7 +66,7 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                "Team Name",
+                "team_name".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -111,7 +112,7 @@ class AccountTab extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  "Update",
+                  "update".tr(),
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 11,
@@ -121,7 +122,7 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Text(
-                "Theme",
+                "theme".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -157,7 +158,7 @@ class AccountTab extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        isDark ? "Light Theme" : "Dark Theme",
+                        isDark ? "light_theme".tr() : "dark_theme".tr(),
                         style: GoogleFonts.poppins(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -170,7 +171,7 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 33),
               Text(
-                "Your Accounts",
+                "your_accounts".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -178,7 +179,7 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 3),
               Text(
-                "Add a new account to manage individual access and settings",
+                "add_a_new_account_to_manage_individual_access_and_settings".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
@@ -205,7 +206,7 @@ class AccountTab extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Text(
-                    "+ Add Account",
+                    "add_account".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -234,7 +235,7 @@ class AccountTab extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Text(
-                    "Logout",
+                    "logout".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -245,22 +246,31 @@ class AccountTab extends StatelessWidget {
               ),
               SizedBox(height: 33),
               Text(
-                "Delete Account",
+                "delete_account".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
               SizedBox(height: 9),
-              Text(
-                "Permanently delete this account and remove all associated\n data",
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 11,
-                  color: isDark ?
-                  Colors.white
-                      : Color(0xff5E5E66),                ),
+              RichText(
+                text: TextSpan(
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 11,
+                    color: isDark ? Colors.white : const Color(0xff5E5E66),
+                  ),
+                  children:  [
+                    TextSpan(
+                        text: "permanently_delete_this_account_and_remove_all_associated\n".tr()
+                    ),
+                    TextSpan(
+                      text: "data".tr(),
+                    ),
+                  ],
+                ),
               ),
+
               SizedBox(height: 10),
 
               Container(
@@ -281,7 +291,7 @@ class AccountTab extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Text(
-                    "Delete Account",
+                    "delete_account".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,

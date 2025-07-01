@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -75,7 +76,7 @@ class Destination extends StatelessWidget {
           children: [
             SizedBox(height: 17),
             Text(
-              "Add a Destination",
+              "add_a_destination".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
                 fontSize: 22,
@@ -84,7 +85,7 @@ class Destination extends StatelessWidget {
             ),
             SizedBox(height: 17),
             Text(
-              "Connect an account to Stremore. Once connected, you can stream to it as often as you like.",
+              "connect_an_account_to_stremore_once_connected_you_can_stream_to_it_as_often_as_you_like".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
@@ -122,7 +123,7 @@ class Destination extends StatelessWidget {
                 Image.asset("assets/images/Vector.png",width: 40,height: 40,),
                 SizedBox(width: 9),
                 Text(
-                  "Custom RTMP",
+                  "custom_rtmp",
                   style: GoogleFonts.inter(
                     fontWeight: FontWeight.w600,
                     fontSize: 23,
@@ -138,11 +139,11 @@ class Destination extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    text: "Don't see your platform? Choose",
+                    text: "don't_see_your_platform_choose".tr(),
                     style: TextStyle(color: Colors.grey, fontSize: 16),
                     children: [
                       TextSpan(
-                        text: '"Custom RTMP".',
+                        text: '"custom_rtmp".'.tr(),
                         style: GoogleFonts.inter(
                           color: Colors.blue,
                           fontSize: 13,

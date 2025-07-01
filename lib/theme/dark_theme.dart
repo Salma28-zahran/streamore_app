@@ -13,6 +13,8 @@ class DarkTheme extends BaseTheme{
 
   @override
   ThemeData get themeData => ThemeData(
+  colorScheme: ColorScheme.dark(
+  primary: Color(0xff1865E8),),
     scaffoldBackgroundColor: Color(0xff0D142A),
     textTheme:  TextTheme(
       bodyLarge: TextStyle(color: Color(0xFFE5EAF3)),

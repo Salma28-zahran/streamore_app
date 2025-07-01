@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
@@ -71,7 +72,7 @@ class Settings extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 23, top: 34),
               child: Text(
-                "Settings",
+                "settings".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -94,10 +95,10 @@ class Settings extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
-                tabs: const [
-                  Tab(text: "Account"),
+                tabs:  [
+                  Tab(text: "account".tr()),
 
-                  Tab(text: "Billing"),
+                  Tab(text: "billing".tr()),
                 ],
               ),
             ),

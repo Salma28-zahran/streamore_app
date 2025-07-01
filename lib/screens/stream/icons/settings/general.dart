@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,9 +21,9 @@ class General extends StatefulWidget {
 class _GeneralState extends State<General> {
 
 
-  String selectedOrientation = 'Portrait';
+  String selectedOrientation = 'portrait'.tr();
 
-  final List<String> items = ['High Definition 720p', 'Medium Definition 480p ',"Low Definition 144p "];
+  final List<String> items = ['high_definition_720p'.tr(), 'medium_definition_480p '.tr(),"low_definition_144p ".tr()];
   String? selectedValue;
   bool hasNotification = false;
 
@@ -99,7 +100,7 @@ class _GeneralState extends State<General> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 17),
                   child: Text(
-                    'General ',
+                    'general '.tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 20,
@@ -121,7 +122,7 @@ class _GeneralState extends State<General> {
             Padding(
               padding: const EdgeInsets.only(left: 21, top: 24),
               child: Text(
-                "Stream quality",
+                "stream_quality".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -147,7 +148,7 @@ class _GeneralState extends State<General> {
                       const SizedBox(width: 2),
                       Expanded(
                         child: Text(
-                          'High Definition 720p',
+                          'high_definition_720p'.tr(),
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -239,7 +240,7 @@ class _GeneralState extends State<General> {
             Padding(
               padding: const EdgeInsets.only(left: 21),
               child: Text(
-                "Name",
+                "name".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -260,7 +261,7 @@ class _GeneralState extends State<General> {
                 height: 34,
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: "Enter your Name",
+                    labelText: "enter_your_name".tr(),
                     hintStyle: GoogleFonts.poppins(
                       color: const Color(0xff676767),
                       fontSize: 8,
@@ -291,7 +292,7 @@ class _GeneralState extends State<General> {
             Padding(
               padding: const EdgeInsets.only(left: 21),
               child: Text(
-                "Orientation",
+                "orientation".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
@@ -306,7 +307,7 @@ class _GeneralState extends State<General> {
               child: Row(
                 children: [
                   Radio<String>(
-                    value: "Portrait",
+                    value: "portrait".tr(),
                     groupValue: selectedOrientation,
                     activeColor: Theme.of(context).primaryColor,
                     onChanged: (value) {
@@ -331,7 +332,7 @@ class _GeneralState extends State<General> {
                   ),
                   const SizedBox(width: 20),
                   Radio<String>(
-                    value: "Landscape",
+                    value: "landscape".tr(),
                     groupValue: selectedOrientation,
                     activeColor: Theme.of(context).primaryColor,
                     onChanged: (value) {

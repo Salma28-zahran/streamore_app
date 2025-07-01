@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
@@ -66,7 +67,7 @@ class Referrals extends StatelessWidget {
           children: [
             SizedBox(height: 16),
             Text(
-              "Referral Methods",
+              "referral_methods".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w500,
                 fontSize: 20,
@@ -96,7 +97,7 @@ class Referrals extends StatelessWidget {
                         Container(
                           width: 273,
                           height: 38,
-                          child: Text("Include your referral link in your upcoming stream",
+                          child: Text("include_your_referral_link_in_your_upcoming_stream".tr(),
                             style:GoogleFonts.poppins(
                               fontWeight: FontWeight.w400,
                               fontSize: 12
@@ -115,7 +116,7 @@ class Referrals extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Text("Share your referral link with others",
+                        Text("share_your_referral_link_with_others".tr(),
                       style:GoogleFonts.poppins(
                           fontWeight: FontWeight.w400,
                           fontSize: 12
@@ -131,7 +132,7 @@ class Referrals extends StatelessWidget {
                         height: 34,
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: "Your referral link",
+                            hintText: "your_referral_link".tr(),
                             hintStyle: TextStyle(
                               color: Colors.black,
                               fontSize: 11,
@@ -154,7 +155,7 @@ class Referrals extends StatelessWidget {
             SizedBox(height: 37,),
 
             Text(
-              "Stats",
+              "stats".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w500,
                 fontSize: 20,
@@ -178,7 +179,7 @@ class Referrals extends StatelessWidget {
                        Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Clicks",
+                          Text("clicks".tr(),
                             style:GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 18
@@ -195,7 +196,7 @@ class Referrals extends StatelessWidget {
                       ),
 
                     Align(alignment: Alignment.topLeft,
-                      child: Text("Share your referral link with others",
+                      child: Text("share_your_referral_link_with_others".tr(),
                         style:GoogleFonts.poppins(
                             fontWeight: FontWeight.w400,
                             fontSize: 12
@@ -225,7 +226,7 @@ class Referrals extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Sign Ups",
+                        Text("sign_ups".tr(),
                           style:GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               fontSize: 18
@@ -242,7 +243,7 @@ class Referrals extends StatelessWidget {
                     ),
 
                     Align(alignment: Alignment.topLeft,
-                      child: Text("Share your referral link with others",
+                      child: Text("share_your_referral_link_with_others".tr(),
                         style:GoogleFonts.poppins(
                             fontWeight: FontWeight.w400,
                             fontSize: 12
@@ -271,7 +272,7 @@ class Referrals extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Referrals",
+                        Text("referrals".tr(),
                           style:GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               fontSize: 18
@@ -288,7 +289,7 @@ class Referrals extends StatelessWidget {
                     ),
 
                     Align(alignment: Alignment.topLeft,
-                      child: Text("Share your referral link with others",
+                      child: Text("share_your_referral_link_with_others".tr(),
                         style:GoogleFonts.poppins(
                             fontWeight: FontWeight.w400,
                             fontSize: 12
@@ -327,7 +328,7 @@ class Referrals extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Total earned",
+                              "total_earned".tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -348,7 +349,7 @@ class Referrals extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Claimed credit",
+                              "claimed_credit".tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
@@ -375,7 +376,7 @@ class Referrals extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Available credit",
+                                "available_credit".tr(),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,

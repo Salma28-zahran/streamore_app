@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +23,7 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
   void _checkPasswordMatch() {
     setState(() {
       if (_passwordController.text != _confirmController.text) {
-        _errorText = "Passwords do not match";
+        _errorText = "passwords_do_not_match".tr();
       } else {
         _errorText = null;
       }
@@ -52,9 +53,9 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
           children: [
             const SizedBox(height: 55),
             Padding(
-              padding: const EdgeInsets.only(left: 32),
+              padding: const EdgeInsets.only(left: 32,right: 34),
               child: Text(
-                "Reset",
+                "reset".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 36,
@@ -62,9 +63,9 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 32),
+              padding: const EdgeInsets.only(left: 32,right: 34),
               child: Text(
-                "Password",
+                "password".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 36,
@@ -73,7 +74,7 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
             ),
             const SizedBox(height: 49),
             _buildPasswordField(
-              label: "New Password",
+              label: "new_password".tr(),
               controller: _passwordController,
               obscureText: _obscurePassword,
               onToggle: () {
@@ -84,7 +85,7 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
             ),
             const SizedBox(height: 24),
             _buildPasswordField(
-              label: "Confirm Password",
+              label: "confirm_password".tr(),
               controller: _confirmController,
               obscureText: _obscureConfirm,
               onToggle: () {
@@ -95,7 +96,7 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
             ),
             if (_errorText != null)
               Padding(
-                padding: const EdgeInsets.only(left: 32, top: 8),
+                padding: const EdgeInsets.only(left: 50, top: 8,right: 32),
                 child: Text(
                   _errorText!,
                   style: const TextStyle(color: Colors.red),
@@ -121,7 +122,7 @@ class _VerifyEmail3State extends State<VerifyEmail3> {
                     ),
                   ),
                   child: Text(
-                    "Reset",
+                    "reset".tr(),
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 20,

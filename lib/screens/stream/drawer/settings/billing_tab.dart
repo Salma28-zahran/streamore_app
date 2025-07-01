@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/utils/billing_info_dialog.dart';
@@ -28,61 +29,61 @@ class _BillingTabState extends State<BillingTab> {
           _buildPlanCard(context, fontSize, textColor!),
           _buildProgressCard(
             context: context,
-            title: 'Storage',
+            title: 'storage'.tr(),
             progress: 29 / (5 * 60),
-            label: '29 minutes of 5 hours',
+            label: ' minutes_of_hours'.tr(),
             fontSize: fontSize,
             textColor: textColor,
           ),
           _buildProgressCard(
             context: context,
-            title: 'Streaming and recording hours',
+            title: 'streaming_and_recording_hours'.tr(),
             progress: 29 / (20 * 60),
-            label: '29 minutes of 20 hours',
+            label: 'minutes_of_hourss'.tr(),
             fontSize: fontSize,
             textColor: textColor,
           ),
           _buildTextCard(
-            'Payment Method',
+            'payment_method'.tr(),
             Text(
-              'Currency USD\$',
+              'currency_usd\$'.tr(),
               style: GoogleFonts.poppins(fontSize: fontSize, color: textColor),
             ),
           ),
           _buildActionCard(
-            title: 'Billing Info',
+            title: 'billing_info'.tr(),
             action: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
-                side: BorderSide(color: Theme.of(context).primaryColor),
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
               ),
               onPressed: () => showEditBillingInfoDialog(context),
               icon: Icon(
                 Icons.edit,
                 size: 14,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               label: Text(
-                'Edit info',
+                'edit_info'.tr(),
                 style: GoogleFonts.poppins(
                   fontSize: fontSize,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
           _buildActionCard(
-            title: 'Invoices',
+            title: 'invoices'.tr(),
             action: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).cardColor,
-                foregroundColor: Theme.of(context).primaryColor,
-                side: BorderSide(color: Theme.of(context).primaryColor),
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -92,7 +93,7 @@ class _BillingTabState extends State<BillingTab> {
                 ),
                 elevation: 0,
               ),
-              child: const Text('Load Invoices'),
+              child:  Text('load_invoices'.tr()),
             ),
           ),
         ],
@@ -101,17 +102,17 @@ class _BillingTabState extends State<BillingTab> {
   }
 
   Widget _buildPlanCard(
-    BuildContext context,
-    double fontSize,
-    Color textColor,
-  ) {
+      BuildContext context,
+      double fontSize,
+      Color textColor,
+      ) {
     return _BillingCard(
-      title: 'Plan',
+      title: 'plan'.tr(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'You are on the Starter Plan',
+            'you_are_on_the_starter_plan'.tr(),
             style: GoogleFonts.poppins(fontSize: fontSize, color: textColor),
           ),
           const SizedBox(height: 8),
@@ -120,7 +121,7 @@ class _BillingTabState extends State<BillingTab> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 6,
@@ -130,7 +131,7 @@ class _BillingTabState extends State<BillingTab> {
                 ),
               ),
               child: Text(
-                'Upgrade',
+                'upgrade'.tr(),
                 style: GoogleFonts.poppins(
                   fontSize: fontSize,
                   color: Colors.white,
@@ -143,23 +144,23 @@ class _BillingTabState extends State<BillingTab> {
           Row(
             children: [
               GestureDetector(
-                onTap:
-                    () => setState(
-                      () => _isAutoRenewEnabled = !_isAutoRenewEnabled,
-                    ),
+                onTap: () => setState(() {
+                  _isAutoRenewEnabled = !_isAutoRenewEnabled;
+                }),
                 child: Icon(
                   _isAutoRenewEnabled ? Icons.toggle_on : Icons.toggle_off,
-                  color: Theme.of(context).primaryColor,
+                  color: _isAutoRenewEnabled
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
                   size: 28,
                 ),
               ),
-
               const SizedBox(width: 6),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(
-                    'Renew my subscription automatically',
+                    'renew_my_subscription_automatically'.tr(),
                     style: GoogleFonts.poppins(
                       fontSize: fontSize,
                       color: textColor,
@@ -171,7 +172,7 @@ class _BillingTabState extends State<BillingTab> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Subscription ends on July 30, 2025',
+            'subscription_ends_on_July'.tr(),
             style: GoogleFonts.poppins(
               fontSize: fontSize - 1,
               color: textColor.withAlpha(204),
@@ -203,7 +204,7 @@ class _BillingTabState extends State<BillingTab> {
           LinearProgressIndicator(
             value: progress,
             backgroundColor: Theme.of(context).dividerColor.withAlpha(51),
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
         ],
@@ -234,7 +235,7 @@ class _BillingCard extends StatelessWidget {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final textColor = isDark ? theme.primaryColor : theme.colorScheme.onSurface;
+    final titleColor = isDark ? Colors.white : Colors.black;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -255,13 +256,16 @@ class _BillingCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: titleFontSize,
-                  color: textColor,
+                  color: titleColor,
                 ),
               ),
               if (trailing != null) trailing!,
             ],
           ),
-          if (child != null) ...[const SizedBox(height: 6), child!],
+          if (child != null) ...[
+            const SizedBox(height: 6),
+            child!,
+          ],
         ],
       ),
     );

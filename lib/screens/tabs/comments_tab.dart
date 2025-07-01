@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,9 +43,9 @@ class _CommentsTabState extends State<CommentsTab> {
                     width: 357,
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.all(3),
-                    color: const Color(0xffEFEFEF),
+                    color: Theme.of(context).cardColor,
                     child: Text(
-                      "Viewers’ comments will be shown here. Tap on a comment to show it on screen",
+                      "viewers_comments_will_be_shown_here_tap_on_a_comment_to_show_it_on_screen".tr(),
                       style: GoogleFonts.inter(fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
@@ -56,7 +57,8 @@ class _CommentsTabState extends State<CommentsTab> {
 
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
-            child: Row(
+            child:
+            Row(
               children: [
                 Transform.scale(
                   scaleX: 28 / 59,
@@ -68,11 +70,13 @@ class _CommentsTabState extends State<CommentsTab> {
                         _isOverlayEnabled = value;
                       });
                     },
+                    activeColor: Theme.of(context).colorScheme.primary,
+
                   ),
                 ),
 
                 Text(
-                  "Overlay",
+                  "overlay".tr(),
                   style: GoogleFonts.inter(fontSize: 14),
                 ),
               ],
@@ -83,7 +87,7 @@ class _CommentsTabState extends State<CommentsTab> {
             child: _comments.isEmpty
                 ? Center(
               child: Text(
-                "no comments",
+                "no_comments".tr(),
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   color: Colors.grey,
@@ -136,8 +140,8 @@ class _CommentsTabState extends State<CommentsTab> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: TextField(
                         controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: "Comment...",
+                        decoration:  InputDecoration(
+                          hintText: "comment".tr(),
                           border: InputBorder.none,
                         ),
                         onSubmitted: (_) => _sendComment(),

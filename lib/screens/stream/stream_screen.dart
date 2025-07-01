@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -106,7 +107,7 @@ class StreamScreen extends StatelessWidget {
           ),
 
           Padding(
-            padding: EdgeInsets.only(left: size.width * 0.08, top: 8),
+            padding: EdgeInsets.only(left: size.width * 0.08, top: 8,right:  size.width * 0.04),
             child: Row(
               children: [
                 for (var icon in [
@@ -116,7 +117,7 @@ class StreamScreen extends StatelessWidget {
                   Icons.person_add,
                 ])
                   Padding(
-                    padding: EdgeInsets.only(right: size.width * 0.04),
+                    padding: EdgeInsets.only(right: size.width * 0.04,),
                     child: Container(
                       width: iconSize,
                       height: iconSize,
@@ -133,27 +134,31 @@ class StreamScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, "/settings_icon"),
-                  child: Container(
-                    width: iconSize,
-                    height: iconSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(190),
-                      color: myprovider.themeMode == ThemeMode.dark
-                          ? const Color(0xff212b49)
-                          : const Color(0xff5E5E66),
-                    ),
-                    child: Icon(
-                      Icons.settings,
-                      color: Theme.of(context).iconTheme.color,
-                      size: isSmall ? 20 : 24,
+                Padding(
+                  padding: const EdgeInsets.only(right: 13),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+                    child: Container(
+                      width: iconSize,
+                      height: iconSize,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(190),
+                        color: myprovider.themeMode == ThemeMode.dark
+                            ? const Color(0xff212b49)
+                            : const Color(0xff5E5E66),
+                      ),
+                      child: Icon(
+                        Icons.settings,
+                        color: Theme.of(context).iconTheme.color,
+                        size: isSmall ? 20 : 24,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
+
           const SizedBox(height: 8),
           Expanded(
             child: Padding(
@@ -190,10 +195,10 @@ class StreamScreen extends StatelessWidget {
                           fontSize: isSmall ? 10 : 12,
                           fontWeight: FontWeight.w600,
                         ),
-                        tabs: const [
-                          Tab(text: "Brand"),
-                          Tab(text: "Banners"),
-                          Tab(text: "Comments"),
+                        tabs:  [
+                          Tab(text: "brand".tr()),
+                          Tab(text: "banners".tr()),
+                          Tab(text: "comments".tr()),
                         ],
                       ),
                       const Expanded(
@@ -215,5 +220,28 @@ class StreamScreen extends StatelessWidget {
       ),
     );
   }
+  Widget _buildIcon(IconData icon, double size, BuildContext context, MyProvider myprovider, bool isSmall) {
+    return GestureDetector(
+      onTap: icon == Icons.settings
+          ? () => Navigator.pushNamed(context, "/settings_icon")
+          : null,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(190),
+          color: myprovider.themeMode == ThemeMode.dark
+              ? const Color(0xff212b49)
+              : const Color(0xff5E5E66),
+        ),
+        child: Icon(
+          icon,
+          color: Theme.of(context).iconTheme.color,
+          size: isSmall ? 20 : 24,
+        ),
+      ),
+    );
+  }
+
 }
 

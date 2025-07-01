@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -44,7 +45,7 @@ void showEditBillingInfoDialog(BuildContext context) {
           children: [
             Center(
               child: Text(
-                'Edit Billing Info',
+                'edit_billing_info'.tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -57,27 +58,27 @@ void showEditBillingInfoDialog(BuildContext context) {
               children: [
                 Flexible(
                   flex: 3,
-                  child: _buildLabeledField('Name', inputDecoration, theme),
+                  child: _buildLabeledField('name'.tr(), inputDecoration, theme),
                 ),
                 const SizedBox(width: 12),
                 Flexible(
                   flex: 2,
-                  child: _buildLabeledField('VAT/Tax ID', inputDecoration, theme),
+                  child: _buildLabeledField('vat_tax_id'.tr(), inputDecoration, theme),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            _buildLabeledField('Address', inputDecoration, theme),
+            _buildLabeledField('address'.tr(), inputDecoration, theme),
             const SizedBox(height: 12),
             _buildLabeledField('', inputDecoration, theme),
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: _buildLabeledField('City', inputDecoration, theme)),
+                Expanded(child: _buildLabeledField('city'.tr(), inputDecoration, theme)),
                 const SizedBox(width: 12),
-                Expanded(child: _buildLabeledField('Region', inputDecoration, theme)),
+                Expanded(child: _buildLabeledField('region'.tr(), inputDecoration, theme)),
                 const SizedBox(width: 12),
-                Expanded(child: _buildLabeledField('Postal Code', inputDecoration, theme)),
+                Expanded(child: _buildLabeledField('postal_code'.tr(), inputDecoration, theme)),
               ],
             ),
             const SizedBox(height: 16),
@@ -85,7 +86,7 @@ void showEditBillingInfoDialog(BuildContext context) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Country/Region',
+                  'country_region'.tr(),
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -97,16 +98,16 @@ void showEditBillingInfoDialog(BuildContext context) {
                   child: DropdownButton2<String>(
                     isExpanded: true,
                     hint: Text(
-                      'Select your country',
+                      'select_your_country'.tr(),
                       style: GoogleFonts.poppins(
                         fontSize: 13,
                         color: theme.brightness == Brightness.dark  
                             ? primaryColor: baseTextColor, 
                       ),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'C', child: Text('Cairo')),
-                      DropdownMenuItem(value: 'A', child: Text('Alex')),
+                    items:  [
+                      DropdownMenuItem(value: 'C', child: Text('cairo'.tr())),
+                      DropdownMenuItem(value: 'A', child: Text('alex'.tr())),
                     ],
                     onChanged: (value) {},
                     buttonStyleData: ButtonStyleData(
@@ -161,7 +162,7 @@ void showEditBillingInfoDialog(BuildContext context) {
                   ),
                 ),
                 child: Text(
-                  'Save Info',
+                  'save_info'.tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,

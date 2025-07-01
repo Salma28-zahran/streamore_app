@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -102,7 +103,7 @@ class _VolumeTestState extends State<VolumeTest> {
             OutlinedButton.icon(
               onPressed: isRecording ? stopTest : startTest,
               icon: Icon(isRecording ? Icons.mic : Icons.mic),
-              label: Text(isRecording ? "Off" : "Test"),
+              label: Text(isRecording ? "off".tr() : "test".tr()),
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,

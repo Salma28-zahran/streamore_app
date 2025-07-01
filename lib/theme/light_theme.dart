@@ -13,6 +13,9 @@ class LightTheme extends BaseTheme{
 
   @override
   ThemeData get themeData => ThemeData(
+      colorScheme: ColorScheme.light(
+        primary: Color(0xff1865E8),
+      ),
     scaffoldBackgroundColor: Color(0xffFFFFFF),
       primaryColor: Color(0xff1865E8),
     appBarTheme: const AppBarTheme(

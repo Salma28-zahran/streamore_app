@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,9 +18,9 @@ class SignIn extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 32, top: 55),
+              padding: const EdgeInsets.only(left: 32, top: 55,right: 32),
               child: Text(
-                "Welcome",
+                "welcome".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 36,
@@ -27,9 +28,9 @@ class SignIn extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 32),
+              padding: const EdgeInsets.only(left: 32,right: 32),
               child: Text(
-                "Back!",
+                "back".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 36,
@@ -47,7 +48,7 @@ class SignIn extends StatelessWidget {
                 child:
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Username or Email",
+                    labelText: "username_or_email".tr(),
                     hintStyle: GoogleFonts.poppins(
                       color: Color(0xff676767),
                       fontSize: 12,
@@ -88,7 +89,7 @@ class SignIn extends StatelessWidget {
                 child:
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: "password".tr(),
                     hintStyle: GoogleFonts.poppins(
                       color: Color(0xff676767),
                       fontSize: 12,
@@ -122,13 +123,13 @@ class SignIn extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 32, top: 12),
+              padding: const EdgeInsets.only(left: 32, top: 12,right: 43),
               child: GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/verify1');
                 },
                 child: Text(
-                  "Forgot Password?",
+                  "forgot_password".tr(),
                   style: GoogleFonts.montserrat(
                     color: Colors.blue,
                     fontSize: 14,
@@ -157,7 +158,7 @@ class SignIn extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                  child: Text("Login", style: GoogleFonts.poppins(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w600)),
+                  child: Text("login".tr(), style: GoogleFonts.poppins(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w600)),
                 ),
               ],
             ),
@@ -168,11 +169,11 @@ class SignIn extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    text: 'Create an account? ',
+                    text: 'create_an_account'.tr(),
                     style: TextStyle(color: Colors.grey, fontSize: 16),
                     children: [
                       TextSpan(
-                        text: 'Sign Up',
+                        text: 'sign_up'.tr(),
                         style: GoogleFonts.poppins(
                           color: Colors.blue,
                           fontSize: 16,
