@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/custombox.dart' show CustomBox;
@@ -62,13 +63,19 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
               children: [
                 RichText(
                   text: TextSpan(
-                    text:
-                    'Enter The Confirmation Code We Sent to\n b****32@gmail.com ',
                     style: GoogleFonts.poppins(
-                        color: Colors.grey, fontSize: 16),
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
                     children: [
                       TextSpan(
-                        text: 'Resent Code',
+                        text: '${'enter_the_confirmation_code_we_sent_to'.tr()}\n',
+                      ),
+                      TextSpan(
+                        text: 'b****32@gmail.com ',
+                      ),
+                      TextSpan(
+                        text: 'resent_code'.tr(),
                         style: GoogleFonts.poppins(
                           color: Colors.blue,
                           fontSize: 14,
@@ -79,6 +86,7 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
                     ],
                   ),
                 ),
+
               ],
             ),
             SizedBox(height: 39),
@@ -115,7 +123,7 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
                     ),
                   ),
                   child: Text(
-                    "Next",
+                    "next".tr(),
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 12,

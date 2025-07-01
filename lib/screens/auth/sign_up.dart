@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +19,7 @@ class SignUp extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 32, top: 55),
               child: Text(
-                "Create an ",
+                "create_an ".tr(),
                 style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold, fontSize: 36),
               ),
@@ -26,7 +27,7 @@ class SignUp extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 32),
               child: Text(
-                "account",
+                "account".tr(),
                 style: GoogleFonts.poppins(
                  fontWeight: FontWeight.bold, fontSize: 36
                 ),),),
@@ -42,7 +43,7 @@ class SignUp extends StatelessWidget {
                     child:
                     TextField(
                       decoration: InputDecoration(
-                        labelText: "First Name",
+                        labelText: "first_name".tr(),
                         hintStyle: TextStyle(color: Color(0xff676767), fontSize: 12),
 
                         prefixIcon: Icon(Icons.person),
@@ -60,7 +61,7 @@ class SignUp extends StatelessWidget {
                     height: 55,
                     child: TextField(
                       decoration: InputDecoration(
-                        labelText: "Last Name",
+                        labelText: "last_name".tr(),
                         hintStyle: TextStyle(color: Color(0xff676767), fontSize: 12),
                         prefixIcon: Icon(Icons.person),
                         iconColor: Color(0xff676767),
@@ -82,7 +83,7 @@ class SignUp extends StatelessWidget {
               child:
               TextField(
                 decoration: InputDecoration(
-                  labelText: " Email",
+                  labelText: " email".tr(),
                   hintStyle: TextStyle(
                     color: Color(0xff676767),
                     fontSize: 12,
@@ -105,7 +106,7 @@ class SignUp extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20,right: 20),
               child: TextField(
                 decoration: InputDecoration(
-                  labelText: " Password",
+                  labelText: " password".tr(),
                   hintStyle: TextStyle(
                     color: Color(0xff676767),
                     fontSize: 12,
@@ -131,7 +132,7 @@ class SignUp extends StatelessWidget {
               child:
               TextField(
                 decoration: InputDecoration(
-                  labelText: " Confirm Password",
+                  labelText: " confirm_password".tr(),
                   hintStyle: TextStyle(
                     color: Color(0xff676767),
                     fontSize: 12,
@@ -161,17 +162,17 @@ class SignUp extends StatelessWidget {
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                   children: [
                     TextSpan(
-                      text: 'By clicking the ',
+                      text: 'by_clicking_the'.tr(),
                     ),
                     TextSpan(
-                      text: 'Register',
+                      text: 'register'.tr(),
                       style: TextStyle(color: Colors.blue),
                     ),
                     TextSpan(
-                      text: ' button, you agree\n',
+                      text: 'button,_you_agree\n'.tr(),
                     ),
                     TextSpan(
-                      text: 'to the public offer',
+                      text: 'to_the_public_offer'.tr(),
                     ),
                   ],
                 ),
@@ -191,7 +192,7 @@ class SignUp extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Create Account",
+                    "create_account".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20,
                       color: Colors.white,
@@ -208,11 +209,11 @@ class SignUp extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    text: 'I Already Have an Account ',
+                    text: 'i_already_have_an_account '.tr(),
                     style: TextStyle(color: Colors.grey, fontSize: 16),
                     children: [
                       TextSpan(
-                        text: 'Login',
+                        text: 'login'.tr(),
                         style:
                         TextStyle(color: Colors.blue,
                             fontSize: 16, decoration: TextDecoration.underline),

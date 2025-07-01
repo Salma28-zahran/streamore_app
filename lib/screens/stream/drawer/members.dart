@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,8 +16,8 @@ class Members extends StatefulWidget {
 
 class _MembersState extends State<Members> {
   final List<String> items = [
-    'Admin',
-    'Guest',
+    'admin'.tr(),
+    'guest'.tr(),
   ];
 
   String? selectedValue;
@@ -84,7 +85,7 @@ class _MembersState extends State<Members> {
           children: [
             SizedBox(height: 16),
             Text(
-              "Members",
+              "members".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
@@ -99,7 +100,7 @@ class _MembersState extends State<Members> {
                   height: 34,
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: "Search",
+                      labelText: "search".tr(),
                       hintStyle: TextStyle(
                         color: Theme.of(context).cardColor,
                         fontSize: 12,
@@ -143,7 +144,7 @@ class _MembersState extends State<Members> {
                         SizedBox(width: 2),
                         Expanded(
                           child: Text(
-                            'Select a role',
+                            'select_a_role'.tr(),
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -259,7 +260,7 @@ class _MembersState extends State<Members> {
                               children: [
                                 SizedBox(height: 24),
                                 Text(
-                                  'Invite a member',
+                                  'invite_a_member'.tr(),
                                   style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
@@ -274,7 +275,7 @@ class _MembersState extends State<Members> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lorem ipsum, dolor sit amet consectetur',
+                                          'lorem_ipsum_dolor_sit_amet_consectetur'.tr(),
                                           style: GoogleFonts.poppins(
                                             fontSize: 10,
                                             fontWeight: FontWeight.w400,
@@ -284,7 +285,7 @@ class _MembersState extends State<Members> {
                                         Padding(
                                           padding: const EdgeInsets.only(left: 60),
                                           child: Text(
-                                            'adipisicing elit',
+                                            'adipisicing_elit'.tr(),
                                             style: GoogleFonts.poppins(
                                               fontSize: 10,
                                               fontWeight: FontWeight.w400,
@@ -305,7 +306,7 @@ class _MembersState extends State<Members> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 4),
                                         child: Text(
-                                          "Email",
+                                          "email".tr(),
                                           style: GoogleFonts.poppins(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w400,
@@ -340,7 +341,7 @@ class _MembersState extends State<Members> {
                                                 width: 1.5,
                                               ),
                                             ),
-                                            hintText: "Enter email",
+                                            hintText: "enter_email".tr(),
                                             hintStyle: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -362,7 +363,7 @@ class _MembersState extends State<Members> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 4),
                                         child: Text(
-                                          "Role",
+                                          "role".tr(),
                                           style: GoogleFonts.poppins(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w400,
@@ -374,7 +375,7 @@ class _MembersState extends State<Members> {
                                         child: DropdownButton2<String>(
                                           isExpanded: true,
                                           hint: Text(
-                                            'Select a role',
+                                            'select_a_role'.tr(),
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
@@ -469,7 +470,7 @@ class _MembersState extends State<Members> {
                                       elevation: 0,
                                     ),
                                     child: Text(
-                                      'Invite',
+                                      'invite'.tr(),
                                       style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontSize: 14,
@@ -522,7 +523,7 @@ class _MembersState extends State<Members> {
                   Icon(Icons.add, color: Theme.of(context).primaryColor),
                   SizedBox(width: 5),
                   Text(
-                    "Invite Members",
+                    "invite_a_member".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -537,7 +538,7 @@ class _MembersState extends State<Members> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Member",
+                  "member".tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
                     fontSize: 10,
@@ -546,7 +547,7 @@ class _MembersState extends State<Members> {
                 Padding(
                   padding: EdgeInsets.only(right: 65),
                   child: Text(
-                    "Role",
+                    "role".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w400,
                       fontSize: 10,

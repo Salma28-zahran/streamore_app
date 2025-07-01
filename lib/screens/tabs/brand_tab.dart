@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +25,8 @@ class _BrandTabState extends State<BrandTab> {
   bool isBackgroundVisible = true;
 
   late TextEditingController _colorController;
-  List<String> fontList = ['Inter', 'poppins'];
-  String selectedSize = 'S';
+  List<String> fontList = ['inter'.tr(), 'poppins'.tr(),];
+  String selectedSize = 's'.tr();
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _BrandTabState extends State<BrandTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildSectionHeader(
-            title: "Theme",
+            title: "theme".tr(),
             isVisible: isThemeOptionsVisible,
             onToggle: () => setState(() => isThemeOptionsVisible = !isThemeOptionsVisible),
             font: myProvider.selectedFont,
@@ -62,7 +63,8 @@ class _BrandTabState extends State<BrandTab> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Row(
-                children: ['Minimal', 'Bubble', 'News'].map((theme) {
+                children: ['minimal', 'bubble', 'news'].map((theme) {
+
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -81,7 +83,7 @@ class _BrandTabState extends State<BrandTab> {
             ),
 
           buildSectionHeader(
-            title: "Primary Color",
+            title: "primary_color".tr(),
             isVisible: isColorOptionsVisible,
             onToggle: () => setState(() => isColorOptionsVisible = !isColorOptionsVisible),
             font: myProvider.selectedFont,
@@ -99,7 +101,7 @@ class _BrandTabState extends State<BrandTab> {
                           return AlertDialog(
                             backgroundColor: myProvider.primaryColor,
                             title: Text(
-                              "Select a Color",
+                              "select_a_color".tr(),
                               style: getFontStyle(
                                 myProvider.selectedFont,
                                 color: Colors.white,
@@ -118,7 +120,7 @@ class _BrandTabState extends State<BrandTab> {
                             actions: [
                               TextButton(
                                 child: Text(
-                                  "Done",
+                                  "done".tr(),
                                   style: getFontStyle(myProvider.selectedFont, color: Colors.white),
                                 ),
                                 onPressed: () => Navigator.of(context).pop(),
@@ -172,7 +174,7 @@ class _BrandTabState extends State<BrandTab> {
             ),
 
           buildSectionHeader(
-            title: "Fonts",
+            title: "fonts".tr(),
             isVisible: isFontsVisible,
             onToggle: () => setState(() => isFontsVisible = !isFontsVisible),
             font: myProvider.selectedFont,
@@ -243,12 +245,13 @@ class _BrandTabState extends State<BrandTab> {
                     ),
                   ),
                   const SizedBox(width: 15),
-                  Text("S", style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
+                  Text("S".tr(), style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
                 ],
               ),
             ),
 
           buildLogoSection(
+
             isVisible: isLogoVisible,
             onToggle: () => setState(() => isLogoVisible = !isLogoVisible),
             font: myProvider.selectedFont,

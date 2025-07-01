@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,11 +17,11 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _controllers = {
-    'First Name': TextEditingController(),
-    'Last Name': TextEditingController(),
-    'Email': TextEditingController(),
-    'Subject': TextEditingController(),
-    'Message': TextEditingController(),
+    'first_name'.tr(): TextEditingController(),
+    'last_name'.tr(): TextEditingController(),
+    'email'.tr(): TextEditingController(),
+    'subject'.tr(): TextEditingController(),
+    'message'.tr(): TextEditingController(),
   };
 
   @override
@@ -34,7 +35,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context).size;
-    const hasNotification = true;
+    const hasNotification = false;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -64,7 +65,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                       children: [
                         SizedBox(height: constraints.maxHeight * 0.03),
                         Text(
-                          'Contact Us',
+                          'contact_us'.tr(),
                           style: GoogleFonts.poppins(
                             fontSize: constraints.maxWidth * 0.048,
                             fontWeight: FontWeight.w600,
@@ -78,8 +79,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               width:
                                   (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
-                                label: 'First Name',
-                                controller: _controllers['First Name']!,
+                                label: 'first_name'.tr(),
+                                controller: _controllers['first_name'.tr()]!,
                                 fontSize: fontSize,
                                 labelFont: labelFont,
                                 height: fieldHeight,
@@ -90,8 +91,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               width:
                                   (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
-                                label: 'Last Name',
-                                controller: _controllers['Last Name']!,
+                                label: 'last_name'.tr(),
+                                controller: _controllers['last_name'.tr()]!,
                                 fontSize: fontSize,
                                 labelFont: labelFont,
                                 height: fieldHeight,
@@ -100,7 +101,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                           ],
                         ),
 
-                        for (final label in ['Email', 'Subject'])
+                        for (final label in ['email'.tr(), 'subject'.tr()])
                           _buildField(
                             label: label,
                             controller: _controllers[label]!,
@@ -109,8 +110,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                             height: fieldHeight,
                           ),
                         _buildField(
-                          label: 'Message',
-                          controller: _controllers['Message']!,
+                          label: 'message'.tr(),
+                          controller: _controllers['message'.tr()]!,
                           fontSize: fontSize,
                           labelFont: labelFont,
                           height: fieldHeight * 3,
@@ -186,7 +187,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           if (_formKey.currentState!.validate()) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(const SnackBar(content: Text('Message sent!')));
+            ).showSnackBar( SnackBar(content: Text('message_sent'.tr())));
           }
         },
         style: ElevatedButton.styleFrom(
@@ -194,7 +195,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
         child: Text(
-          'Send Message',
+          'send_message'.tr(),
           style: GoogleFonts.poppins(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
@@ -234,13 +235,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               style: GoogleFonts.poppins(fontSize: fontSize),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter $label';
+                  return 'please_enter $label'.tr();
                 }
-                if (label == 'Email' &&
+                if (label == 'email' &&
                     !RegExp(
                       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$',
                     ).hasMatch(value)) {
-                  return 'Enter a valid email address';
+                  return 'enter_a_valid_email_address'.tr();
                 }
                 return null;
               },

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,11 +21,11 @@ class _SettingsIconState extends State<SettingsIcon> {
   bool hasNotification = false;
 
   final List<Map<String, dynamic>> settingsItems = [
-    {'icon': Icons.settings_outlined, 'text': 'General'},
-    {'icon': Icons.videocam_outlined, 'text': 'Camera'},
-    {'icon': Icons.mic_none, 'text': 'Audio'},
-    {'icon': FontAwesomeIcons.images, 'text': 'Virtual Background'},
-    {'icon': Icons.person_pin_sharp, 'text': 'Layouts'},
+    {'icon': Icons.settings_outlined, 'text': 'general'.tr()},
+    {'icon': Icons.videocam_outlined, 'text': 'camera'.tr()},
+    {'icon': Icons.mic_none, 'text': 'audio'.tr()},
+    {'icon': FontAwesomeIcons.images, 'text': 'virtual_background'.tr()},
+    {'icon': Icons.person_pin_sharp, 'text': 'layouts'.tr()},
   ];
 
   void handleTap(String title, int index) {
@@ -32,15 +33,15 @@ class _SettingsIconState extends State<SettingsIcon> {
       selectedIndex = index;
     });
 
-    if (title == "General") {
+    if (title == "general".tr()) {
       Navigator.pushNamed(context, '/general');
-    } else if (title == "Camera") {
+    } else if (title == "camera".tr()) {
       Navigator.pushNamed(context, '/camera');
-    } else if (title == "Audio") {
+    } else if (title == "audio".tr()) {
       Navigator.pushNamed(context, '/audio');
-    } else if (title == "Virtual Background") {
+    } else if (title == "virtual_background".tr()) {
       Navigator.pushNamed(context, '/back');
-    } else if (title == "Layouts") {
+    } else if (title == "layouts".tr()) {
       Navigator.pushNamed(context, '/lay');
     }
   }
@@ -63,7 +64,7 @@ class _SettingsIconState extends State<SettingsIcon> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -119,7 +120,7 @@ class _SettingsIconState extends State<SettingsIcon> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 17),
                   child: Text(
-                    'Settings',
+                    'settings'.tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 20,

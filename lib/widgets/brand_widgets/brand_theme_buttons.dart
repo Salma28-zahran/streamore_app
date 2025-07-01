@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -37,11 +38,11 @@ Widget buildThemeButton({
   Color bgColor = isDark ? const Color(0xff0D142A) : const Color(0xffEFEFEF);
 
   switch (theme) {
-    case 'Minimal':
+    case 'minimal':
       return _buildMinimalButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
-    case 'Bubble':
+    case 'bubble':
       return _buildBubbleButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
-    case 'News':
+    case 'news':
       return _buildNewsButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
     default:
       return const SizedBox();
@@ -70,7 +71,7 @@ Widget _buildMinimalButton(String theme, bool isSelected, Color primaryColor, Co
               color: Colors.white,
               child: Center(
                 child: Text(
-                  'Minimal',
+                  'minimal'.tr(),
                   style: getFontStyle(font, fontSize: 12, color: Colors.black87),
                 ),
               ),
@@ -102,7 +103,7 @@ Widget _buildBubbleButton(String theme, bool isSelected, Color primaryColor, Col
           ),
           child: Center(
             child: Text(
-              'Bubble',
+              'bubble'.tr(),
               style: getFontStyle(font, fontSize: 12, color: Colors.white),
             ),
           ),
@@ -132,7 +133,7 @@ Widget _buildNewsButton(String theme, bool isSelected, Color primaryColor, Color
           ),
           child: Center(
             child: Text(
-              'News',
+              'news'.tr(),
               style: getFontStyle(font, fontSize: 12, color: Colors.white),
             ),
           ),

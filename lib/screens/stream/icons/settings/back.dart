@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +37,7 @@ class _BackState extends State<Back> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -91,7 +92,7 @@ class _BackState extends State<Back> {
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 17),
                 child: Text(
-                  'Virtual Background ',
+                  'virtual_background'.tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
@@ -131,7 +132,7 @@ class _BackState extends State<Back> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "For best performance, we recommend using a green screen",
+                "for_best_performance_we_recommend_using_a_green_screen".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
                   fontSize: 11,
@@ -158,16 +159,16 @@ class _BackState extends State<Back> {
                 ),
               ),
               Text(
-                "Green Screen Effect",
+                "green_screen_effect".tr(),
                 style: GoogleFonts.poppins(
                     fontSize: 12, fontWeight: FontWeight.w500),
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 14, bottom: 10, top: 10),
+            padding: const EdgeInsets.only(left: 14, bottom: 10, top: 10,right: 14),
             child: Text(
-              "Virtual Backgrounds",
+              "virtual_background".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
                 fontSize: 15,
@@ -177,7 +178,7 @@ class _BackState extends State<Back> {
           SizedBox(height:15 ,),
 
           Padding(
-            padding: const EdgeInsets.only(left: 14),
+            padding: const EdgeInsets.only(left: 14,right: 14),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(

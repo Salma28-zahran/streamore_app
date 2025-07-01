@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -44,7 +45,7 @@ class _CommentsTabState extends State<CommentsTab> {
                     margin: const EdgeInsets.all(3),
                     color: Theme.of(context).cardColor,
                     child: Text(
-                      "Viewers’ comments will be shown here. Tap on a comment to show it on screen",
+                      "viewers_comments_will_be_shown_here_tap_on_a_comment_to_show_it_on_screen".tr(),
                       style: GoogleFonts.inter(fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
@@ -75,7 +76,7 @@ class _CommentsTabState extends State<CommentsTab> {
                 ),
 
                 Text(
-                  "Overlay",
+                  "overlay".tr(),
                   style: GoogleFonts.inter(fontSize: 14),
                 ),
               ],
@@ -86,7 +87,7 @@ class _CommentsTabState extends State<CommentsTab> {
             child: _comments.isEmpty
                 ? Center(
               child: Text(
-                "no comments",
+                "no_comments".tr(),
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   color: Colors.grey,
@@ -139,8 +140,8 @@ class _CommentsTabState extends State<CommentsTab> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: TextField(
                         controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: "Comment...",
+                        decoration:  InputDecoration(
+                          hintText: "comment".tr(),
                           border: InputBorder.none,
                         ),
                         onSubmitted: (_) => _sendComment(),

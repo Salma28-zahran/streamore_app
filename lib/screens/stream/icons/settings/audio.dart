@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
@@ -36,7 +37,7 @@ class _AudioState extends State<Audio> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -90,7 +91,7 @@ class _AudioState extends State<Audio> {
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 17),
                 child: Text(
-                  'Audio ',
+                  'audio'.tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
@@ -110,7 +111,7 @@ class _AudioState extends State<Audio> {
           SizedBox(height: 19,),
           Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            Text("Please speak to ensure your microphone is working correctly.",
+            Text("please_speak_to_ensure_your_microphone_is_working_correctly.".tr(),
               style:GoogleFonts.poppins(
                 fontWeight: FontWeight.w500,
                 fontSize: 11,
@@ -121,7 +122,7 @@ class _AudioState extends State<Audio> {
           ],),
           SizedBox(height:14 ,),
           Padding(
-            padding: const EdgeInsets.only(left: 18),
+            padding: const EdgeInsets.only(left: 18,right: 18),
             child: Center(
               child: VolumeTest(),
             ),
@@ -144,7 +145,7 @@ class _AudioState extends State<Audio> {
 
 
               Text(
-                "Echo cancellation",
+                "echo_cancellation".tr(),
                 style: GoogleFonts.poppins(fontSize: 12,fontWeight: FontWeight.w500),
               ),
             ],
@@ -166,7 +167,7 @@ class _AudioState extends State<Audio> {
                 ),
               ),
               Text(
-                "Noise suppression",
+                "noise_suppression".tr(),
                 style: GoogleFonts.poppins(fontSize: 12,fontWeight: FontWeight.w500),
               ),
             ],

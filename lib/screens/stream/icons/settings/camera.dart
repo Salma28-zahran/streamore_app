@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
@@ -40,7 +41,8 @@ class _CameraState extends State<Camera> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
+
             child: Stack(
               children: [
                 Icon(
@@ -94,7 +96,7 @@ class _CameraState extends State<Camera> {
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 17),
                 child: Text(
-                  'Camera ',
+                  'camera'.tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
@@ -148,7 +150,7 @@ class _CameraState extends State<Camera> {
 
 
               Text(
-                "Flip Camera",
+                "flip_camera".tr(),
                 style: GoogleFonts.poppins(fontSize: 12,fontWeight: FontWeight.w500),
               ),
             ],
@@ -170,7 +172,7 @@ class _CameraState extends State<Camera> {
                 ),
               ),
               Text(
-                "Mirror Camera",
+                "mirror_camera".tr(),
                 style: GoogleFonts.poppins(fontSize: 12,fontWeight: FontWeight.w500),
               ),
             ],

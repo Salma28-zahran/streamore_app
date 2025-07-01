@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -66,7 +67,7 @@ class _BannersTabState extends State<BannersTab> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Folders",
+                    "folders".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
@@ -102,7 +103,7 @@ class _BannersTabState extends State<BannersTab> {
                   valueListenable: folders,
                   builder: (context, folderList, _) {
                     if (folderList.isEmpty) {
-                      return const Text("No folders yet");
+                      return  Text("no_folders_yet".tr());
                     }
                     return SizedBox(
                       height: folderList.length * 86,
@@ -119,7 +120,7 @@ class _BannersTabState extends State<BannersTab> {
                         itemBuilder: (context, index) {
                           final folder = folderList[index];
                           return KeyedSubtree(
-                            key: ValueKey("folder_$index"),
+                            key: ValueKey("folder_$index".tr()),
                             child: _buildItemTile(
                               context,
                               title: folder.name,
@@ -147,7 +148,7 @@ class _BannersTabState extends State<BannersTab> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Tickers",
+                    "tickers".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
@@ -183,7 +184,7 @@ class _BannersTabState extends State<BannersTab> {
                   valueListenable: tickers,
                   builder: (context, tickerList, _) {
                     if (tickerList.isEmpty) {
-                      return const Text("No tickers yet");
+                      return  Text("no_tickers_yet".tr());
                     }
                     return SizedBox(
                       height: tickerList.length * 86,
@@ -200,7 +201,7 @@ class _BannersTabState extends State<BannersTab> {
                         itemBuilder: (context, index) {
                           final ticker = tickerList[index];
                           return KeyedSubtree(
-                            key: ValueKey("ticker_$index"),
+                            key: ValueKey("ticker_$index".tr()),
                             child: _buildItemTile(
                               context,
                               title: ticker.name,
@@ -259,8 +260,8 @@ class _BannersTabState extends State<BannersTab> {
             child: isEditing
                 ? TextField(
               autofocus: true,
-              decoration: const InputDecoration(
-                hintText: "Name...",
+              decoration:  InputDecoration(
+                hintText: "name".tr(),
                 border: InputBorder.none,
               ),
               onSubmitted: (value) {
@@ -274,7 +275,7 @@ class _BannersTabState extends State<BannersTab> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  title ?? "Unnamed",
+                  title ?? "unnamed".tr(),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -294,30 +295,30 @@ class _BannersTabState extends State<BannersTab> {
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert, color: Colors.black),
             onSelected: (value) {
-              if (value == 'edit') {
+              if (value == 'edit'.tr()) {
                 onEdit();
-              } else if (value == 'remove') {
+              } else if (value == 'remove'.tr()) {
                 onRemove();
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'edit',
+               PopupMenuItem(
+                value: 'edit'.tr(),
                 child: Row(
                   children: [
                     Icon(Icons.edit, color: Colors.grey),
                     SizedBox(width: 8),
-                    Text('Edit'),
+                    Text('edit'.tr()),
                   ],
                 ),
               ),
-              const PopupMenuItem(
-                value: 'remove',
+               PopupMenuItem(
+                value: 'remove'.tr(),
                 child: Row(
                   children: [
                     Icon(Icons.delete, color: Colors.red),
                     SizedBox(width: 8),
-                    Text('Remove', style: TextStyle(color: Colors.red)),
+                    Text('remove'.tr(), style: TextStyle(color: Colors.red)),
                   ],
                 ),
               ),

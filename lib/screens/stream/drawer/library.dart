@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 import 'package:google_fonts/google_fonts.dart';
@@ -72,7 +73,7 @@ class Library extends StatelessWidget {
           children: [
             SizedBox(height: 10,),
             Text(
-              "Library",
+              "library".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
                 fontSize: 22,
@@ -83,7 +84,7 @@ class Library extends StatelessWidget {
              child: Column(
                mainAxisSize: MainAxisSize.min,
                children: [
-                 Text("You have no recordings at the moment",style:
+                 Text("You_have_no_recordings_at_the_moment".tr(),style:
                  GoogleFonts.poppins(
                    fontWeight: FontWeight.w400,
                    fontSize: 14
@@ -96,7 +97,7 @@ class Library extends StatelessWidget {
                    style: ElevatedButton.styleFrom(
                      backgroundColor: Theme.of(context).primaryColor
                    ),
-                     child: Text("Record Now",
+                     child: Text("record_now".tr(),
                      style: GoogleFonts.poppins(
                        color: Colors.white,
                        fontSize: 13,

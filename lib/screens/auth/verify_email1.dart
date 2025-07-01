@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,21 +19,29 @@ class VerifyEmail1 extends StatelessWidget {
               child: Center(child: Image.asset("assets/images/verify1.png")),
             ),
             SizedBox(height: 34,),
-            Text("Please verify your email!",
+            Text("please_verify_your_email".tr(),
               style:GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: Colors.black
               ) ,),
             SizedBox(height: 5,),
-            Text(
-              "Enter Your Email Address to Receive a\nverification code",
+            RichText(
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
+              text: TextSpan(
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                children: [
+                  TextSpan(text: "${'enter_your_email_address_to_receive_a'.tr()}\n"),
+                  TextSpan(text: "verification_code".tr()),
+                ],
               ),
             ),
+
+
             SizedBox(height: 46),
             Padding(
               padding: const EdgeInsets.only(left: 32,right: 30),
@@ -44,7 +53,7 @@ class VerifyEmail1 extends StatelessWidget {
                 child:
                 TextField(
                   decoration: InputDecoration(
-                    labelText: " Email",
+                    labelText: "email".tr(),
                     hintStyle: GoogleFonts.poppins(
                       color: Color(0xff676767),
                       fontSize: 12,
@@ -90,7 +99,7 @@ class VerifyEmail1 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                  child: Text("Send Code",
+                  child: Text("send_code".tr(),
                       style: GoogleFonts.poppins(
                           color: Colors.white,fontSize: 12,fontWeight: FontWeight.w700)),
                 ),
@@ -98,7 +107,7 @@ class VerifyEmail1 extends StatelessWidget {
             ),
 
             SizedBox(height: 132,),
-            Text("Question? Email us!",
+            Text("question_email_us".tr(),
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

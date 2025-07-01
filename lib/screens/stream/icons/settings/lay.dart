@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
@@ -30,7 +31,7 @@ class Lay extends StatelessWidget {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -84,7 +85,7 @@ class Lay extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 17),
                 child: Text(
-                  'Layout ',
+                  'Layout '.tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 20,

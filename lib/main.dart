@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/on_boarding_screen.dart';
@@ -25,11 +26,18 @@ import 'package:streamore_app/screens/stream/stream_screen.dart';
 import 'package:streamore_app/theme/theme.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => MyProvider(),
-      child: const MyApp(),
+    EasyLocalization(
+      supportedLocales: [Locale('en'), Locale("ar")],
+      path: 'assets/translations', // <-- change the path of the translation files
+      fallbackLocale: Locale('en'),
+      child: ChangeNotifierProvider(
+        create: (context) => MyProvider(),
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -45,6 +53,9 @@ class MyApp extends StatelessWidget {
     final BaseTheme darkTheme = DarkTheme();
 
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: lightTheme.themeData,
       darkTheme: darkTheme.themeData,
       themeMode: provider.themeMode,

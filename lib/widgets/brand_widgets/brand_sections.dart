@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../my_provider.dart';
@@ -38,7 +39,7 @@ Widget buildLogoSection({
   return Column(
     children: [
       buildSectionHeader(
-        title: "Logo",
+        title: "logo".tr(),
         isVisible: isVisible,
         onToggle: onToggle,
         font: font,
@@ -58,6 +59,7 @@ Widget buildLogoSection({
   );
 }
 
+
 Widget buildOverlaySection({
   required bool isVisible,
   required VoidCallback onToggle,
@@ -66,7 +68,7 @@ Widget buildOverlaySection({
   return Column(
     children: [
       buildSectionHeader(
-        title: "Overlay",
+        title: "overlay".tr(),
         isVisible: isVisible,
         onToggle: onToggle,
         font: font,
@@ -92,7 +94,7 @@ Widget buildBackgroundSection({
   return Column(
     children: [
       buildSectionHeader(
-        title: "Background",
+        title: "background".tr(),
         isVisible: isVisible,
         onToggle: onToggle,
         font: font,
