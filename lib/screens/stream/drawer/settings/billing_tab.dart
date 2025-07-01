@@ -56,20 +56,20 @@ class _BillingTabState extends State<BillingTab> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
-                side: BorderSide(color: Theme.of(context).primaryColor),
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
               ),
               onPressed: () => showEditBillingInfoDialog(context),
               icon: Icon(
                 Icons.edit,
                 size: 14,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
               label: Text(
                 'Edit info',
                 style: GoogleFonts.poppins(
                   fontSize: fontSize,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -81,8 +81,8 @@ class _BillingTabState extends State<BillingTab> {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).cardColor,
-                foregroundColor: Theme.of(context).primaryColor,
-                side: BorderSide(color: Theme.of(context).primaryColor),
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -101,10 +101,10 @@ class _BillingTabState extends State<BillingTab> {
   }
 
   Widget _buildPlanCard(
-    BuildContext context,
-    double fontSize,
-    Color textColor,
-  ) {
+      BuildContext context,
+      double fontSize,
+      Color textColor,
+      ) {
     return _BillingCard(
       title: 'Plan',
       child: Column(
@@ -120,7 +120,7 @@ class _BillingTabState extends State<BillingTab> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 6,
@@ -143,17 +143,17 @@ class _BillingTabState extends State<BillingTab> {
           Row(
             children: [
               GestureDetector(
-                onTap:
-                    () => setState(
-                      () => _isAutoRenewEnabled = !_isAutoRenewEnabled,
-                    ),
+                onTap: () => setState(() {
+                  _isAutoRenewEnabled = !_isAutoRenewEnabled;
+                }),
                 child: Icon(
                   _isAutoRenewEnabled ? Icons.toggle_on : Icons.toggle_off,
-                  color: Theme.of(context).primaryColor,
+                  color: _isAutoRenewEnabled
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
                   size: 28,
                 ),
               ),
-
               const SizedBox(width: 6),
               Expanded(
                 child: Padding(
@@ -203,7 +203,7 @@ class _BillingTabState extends State<BillingTab> {
           LinearProgressIndicator(
             value: progress,
             backgroundColor: Theme.of(context).dividerColor.withAlpha(51),
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
         ],
@@ -234,7 +234,7 @@ class _BillingCard extends StatelessWidget {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final textColor = isDark ? theme.primaryColor : theme.colorScheme.onSurface;
+    final titleColor = isDark ? Colors.white : Colors.black;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -255,13 +255,16 @@ class _BillingCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: titleFontSize,
-                  color: textColor,
+                  color: titleColor,
                 ),
               ),
               if (trailing != null) trailing!,
             ],
           ),
-          if (child != null) ...[const SizedBox(height: 6), child!],
+          if (child != null) ...[
+            const SizedBox(height: 6),
+            child!,
+          ],
         ],
       ),
     );
