@@ -18,16 +18,28 @@ class LayoutScreen extends StatefulWidget {
 class _LayoutScreenState extends State<LayoutScreen> {
   int selectedIndex = 0;
 
+  // final List<LayoutOption> layouts = [
+  //   LayoutOption(title: 'Default'),
+  //   LayoutOption(title: 'Cropped Layout'),
+  //   LayoutOption(title: 'Group Layout'),
+  //   LayoutOption(title: 'Spotlight Layout'),
+  //   LayoutOption(title: 'Screen Layout'),
+  //   LayoutOption(title: 'Picture-in-picture'),
+  //   LayoutOption(title: 'News Layout'),
+  //   LayoutOption(title: 'Cinema Layout'),
+  // ];
+
   final List<LayoutOption> layouts = [
-    LayoutOption(title: 'Default'),
-    LayoutOption(title: 'Cropped Layout'),
-    LayoutOption(title: 'Group Layout'),
-    LayoutOption(title: 'Spotlight Layout'),
-    LayoutOption(title: 'Screen Layout'),
-    LayoutOption(title: 'Picture-in-picture'),
-    LayoutOption(title: 'News Layout'),
-    LayoutOption(title: 'Cinema Layout'),
-  ];
+  LayoutOption(titleKey: 'default'),
+  LayoutOption(titleKey: 'cropped_layout'),
+  LayoutOption(titleKey: 'group_layout'),
+  LayoutOption(titleKey: 'spotlight_layout'),
+  LayoutOption(titleKey: 'screen_layout'),
+  LayoutOption(titleKey: 'picture_in_picture'),
+  LayoutOption(titleKey: 'news_layout'),
+  LayoutOption(titleKey: 'cinema_layout'),
+];
+
 
   void selectLayout(int index) {
     setState(() {
@@ -36,18 +48,16 @@ class _LayoutScreenState extends State<LayoutScreen> {
   }
 
   int getCrossAxisCount(double width) {
-    if (width < 400) return 1;
+    if (width < 200) return 1;
     if (width < 800) return 2;
     return 3;
   }
 
-  String getImageName(String title) {
-    // Handle exceptions
-    if (title == 'Default') return 'defaultt.png';
-    if (title == 'Picture-in-picture') return 'picture_in_picture.png';
-
-    return title.toLowerCase().replaceAll(' ', '_') + '.png';
-  }
+  String getImageName(String key) {
+  if (key == 'default') return 'defaultt.png';
+  if (key == 'picture_in_picture') return 'picture_in_picture.png';
+  return key + '.png';
+}
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +71,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: theme.appBarTheme.backgroundColor,
-        title: Text(
-          "Streamore",
+        title: Text("streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -109,8 +118,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         const SizedBox(width: 4),
-        Text(
-          'Layout',
+        Text('layout'.tr(),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -133,7 +141,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
       itemBuilder: (context, index) {
         final layout = layouts[index];
         final isSelected = index == selectedIndex;
-        final imageName = getImageName(layout.title);
+        final imageName = getImageName(layout.titleKey);
         final imagePath = 'assets/images/$imageName';
 
         return GestureDetector(
@@ -168,7 +176,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
               
                   const SizedBox(height: 8),
                   Text(
-                    layout.title,
+                    layout.titleKey.tr(),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
@@ -186,8 +194,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
   }
 }
 
-class LayoutOption {
-  final String title;
 
-  LayoutOption({required this.title});
+class LayoutOption {
+  final String titleKey;
+  LayoutOption({required this.titleKey});
 }
