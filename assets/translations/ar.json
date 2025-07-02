@@ -169,7 +169,18 @@
   "off": "إيقاف",
   "test": "اختبار",
   "logo": "الشعار",
-  "background": "الخلفية"
+  "background": "الخلفية",
+
+  "streamore": "ستريمور",
+  "layout": "التصميم",
+  "default": "الافتراضي",
+  "cropped_layout": "تصميم مقصوص",
+  "group_layout": "تصميم المجموعة",
+  "spotlight_layout": "تصميم الأضواء",
+  "screen_layout": "تصميم الشاشة",
+  "picture_in_picture": "صورة داخل صورة",
+  "news_layout": "تصميم الأخبار",
+  "cinema_layout": "تصميم السينما"
 
 }
 

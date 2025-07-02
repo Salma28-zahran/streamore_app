@@ -168,9 +168,18 @@
  "off": "Off",
  "test": "Test",
  "logo": "Logo",
- "background": "Background"
-
-
+ 
+ "background": "Background",
+  "streamore": "Streamore",
+  "layout": "Layout",
+  "default": "Default",
+  "cropped_layout": "Cropped Layout",
+  "group_layout": "Group Layout",
+  "spotlight_layout": "Spotlight Layout",
+  "screen_layout": "Screen Layout",
+  "picture_in_picture": "Picture-in-picture",
+  "news_layout": "News Layout",
+  "cinema_layout": "Cinema Layout"
 
 
 
