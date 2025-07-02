@@ -19,16 +19,15 @@ class _LayoutScreenState extends State<LayoutScreen> {
   int selectedIndex = 1;
 
   final List<LayoutOption> layouts = [
-  LayoutOption(titleKey: 'default'),
-  LayoutOption(titleKey: 'cropped_layout'),
-  LayoutOption(titleKey: 'group_layout'),
-  LayoutOption(titleKey: 'spotlight_layout'),
-  LayoutOption(titleKey: 'screen_layout'),
-  LayoutOption(titleKey: 'picture_in_picture'),
-  LayoutOption(titleKey: 'news_layout'),
-  LayoutOption(titleKey: 'cinema_layout'),
-];
-
+    LayoutOption(titleKey: 'default'),
+    LayoutOption(titleKey: 'cropped_layout'),
+    LayoutOption(titleKey: 'group_layout'),
+    LayoutOption(titleKey: 'spotlight_layout'),
+    LayoutOption(titleKey: 'screen_layout'),
+    LayoutOption(titleKey: 'picture_in_picture'),
+    LayoutOption(titleKey: 'news_layout'),
+    LayoutOption(titleKey: 'cinema_layout'),
+  ];
 
   void selectLayout(int index) {
     setState(() {
@@ -43,10 +42,10 @@ class _LayoutScreenState extends State<LayoutScreen> {
   }
 
   String getImageName(String key) {
-  if (key == 'default') return 'defaultt.png';
-  if (key == 'picture_in_picture') return 'picture_in_picture.png';
-  return key + '.png';
-}
+    if (key == 'default') return 'defaultt.png';
+    if (key == 'picture_in_picture') return 'picture_in_picture.png';
+    return key + '.png';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +59,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: theme.appBarTheme.backgroundColor,
-        title: Text("streamore",
+        title: Text(
+          "streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -107,7 +107,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         const SizedBox(width: 4),
-        Text('layout'.tr(),
+        Text(
+          'layout'.tr(),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -140,10 +141,17 @@ class _LayoutScreenState extends State<LayoutScreen> {
               color: theme.cardColor,
               border:
                   isSelected
-                      ? Border.all(color: theme.primaryColor, width: 2)
+                      ? Border.all(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : theme.primaryColor,
+                        width: 2,
+                      )
                       : null,
               borderRadius: BorderRadius.circular(12),
             ),
+
             child: Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -162,7 +170,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
                       );
                     },
                   ),
-              
+
                   const SizedBox(height: 8),
                   Text(
                     layout.titleKey.tr(),
@@ -182,7 +190,6 @@ class _LayoutScreenState extends State<LayoutScreen> {
     );
   }
 }
-
 
 class LayoutOption {
   final String titleKey;
