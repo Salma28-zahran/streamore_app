@@ -16,18 +16,7 @@ class LayoutScreen extends StatefulWidget {
 }
 
 class _LayoutScreenState extends State<LayoutScreen> {
-  int selectedIndex = 0;
-
-  // final List<LayoutOption> layouts = [
-  //   LayoutOption(title: 'Default'),
-  //   LayoutOption(title: 'Cropped Layout'),
-  //   LayoutOption(title: 'Group Layout'),
-  //   LayoutOption(title: 'Spotlight Layout'),
-  //   LayoutOption(title: 'Screen Layout'),
-  //   LayoutOption(title: 'Picture-in-picture'),
-  //   LayoutOption(title: 'News Layout'),
-  //   LayoutOption(title: 'Cinema Layout'),
-  // ];
+  int selectedIndex = 1;
 
   final List<LayoutOption> layouts = [
   LayoutOption(titleKey: 'default'),
