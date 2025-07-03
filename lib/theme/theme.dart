@@ -9,5 +9,4 @@ abstract class BaseTheme{
 
   ThemeData get themeData;
 
-
 }

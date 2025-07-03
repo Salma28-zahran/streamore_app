@@ -2,8 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
 class LayoutScreen extends StatefulWidget {
@@ -50,10 +48,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final myprovider = Provider.of<MyProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
-    final isDark = myprovider.themeMode == ThemeMode.dark;
-    final baseTextColor = isDark ? Colors.white : Colors.black;
+    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +68,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
             padding: const EdgeInsets.only(right: 10),
             child: Icon(
               FontAwesomeIcons.bell,
-              color: theme.primaryColorDark,
+              color: Theme.of(context).primaryColor,
               size: 22,
             ),
           ),
@@ -88,22 +84,22 @@ class _LayoutScreenState extends State<LayoutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(context, baseTextColor),
+            _buildHeader(context, textColor),
             const SizedBox(height: 12),
             Divider(color: theme.dividerColor, thickness: 0.5),
             const SizedBox(height: 12),
-            Flexible(child: _buildGrid(theme, baseTextColor, screenWidth)),
+            Expanded(child: _buildGrid(theme, textColor, screenWidth)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, Color baseTextColor) {
+  Widget _buildHeader(BuildContext context, Color textColor) {
     return Row(
       children: [
         IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 16, color: baseTextColor),
+          icon: Icon(Icons.arrow_back_ios_new, size: 16, color: textColor),
           onPressed: () => Navigator.pop(context),
         ),
         const SizedBox(width: 4),
@@ -112,14 +108,14 @@ class _LayoutScreenState extends State<LayoutScreen> {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: baseTextColor,
+            color: textColor,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildGrid(ThemeData theme, Color baseTextColor, double screenWidth) {
+  Widget _buildGrid(ThemeData theme, Color textColor, double screenWidth) {
     return GridView.builder(
       itemCount: layouts.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -145,13 +141,13 @@ class _LayoutScreenState extends State<LayoutScreen> {
                         color:
                             Theme.of(context).brightness == Brightness.dark
                                 ? Colors.white
-                                : theme.primaryColor,
+                                : Theme.of(context).primaryColor,
                         width: 2,
                       )
                       : null,
+
               borderRadius: BorderRadius.circular(12),
             ),
-
             child: Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -170,7 +166,6 @@ class _LayoutScreenState extends State<LayoutScreen> {
                       );
                     },
                   ),
-
                   const SizedBox(height: 8),
                   Text(
                     layout.titleKey.tr(),
@@ -178,7 +173,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: baseTextColor,
+                      color: textColor,
                     ),
                   ),
                 ],
