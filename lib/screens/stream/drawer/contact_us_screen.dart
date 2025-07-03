@@ -36,11 +36,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context).size;
     const hasNotification = false;
+    final theme = Theme.of(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: MainDrawer(),
-      appBar: _buildAppBar(media, hasNotification),
+      appBar: _buildAppBar(media, hasNotification, theme),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -69,6 +70,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                           style: GoogleFonts.poppins(
                             fontSize: constraints.maxWidth * 0.048,
                             fontWeight: FontWeight.w600,
+                            color: theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         SizedBox(height: constraints.maxHeight * 0.03),
@@ -76,31 +78,30 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
-                              width:
-                                  (constraints.maxWidth - padding * 2) * 0.47,
+                              width: (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
                                 label: 'first_name'.tr(),
                                 controller: _controllers['first_name'.tr()]!,
                                 fontSize: fontSize,
                                 labelFont: labelFont,
                                 height: fieldHeight,
+                                theme: theme,
                               ),
                             ),
                             SizedBox(width: padding * 0.06),
                             SizedBox(
-                              width:
-                                  (constraints.maxWidth - padding * 2) * 0.47,
+                              width: (constraints.maxWidth - padding * 2) * 0.47,
                               child: _buildField(
                                 label: 'last_name'.tr(),
                                 controller: _controllers['last_name'.tr()]!,
                                 fontSize: fontSize,
                                 labelFont: labelFont,
                                 height: fieldHeight,
+                                theme: theme,
                               ),
                             ),
                           ],
                         ),
-
                         for (final label in ['email'.tr(), 'subject'.tr()])
                           _buildField(
                             label: label,
@@ -108,6 +109,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                             fontSize: fontSize,
                             labelFont: labelFont,
                             height: fieldHeight,
+                            theme: theme,
                           ),
                         _buildField(
                           label: 'message'.tr(),
@@ -116,9 +118,10 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                           labelFont: labelFont,
                           height: fieldHeight * 3,
                           maxLines: 6,
+                          theme: theme,
                         ),
                         const Spacer(),
-                        _buildSendButton(fontSize),
+                        _buildSendButton(fontSize, theme),
                         SizedBox(height: constraints.maxHeight * 0.05),
                       ],
                     ),
@@ -132,16 +135,16 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     );
   }
 
-  AppBar _buildAppBar(Size media, bool hasNotification) {
+  AppBar _buildAppBar(Size media, bool hasNotification, ThemeData theme) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: 0,
       title: Text(
         "Streamore",
         style: GoogleFonts.poppins(
           fontSize: media.width * 0.05,
           fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: theme.appBarTheme.foregroundColor,
         ),
       ),
       actions: [
@@ -152,7 +155,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               Icon(
                 FontAwesomeIcons.bell,
                 size: media.width * 0.055,
-                color: Color(0xff1865E8),
+                color: theme.primaryColor,
               ),
               if (hasNotification)
                 Positioned(
@@ -173,26 +176,32 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Divider(height: 1, thickness: 1, color: Colors.grey.shade300),
+        child: Divider(
+          height: 1,
+          thickness: 1,
+          color: theme.dividerColor,
+        ),
       ),
     );
   }
 
-  Widget _buildSendButton(double fontSize) {
+  Widget _buildSendButton(double fontSize, ThemeData theme) {
     return SizedBox(
       width: double.infinity,
       height: 34,
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar( SnackBar(content: Text('message_sent'.tr())));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('message_sent'.tr())),
+            );
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff1865E8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          backgroundColor: theme.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
         child: Text(
           'send_message'.tr(),
@@ -212,6 +221,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     required double fontSize,
     required double labelFont,
     required double height,
+    required ThemeData theme,
     int maxLines = 1,
   }) {
     return Padding(
@@ -224,6 +234,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
             style: GoogleFonts.poppins(
               fontSize: labelFont,
               fontWeight: FontWeight.w500,
+              color: theme.textTheme.bodyLarge?.color,
             ),
           ),
           const SizedBox(height: 6),
@@ -232,30 +243,32 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
             child: TextFormField(
               controller: controller,
               maxLines: maxLines,
-              style: GoogleFonts.poppins(fontSize: fontSize),
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                color: theme.textTheme.bodyLarge?.color,
+              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'please_enter $label'.tr();
                 }
                 if (label == 'email' &&
-                    !RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\$',
-                    ).hasMatch(value)) {
+                    !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value)) {
                   return 'enter_a_valid_email_address'.tr();
                 }
                 return null;
               },
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: theme.cardColor,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 10,
                 ),
-                border: _inputBorder(),
-                focusedBorder: _inputBorder(color: const Color(0xff1865E8)),
-                errorBorder: _inputBorder(color: Colors.red),
-                focusedErrorBorder: _inputBorder(color: Colors.red),
+                border: _inputBorder(theme.dividerColor),
+                focusedBorder: _inputBorder(theme.primaryColor),
+                errorBorder: _inputBorder(Colors.red),
+                focusedErrorBorder: _inputBorder(Colors.red),
               ),
             ),
           ),
@@ -264,7 +277,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     );
   }
 
-  OutlineInputBorder _inputBorder({Color color = const Color(0xFF5E5E66)}) {
+  OutlineInputBorder _inputBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(3),
       borderSide: BorderSide(color: color, width: 1),
