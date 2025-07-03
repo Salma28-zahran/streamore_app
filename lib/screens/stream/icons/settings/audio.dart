@@ -71,6 +71,7 @@ class _AudioState extends State<Audio> {
           ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -29,22 +29,18 @@ class _MembersState extends State<Members> {
       drawer: MainDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: true,
-
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           "Streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 22,
-            color:
-            Theme.of(
-              context,
-            ).appBarTheme.foregroundColor,
+            color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -59,7 +55,7 @@ class _MembersState extends State<Members> {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
@@ -70,16 +66,17 @@ class _MembersState extends State<Members> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
+          preferredSize: const Size.fromHeight(1),
           child: Divider(
             color: Theme.of(context).dividerColor,
-            thickness: 1,
+            thickness: 0.5,
             height: 1,
           ),
         ),
       ),
+
       body: Padding(
-        padding: EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: 10,right: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

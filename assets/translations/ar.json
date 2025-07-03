@@ -131,8 +131,7 @@
   "add_account": "+ إضافة حساب",
   "logout": "تسجيل الخروج",
   "delete_account": "حذف الحساب",
-  "permanently_delete_this_account_and_remove_all_associated": "احذف هذا الحساب نهائيًا وقم بإزالة جميع البيانات المرتبطة",
-  "data": "البيانات",
+  "permanently_delete_this_account_and_remove_all_associated": "حذف هذا الحساب نهائيًا وإزالة جميع البيانات المرتبطة به.",
   "light_theme": "الثيم الفاتح",
   "dark_theme": "الثيم الداكن",
   "storage": "التخزين",
@@ -140,7 +139,7 @@
   "streaming_and_recording_hours": "ساعات البث والتسجيل",
   "minutes_of_hourss": "29 دقيقة من أصل 20 ساعة",
   "payment_method": "طريقة الدفع",
-  "currency_usd": "العملة: الدولار الأمريكي",
+  "currency_usd$": "العملة: الدولار الأمريكي",
   "billing_info": "معلومات الفوترة",
   "edit_info": "تعديل المعلومات",
   "invoices": "الفواتير",
@@ -171,7 +170,9 @@
   "logo": "الشعار",
   "background": "الخلفية",
 
-  "streamore": "ستريمور",
+
+
+
   "layout": "التصميم",
   "default": "الافتراضي",
   "cropped_layout": "تصميم مقصوص",

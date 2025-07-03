@@ -69,7 +69,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Icon(
               FontAwesomeIcons.bell,
               color: theme.primaryColorDark,
@@ -83,19 +83,41 @@ class _LayoutScreenState extends State<LayoutScreen> {
         ),
       ),
       drawer: MainDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context, baseTextColor),
-            const SizedBox(height: 12),
-            Divider(color: theme.dividerColor, thickness: 0.5),
-            const SizedBox(height: 12),
-            Flexible(child: _buildGrid(theme, baseTextColor, screenWidth)),
-          ],
-        ),
+
+      body:
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(context, baseTextColor),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+
+          Divider(
+            color: theme.dividerColor,
+            thickness: 0.5,
+            height: 1,
+            indent: 0,
+            endIndent: 0,
+          ),
+
+          const SizedBox(height: 12),
+
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: _buildGrid(theme, baseTextColor, screenWidth),
+            ),
+          ),
+        ],
       ),
+
     );
   }
 
@@ -107,7 +129,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         const SizedBox(width: 4),
-        Text('layout'.tr(),
+        Text("layout".tr(),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,

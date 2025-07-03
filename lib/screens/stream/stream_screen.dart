@@ -35,19 +35,19 @@ class StreamScreen extends StatelessWidget {
           "Streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
-            fontSize: isSmall ? 18 : 22,
+            fontSize: 22,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: isSmall ? 6 : 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
                   FontAwesomeIcons.bell,
                   color: Theme.of(context).primaryColorDark,
-                  size: isSmall ? 20 : 24,
+                  size: 24,
                 ),
                 if (hasNotification)
                   Positioned(
@@ -56,7 +56,7 @@ class StreamScreen extends StatelessWidget {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
@@ -70,11 +70,12 @@ class StreamScreen extends StatelessWidget {
           preferredSize: const Size.fromHeight(1),
           child: Divider(
             color: Theme.of(context).dividerColor,
-            thickness: 1,
+            thickness: 0.5,
             height: 1,
           ),
         ),
       ),
+
       body: Column(
         children: [
           Padding(

@@ -16,7 +16,6 @@ class Referrals extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           "Streamore",
@@ -26,39 +25,43 @@ class Referrals extends StatelessWidget {
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Stack(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.bell,
-                    color: Theme.of(context).primaryColorDark,
-                    size: 24,
-                  ),
-                  if (hasNotification)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10,left: 10),
+            child: Stack(
+              children: [
+                Icon(
+                  FontAwesomeIcons.bell,
+                  color: Theme.of(context).primaryColorDark,
+                  size: 24,
+                ),
+                if (hasNotification)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
+          ),
+        ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(color: Theme.of(context).dividerColor,
-              thickness: 1, height: 1),
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(
+            color: Theme.of(context).dividerColor,
+            thickness: 0.5,
+            height: 1,
+          ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.only(left: 21),

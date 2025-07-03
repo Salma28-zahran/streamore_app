@@ -87,6 +87,7 @@
  "help_center": "Help Center",
  "our_policies": "Our Policies",
  "add_a_destination": "Add a Destination",
+
  "connect_an_account_to_stremore_once_connected_you_can_stream_to_it_as_often_as_you_like": "Connect an account to Stremore. Once connected, you can stream to it as often as you like",
  "custom_rtmp": "Custom RTMP",
  "don't_see_your_platform_choose": "Don't see your platform? Choose",
@@ -131,16 +132,16 @@
  "add_account": "+ Add Account",
  "logout": "Logout",
  "delete_account": "Delete Account",
-"permanently_delete_this_account_and_remove_all_associated": "Permanently delete this account and remove all associated",
- "data": "data",
+ "permanently_delete_this_account_and_remove_all_associated": "Permanently Delete this account and remove all ssociated",
+
  "light_theme": "Light Theme",
  "dark_theme": "Dark Theme",
  "storage": "Storage",
- " minutes_of_hours": "29 minutes of 5 hours",
+ "minutes_of_hours": "29 minutes of 5 hours",
 "streaming_and_recording_hours": "Streaming and recording hours",
- " minutes_of_hourss": "29 minutes of 20 hours",
+ "minutes_of_hourss": "29 minutes of 20 hours",
  "payment_method": "Payment Method",
- "currency_usd": "Currency USD",
+ "currency_usd$": "Currency USD$",
  "billing_info": "Billing Info",
  "edit_info": "Edit info",
  "invoices": "Invoices",
@@ -168,18 +169,19 @@
  "off": "Off",
  "test": "Test",
  "logo": "Logo",
- 
  "background": "Background",
-  "streamore": "Streamore",
-  "layout": "Layout",
-  "default": "Default",
-  "cropped_layout": "Cropped Layout",
-  "group_layout": "Group Layout",
-  "spotlight_layout": "Spotlight Layout",
-  "screen_layout": "Screen Layout",
-  "picture_in_picture": "Picture-in-picture",
-  "news_layout": "News Layout",
-  "cinema_layout": "Cinema Layout"
+
+ "layout": "Layout",
+ "default": "Default",
+ "cropped_layout": "Cropped Layout",
+ "group_layout": "Group Layout",
+ "spotlight_layout": "Spotlight Layout",
+ "screen_layout": "Screen Layout",
+ "picture_in_picture": "Picture-in-picture",
+ "news_layout": "News Layout",
+ "cinema_layout": "Cinema Layout"
+
+
 
 
 

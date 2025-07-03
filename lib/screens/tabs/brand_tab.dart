@@ -25,7 +25,7 @@ class _BrandTabState extends State<BrandTab> {
   bool isBackgroundVisible = true;
 
   late TextEditingController _colorController;
-  List<String> fontList = ['inter'.tr(), 'poppins'.tr(),];
+  List<String> fontList = ['inter'.tr(), 'poppins'.tr()];
   String selectedSize = 's'.tr();
 
   @override
