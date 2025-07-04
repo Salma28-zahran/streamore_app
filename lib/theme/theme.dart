@@ -7,10 +7,6 @@ abstract class BaseTheme{
 
   Color get textColor;
 
-
-  Color get selectedBorderColor;
-
-
   ThemeData get themeData;
 
 }

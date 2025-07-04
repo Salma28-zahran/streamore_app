@@ -11,10 +11,6 @@ class LightTheme extends BaseTheme{
   @override
   Color get textColor => Color(0xff5E5E66);
 
-
-   @override
-  Color get selectedBorderColor => primaryColor; // -------------------> 
-
   @override
   ThemeData get themeData => ThemeData(
       colorScheme: ColorScheme.light(

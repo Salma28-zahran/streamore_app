@@ -7,6 +7,7 @@ import 'package:streamore_app/screens/auth/sign_up.dart';
 import 'package:streamore_app/screens/auth/verify_email1.dart';
 import 'package:streamore_app/screens/auth/verify_email2.dart';
 import 'package:streamore_app/screens/auth/verify_email3.dart';
+import 'package:streamore_app/screens/stream/choose_plan_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/destination.dart';
 import 'package:streamore_app/screens/stream/drawer/library.dart';
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme.themeData,
       themeMode: provider.themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: OnBoardingScreen.routeName,
+      initialRoute: ChoosePlanScreen.routeName,
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
         SignIn.routeName:        (context) => const SignIn(),
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
         LayoutScreen.routeName:  (context) => const LayoutScreen(),
         Profile.routeName:       (context) => const Profile(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
+        ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
       },
     );
   }
