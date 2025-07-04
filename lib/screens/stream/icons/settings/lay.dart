@@ -19,7 +19,6 @@ class _LayoutScreenState extends State<LayoutScreen> {
   final List<LayoutOption> layouts = [
     LayoutOption(titleKey: 'default'),
     LayoutOption(titleKey: 'cropped_layout'),
-    LayoutOption(titleKey: 'group_layout'),
     LayoutOption(titleKey: 'spotlight_layout'),
     LayoutOption(titleKey: 'screen_layout'),
     LayoutOption(titleKey: 'picture_in_picture'),
@@ -33,22 +32,14 @@ class _LayoutScreenState extends State<LayoutScreen> {
     });
   }
 
-  int getCrossAxisCount(double width) {
-    if (width < 200) return 1;
-    if (width < 800) return 2;
-    return 3;
-  }
-
-  String getImageName(String key) {
-    if (key == 'default') return 'defaultt.png';
-    if (key == 'picture_in_picture') return 'picture_in_picture.png';
-    return key + '.png';
+  String getImageName(String key, bool isSelected) {
+    final prefix = key == 'default' ? 'defaultt' : key;
+    return isSelected ? '${prefix}_selected.png' : '$prefix.png';
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
     final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
@@ -68,14 +59,18 @@ class _LayoutScreenState extends State<LayoutScreen> {
             padding: const EdgeInsets.only(right: 10),
             child: Icon(
               FontAwesomeIcons.bell,
-              color: Theme.of(context).primaryColor,
+              color: theme.primaryColor,
               size: 22,
             ),
           ),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(color: theme.dividerColor, thickness: 0.5, height: 1),
+          child: Divider(
+            color: theme.dividerColor,
+            thickness: 0.5,
+            height: 1,
+          ),
         ),
       ),
       drawer: MainDrawer(),
@@ -84,18 +79,18 @@ class _LayoutScreenState extends State<LayoutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(context, textColor),
+            _buildHeader(textColor),
             const SizedBox(height: 12),
             Divider(color: theme.dividerColor, thickness: 0.5),
             const SizedBox(height: 12),
-            Expanded(child: _buildGrid(theme, textColor, screenWidth)),
+            _buildGridLayout(textColor),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, Color textColor) {
+  Widget _buildHeader(Color textColor) {
     return Row(
       children: [
         IconButton(
@@ -115,73 +110,95 @@ class _LayoutScreenState extends State<LayoutScreen> {
     );
   }
 
-  Widget _buildGrid(ThemeData theme, Color textColor, double screenWidth) {
-    return GridView.builder(
-      itemCount: layouts.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: getCrossAxisCount(screenWidth),
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 0,
-        childAspectRatio: 1.2,
-      ),
-      itemBuilder: (context, index) {
-        final layout = layouts[index];
-        final isSelected = index == selectedIndex;
-        final imageName = getImageName(layout.titleKey);
-        final imagePath = 'assets/images/$imageName';
+  Widget _buildGridLayout(Color textColor) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-        return GestureDetector(
-          onTap: () => selectLayout(index),
-          child: Container(
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              border:
-                  isSelected
-                      ? Border.all(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : Theme.of(context).primaryColor,
-                        width: 2,
-                      )
-                      : null,
+    final layoutOrder = [
+      0, 1, 
+      3, 2, 
+      5, 4, 
+      6     
+    ];
 
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    imagePath,
-                    height: 84,
-                    width: 84,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.image_not_supported,
-                        size: 48,
-                        color: Colors.grey,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    layout.titleKey.tr(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: textColor,
+    return Column(
+      children: [
+        for (int row = 0; row < 3; row++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                for (int col = 0; col < 2; col++)
+                  Container(
+                    width: (MediaQuery.of(context).size.width - 48) / 2,
+                    child: _buildGridItem(
+                      layoutOrder[row * 2 + col],
+                      isDark,
+                      textColor,
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
           ),
-        );
-      },
+
+        Center(
+          child: Container(
+            width: (MediaQuery.of(context).size.width - 48) / 2,
+            child: _buildGridItem(layoutOrder[6], isDark, textColor),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGridItem(int index, bool isDark, Color textColor) {
+    final theme = Theme.of(context);
+    final layout = layouts[index];
+    final isSelected = index == selectedIndex;
+    final imagePath = 'assets/images/${getImageName(layout.titleKey, isSelected)}';
+
+    return GestureDetector(
+      onTap: () => selectLayout(index),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          border: isSelected
+              ? Border.all(
+                  color: isDark ? Colors.white : theme.primaryColor,
+                  width: 2,
+                )
+              : null,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(6.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              imagePath,
+              height: 84,
+              width: 84,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Icon(
+                Icons.image_not_supported,
+                size: 48,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              layout.titleKey.tr(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

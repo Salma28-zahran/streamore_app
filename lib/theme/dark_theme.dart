@@ -47,5 +47,9 @@ class DarkTheme extends BaseTheme{
   );
 
 
+    @override
+  Color get selectedBorderColor => Colors.white; // ------------> 
+
+
 
 }
