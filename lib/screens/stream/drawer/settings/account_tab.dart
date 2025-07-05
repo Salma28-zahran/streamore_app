@@ -69,7 +69,7 @@ class AccountTab extends StatelessWidget {
                 "team_name".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 11),
@@ -125,7 +125,7 @@ class AccountTab extends StatelessWidget {
                 "theme".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 11,),
@@ -174,7 +174,7 @@ class AccountTab extends StatelessWidget {
                 "your_accounts".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 3),
@@ -249,7 +249,7 @@ class AccountTab extends StatelessWidget {
                 "delete_account".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 9),
