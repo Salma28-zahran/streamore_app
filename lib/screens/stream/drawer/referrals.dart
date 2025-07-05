@@ -4,14 +4,22 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
-class Referrals extends StatelessWidget {
+class Referrals extends StatefulWidget {
   static const String routeName = "/referrals";
 
   const Referrals({super.key});
 
   @override
+  State<Referrals> createState() => _ReferralsState();
+}
+
+class _ReferralsState extends State<Referrals> {
+  bool _isOverlayEnabled2 = false;
+  @override
   Widget build(BuildContext context) {
     bool hasNotification = false;
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -95,8 +103,20 @@ class Referrals extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                       Icon(Icons.toggle_on,color: Theme.of(context).primaryColor,size: 28,),
-                        SizedBox(width: 6,),
+                        Transform.scale(
+                          scaleX: 28 / 59,
+                          scaleY: 13 / 34,
+                          child: Switch(
+                            value: _isOverlayEnabled2,
+                            onChanged: (value) {
+                              setState(() {
+                                _isOverlayEnabled2 = value;
+                              });
+                            },
+                          ),
+                        ),
+
+                        SizedBox(width: 2,),
                         Container(
                           width: 273,
                           height: 38,
