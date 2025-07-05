@@ -24,6 +24,7 @@ class DarkTheme extends BaseTheme{
       backgroundColor: Color(0xff0D142A),
       foregroundColor: Colors.white,
       elevation: 0,
+
     ),
     iconTheme: const IconThemeData(
       color: Color(0xff1865E8),
@@ -33,6 +34,7 @@ class DarkTheme extends BaseTheme{
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xff1865E8),
         foregroundColor: Colors.white,
+
 
       ),
     ),
@@ -44,7 +46,9 @@ class DarkTheme extends BaseTheme{
         unselectedLabelColor: Color(0xff80A9CC)
     ),
 
+
   );
+
 
 
 
