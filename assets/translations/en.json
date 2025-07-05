@@ -222,6 +222,14 @@
   "Card Information": "Card Information",
   "Card Number": "Card Number",
   "Country/Region": "Country/Region",
-  "Subscribe": "Subscribe"
+  "Subscribe": "Subscribe",
 
+
+
+  "content_sharing": "Content Sharing",
+  "share_screen": "Share Screen",
+  "image": "Image",
+  "video": "Video",
+  "presentation_pdf": "Presentation/PDF",
+  "selected_message": "{option} selected"
 }

@@ -223,7 +223,16 @@
   "Card Information": "معلومات البطاقة",
   "Card Number": "رقم البطاقة",
   "Country/Region": "الدولة/المنطقة",
-  "Subscribe": "اشترك"
+  "Subscribe": "اشترك",
+
+
+
+   "content_sharing": "مشاركة المحتوى",
+  "share_screen": "مشاركة الشاشة",
+  "image": "صورة",
+  "video": "فيديو",
+  "presentation_pdf": "عرض / PDF",
+  "selected_message": "تم اختيار {option}"
 }
 
 

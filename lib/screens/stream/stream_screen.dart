@@ -7,9 +7,9 @@ import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
+import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 import '../../my_provider.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
-
 
 class StreamScreen extends StatelessWidget {
   static const String routeName = "/stream";
@@ -96,18 +96,18 @@ class StreamScreen extends StatelessWidget {
                     Positioned(
                       bottom: 0,
                       left: 0,
-                      child: buildOverlay(myprovider)
-                      ,
+                      child: buildOverlay(myprovider),
                     ),
-
                   ],
                 ),
               ],
             ),
           ),
-
           Padding(
-            padding: EdgeInsets.only(left: size.width * 0.08, top: 8,right:  size.width * 0.04),
+            padding: EdgeInsets.only(
+                left: size.width * 0.08,
+                top: 8,
+                right: size.width * 0.04),
             child: Row(
               children: [
                 for (var icon in [
@@ -117,27 +117,33 @@ class StreamScreen extends StatelessWidget {
                   Icons.person_add,
                 ])
                   Padding(
-                    padding: EdgeInsets.only(right: size.width * 0.04,),
-                    child: Container(
-                      width: iconSize,
-                      height: iconSize,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(190),
-                        color: myprovider.themeMode == ThemeMode.dark
-                            ? const Color(0xff212b49)
-                            : const Color(0xff5E5E66),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: Theme.of(context).iconTheme.color,
-                        size: isSmall ? 20 : 24,
+                    padding: EdgeInsets.only(right: size.width * 0.04),
+                    child: GestureDetector(
+                      onTap: icon == Icons.cast_sharp
+                          ? () => _showBottomSheet(context)
+                          : null,
+                      child: Container(
+                        width: iconSize,
+                        height: iconSize,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(190),
+                          color: myprovider.themeMode == ThemeMode.dark
+                              ? const Color(0xff212b49)
+                              : const Color(0xff5E5E66),
+                        ),
+                        child: Icon(
+                          icon,
+                          color: Theme.of(context).iconTheme.color,
+                          size: isSmall ? 20 : 24,
+                        ),
                       ),
                     ),
                   ),
                 Padding(
                   padding: const EdgeInsets.only(right: 13),
                   child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+                    onTap: () =>
+                        Navigator.pushNamed(context, "/settings_icon"),
                     child: Container(
                       width: iconSize,
                       height: iconSize,
@@ -158,7 +164,6 @@ class StreamScreen extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 8),
           Expanded(
             child: Padding(
@@ -195,7 +200,7 @@ class StreamScreen extends StatelessWidget {
                           fontSize: isSmall ? 10 : 12,
                           fontWeight: FontWeight.w600,
                         ),
-                        tabs:  [
+                        tabs: [
                           Tab(text: "brand".tr()),
                           Tab(text: "banners".tr()),
                           Tab(text: "comments".tr()),
@@ -220,7 +225,9 @@ class StreamScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildIcon(IconData icon, double size, BuildContext context, MyProvider myprovider, bool isSmall) {
+
+  Widget _buildIcon(IconData icon, double size, BuildContext context,
+      MyProvider myprovider, bool isSmall) {
     return GestureDetector(
       onTap: icon == Icons.settings
           ? () => Navigator.pushNamed(context, "/settings_icon")
@@ -243,5 +250,13 @@ class StreamScreen extends StatelessWidget {
     );
   }
 
-}
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+  context: context,
+  isScrollControlled: true,
+  backgroundColor: Colors.transparent,
+  builder: (context) => const BottomSheetWidget(),
+);
 
+  }
+}
