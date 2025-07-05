@@ -181,7 +181,13 @@
   "screen_layout": "تصميم الشاشة",
   "picture_in_picture": "صورة داخل صورة",
   "news_layout": "تصميم الأخبار",
-  "cinema_layout": "تصميم السينما"
+  "cinema_layout": "تصميم السينما",
+
+  "add_members": "إضافة أعضاء",
+  "you_can_add_up_to_guests": "يمكنك إضافة حتى 6 ضيوف",
+  "upgrade_for_more": "قم بالترقية للمزيد",
+  "copy_link": "نسخ الرابط"
+
 
 }
 
