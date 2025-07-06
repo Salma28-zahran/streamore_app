@@ -21,6 +21,7 @@ import 'package:streamore_app/screens/stream/icons/settings/camera.dart';
 import 'package:streamore_app/screens/stream/icons/settings/general.dart';
 import 'package:streamore_app/screens/stream/icons/settings/lay.dart';
 import 'package:streamore_app/screens/stream/icons/settings/settings_icon.dart';
+import 'package:streamore_app/screens/tabs/banners_ex.dart';
 import 'package:streamore_app/theme/dark_theme.dart';
 import 'package:streamore_app/theme/light_theme.dart';
 import 'package:streamore_app/screens/stream/stream_screen.dart';

@@ -5,9 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/utils/payment_details_dialog.dart';
 
-
-
-
 class ChoosePlanScreen extends StatefulWidget {
   static const routeName = '/choose-plan';
   const ChoosePlanScreen({super.key});
@@ -127,9 +124,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     Color primaryColor,
     Color textColor,
   ) {
-
-      final isRtl = Directionality.of(context) == TextDirection.RTL;
-
+    final isArabic = context.locale.languageCode == 'ar';
 
     return Container(
       height: 55,
@@ -144,8 +139,8 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             child: AnimatedAlign(
               duration: const Duration(milliseconds: 250),
               alignment: (selectedTabIndex == 0)
-                  ? (isRtl ? Alignment.centerRight : Alignment.centerLeft)
-                  : (isRtl ? Alignment.centerLeft : Alignment.centerRight),
+                  ? (isArabic ? Alignment.centerRight : Alignment.centerLeft)
+                  : (isArabic ? Alignment.centerLeft : Alignment.centerRight),
               child: Container(
                 width: (screenWidth - 32) / 2,
                 height: 42,
