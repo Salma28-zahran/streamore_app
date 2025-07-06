@@ -4,7 +4,7 @@ class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
   // ==== Theme Overlay State ====
-  String _selectedTheme = 'Minimal';
+  String _selectedTheme = 'minimal';
   Color _primaryColor = Color(0xff1865E8);
 
   // ==== Getters ====

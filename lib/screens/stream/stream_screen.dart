@@ -255,7 +255,7 @@ class _StreamScreenState extends State<StreamScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                        ),),
+                                    ),),
                                 ),
                               ],
                             ),

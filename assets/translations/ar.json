@@ -34,14 +34,19 @@
   "banners": "اللافتات",
   "comments": "التعليقات",
   "theme": "الثيم",
+
+
   "minimal": "بسيط",
   "bubble": "فقاعات",
   "news": "الأخبار",
+
+
+
   "primary_color": "اللون الأساسي",
   "select_a_color": "اختر لونًا",
   "done": "تم",
   "fonts": "الخطوط",
-  "s": "S",
+
   "inter": "Inter",
   "poppins": "Poppins",
   "folders": "المجلدات",
