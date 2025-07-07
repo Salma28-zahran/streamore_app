@@ -178,7 +178,38 @@
  "off": "Off",
  "test": "Test",
  "logo": "Logo",
- "background": "Background",
+
+ 
+  "streamore": "Streamore",
+  "default": "Default",
+  "cropped_layout": "Cropped Layout",
+  "group_layout": "Group Layout",
+  "spotlight_layout": "Spotlight Layout",
+  "screen_layout": "Screen Layout",
+  "picture_in_picture": "Picture-in-picture",
+  "news_layout": "News Layout",
+  "cinema_layout": "Cinema Layout",
+
+
+
+
+  "choose_your_plan": "Choose Your Plan",
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+  "basic": "Basic",
+  "professional": "Professional",
+  "basic_description": "Dive deeper into streaming, expand your\nreach and brand.",
+  "professional_description": "Dive deeper into streaming, expand your\nreach and brand.",
+
+  "basic_feature_1": "No Streamore logo on your streams",
+  "basic_feature_2": "Multistream - 3 destinations",
+  "basic_feature_3": "Unlimited streaming",
+  "basic_feature_4": "10 on-screen participants",
+  "basic_feature_5": "Custom RTMP destinations",
+  "basic_feature_6": "Pre-recorded streams - 1 hour",
+  "basic_feature_7": "Guest destination",
+  "basic_feature_8": "Logos, Overlays, and Backgrounds",
+  "background": "Background",
 
  "layout": "Layout",
  "default": "Default",
@@ -192,11 +223,34 @@
 
 
 
+  "professional_feature_1": "Full HD (1080P)",
+  "professional_feature_2": "Multistream - 8 destinations",
+  "professional_feature_3": "Extra camera",
+  "professional_feature_4": "12 backstage participants",
+  "professional_feature_5": "Download transcripts",
+  "professional_feature_6": "4 seats",
+  "professional_feature_7": "Pre-recorded streams - 2 hours",
+  "professional_feature_8": "Logos, Overlays, and Backgrounds",
+
+  "more_details": "More Details",
+  "mo": "mo",
+  "yr": "yr",
 
 
 
+   "Payment Details": "Payment Details",
+  "7-day money-back guarantee": "7-day money-back guarantee",
+  "Card Information": "Card Information",
+  "Card Number": "Card Number",
+  "Country/Region": "Country/Region",
+  "Subscribe": "Subscribe",
 
 
 
-
+  "content_sharing": "Content Sharing",
+  "share_screen": "Share Screen",
+  "image": "Image",
+  "video": "Video",
+  "presentation_pdf": "Presentation/PDF",
+  "selected_message": "{option} selected"
 }

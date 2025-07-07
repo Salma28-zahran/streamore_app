@@ -156,6 +156,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               Icon(
                 FontAwesomeIcons.bell,
                 size: media.width * 0.055,
+
                 color: Theme.of(context).colorScheme.primary,
               ),
               if (hasNotification)
@@ -199,6 +200,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
+
           backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:streamore_app/screens/stream/choose_plan_screen.dart';
 import 'package:streamore_app/utils/billing_info_dialog.dart';
 
 class BillingTab extends StatefulWidget {
@@ -122,9 +123,12 @@ class _BillingTabState extends State<BillingTab> {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 30,
+            height: 30, 
+
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, ChoosePlanScreen.routeName);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
