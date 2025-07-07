@@ -41,7 +41,7 @@ class BottomSheetWidget extends StatelessWidget {
           const Divider(
             thickness: 1.2,
             height: 20,
-            color: Color(0xFFC8C8C8), // Light gray
+            color: Color(0xFFC8C8C8), 
           ),
           const SizedBox(height: 10),
           _buildOptionButton(

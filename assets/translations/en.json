@@ -180,9 +180,7 @@
  "logo": "Logo",
 
  
- "background": "Background",
   "streamore": "Streamore",
-  "layout": "Layout",
   "default": "Default",
   "cropped_layout": "Cropped Layout",
   "group_layout": "Group Layout",
@@ -211,6 +209,19 @@
   "basic_feature_6": "Pre-recorded streams - 1 hour",
   "basic_feature_7": "Guest destination",
   "basic_feature_8": "Logos, Overlays, and Backgrounds",
+  "background": "Background",
+
+ "layout": "Layout",
+ "default": "Default",
+ "cropped_layout": "Cropped Layout",
+ "group_layout": "Group Layout",
+ "spotlight_layout": "Spotlight Layout",
+ "screen_layout": "Screen Layout",
+ "picture_in_picture": "Picture-in-picture",
+ "news_layout": "News Layout",
+ "cinema_layout": "Cinema Layout",
+
+
 
   "professional_feature_1": "Full HD (1080P)",
   "professional_feature_2": "Multistream - 8 destinations",
