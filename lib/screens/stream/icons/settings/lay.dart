@@ -56,7 +56,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Icon(
               FontAwesomeIcons.bell,
               color: theme.primaryColor,
@@ -87,6 +87,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
           ],
         ),
       ),
+
     );
   }
 

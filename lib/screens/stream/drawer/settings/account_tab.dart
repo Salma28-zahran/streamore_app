@@ -14,7 +14,7 @@ class AccountTab extends StatelessWidget {
         final isDark = myprovider.themeMode == ThemeMode.dark;
 
         return Padding(
-          padding: const EdgeInsets.only(left: 23, top: 13),
+          padding: const EdgeInsets.only(left: 23, top: 13,right: 23),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -69,7 +69,7 @@ class AccountTab extends StatelessWidget {
                 "team_name".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 11),
@@ -125,7 +125,7 @@ class AccountTab extends StatelessWidget {
                 "theme".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 11,),
@@ -174,19 +174,19 @@ class AccountTab extends StatelessWidget {
                 "your_accounts".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 3),
               Text(
-                "add_a_new_account_to_manage_individual_access_and_settings".tr(),
+                "permanently_delete_this_account_and_remove_all_associated".tr(),
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 11,
-                  color: isDark ?
-                  Colors.white
-                      : Color(0xff5E5E66), ),
-              ),
+                  color: isDark ? Colors.white : const Color(0xff5E5E66),
+                ),
+              )
+              ,
               SizedBox(height: 6),
               Container(
                 width: 100,
@@ -249,7 +249,7 @@ class AccountTab extends StatelessWidget {
                 "delete_account".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 9),
@@ -260,16 +260,14 @@ class AccountTab extends StatelessWidget {
                     fontSize: 11,
                     color: isDark ? Colors.white : const Color(0xff5E5E66),
                   ),
-                  children:  [
+                  children: [
                     TextSpan(
-                        text: "permanently_delete_this_account_and_remove_all_associated\n".tr()
-                    ),
-                    TextSpan(
-                      text: "data".tr(),
+                      text: "${"permanently_delete_this_account_and_remove_all_associated".tr()}\n",
                     ),
                   ],
                 ),
               ),
+
 
               SizedBox(height: 10),
 

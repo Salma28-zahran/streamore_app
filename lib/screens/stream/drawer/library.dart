@@ -16,22 +16,18 @@ class Library extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           "Streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 22,
-            color:
-            Theme.of(
-              context,
-            ).appBarTheme.foregroundColor,
+            color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -46,7 +42,7 @@ class Library extends StatelessWidget {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
@@ -57,17 +53,18 @@ class Library extends StatelessWidget {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
+          preferredSize: const Size.fromHeight(1),
           child: Divider(
             color: Theme.of(context).dividerColor,
-            thickness: 1,
+            thickness: 0.5,
             height: 1,
           ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Padding(
-        padding: const EdgeInsets.only(left: 21),
+        padding: const EdgeInsets.only(left: 21,right: 21),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -84,7 +81,7 @@ class Library extends StatelessWidget {
              child: Column(
                mainAxisSize: MainAxisSize.min,
                children: [
-                 Text("You_have_no_recordings_at_the_moment".tr(),style:
+                 Text("you_have_no_recordings_at_the_moment".tr(),style:
                  GoogleFonts.poppins(
                    fontWeight: FontWeight.w400,
                    fontSize: 14

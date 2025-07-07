@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme.themeData,
       themeMode: provider.themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: StreamScreen.routeName,
+      initialRoute: OnBoardingScreen.routeName,
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
         SignIn.routeName:        (context) => const SignIn(),

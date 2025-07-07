@@ -79,7 +79,7 @@ class _SettingsIconState extends State<SettingsIcon> {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
@@ -90,7 +90,7 @@ class _SettingsIconState extends State<SettingsIcon> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
+          preferredSize: const Size.fromHeight(1),
           child: Divider(
             color: Theme.of(context).dividerColor,
             thickness: 0.5,
@@ -98,6 +98,7 @@ class _SettingsIconState extends State<SettingsIcon> {
           ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

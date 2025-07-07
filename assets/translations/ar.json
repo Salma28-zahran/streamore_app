@@ -34,14 +34,19 @@
   "banners": "اللافتات",
   "comments": "التعليقات",
   "theme": "الثيم",
+
+
   "minimal": "بسيط",
   "bubble": "فقاعات",
   "news": "الأخبار",
+
+
+
   "primary_color": "اللون الأساسي",
   "select_a_color": "اختر لونًا",
   "done": "تم",
   "fonts": "الخطوط",
-  "s": "S",
+
   "inter": "Inter",
   "poppins": "Poppins",
   "folders": "المجلدات",
@@ -131,8 +136,7 @@
   "add_account": "+ إضافة حساب",
   "logout": "تسجيل الخروج",
   "delete_account": "حذف الحساب",
-  "permanently_delete_this_account_and_remove_all_associated": "احذف هذا الحساب نهائيًا وقم بإزالة جميع البيانات المرتبطة",
-  "data": "البيانات",
+  "permanently_delete_this_account_and_remove_all_associated": "حذف هذا الحساب نهائيًا وإزالة جميع البيانات المرتبطة به.",
   "light_theme": "الثيم الفاتح",
   "dark_theme": "الثيم الداكن",
   "storage": "التخزين",
@@ -140,7 +144,7 @@
   "streaming_and_recording_hours": "ساعات البث والتسجيل",
   "minutes_of_hourss": "29 دقيقة من أصل 20 ساعة",
   "payment_method": "طريقة الدفع",
-  "currency_usd": "العملة: الدولار الأمريكي",
+  "currency_usd$": "العملة: الدولار الأمريكي",
   "billing_info": "معلومات الفوترة",
   "edit_info": "تعديل المعلومات",
   "invoices": "الفواتير",
@@ -171,6 +175,9 @@
   "logo": "الشعار",
   "background": "الخلفية",
 
+
+
+
   "layout": "التصميم",
   "default": "الافتراضي",
   "cropped_layout": "تصميم مقصوص",
@@ -181,58 +188,12 @@
   "news_layout": "تصميم الأخبار",
   "cinema_layout": "تصميم السينما",
 
-
-  
-  
-  "streamore": "ستريمور",
-  "choose_your_plan": "اختر خطتك",
-  "monthly": "شهري",
-  "yearly": "سنوي",
-  "basic": "الأساسي",
-  "professional": "الاحترافي",
-  "basic_description": "تعمّق أكثر في البث، ووسّع نطاق وصولك وعلامتك.",
-  "professional_description": "تعمّق أكثر في البث، ووسّع نطاق وصولك وعلامتك.",
-
-  "basic_feature_1": "لا يوجد شعار ستريمور على البث",
-  "basic_feature_2": "بث متعدد - 3 وجهات",
-  "basic_feature_3": "بث غير محدود",
-  "basic_feature_4": "10 مشاركين على الشاشة",
-  "basic_feature_5": "وجهات RTMP مخصصة",
-  "basic_feature_6": "بث مسجل مسبقًا - ساعة واحدة",
-  "basic_feature_7": "وجهة للضيوف",
-  "basic_feature_8": "شعارات، تراكبات وخلفيات",
-
-  "professional_feature_1": "دقة كاملة (1080P)",
-  "professional_feature_2": "بث متعدد - 8 وجهات",
-  "professional_feature_3": "كاميرا إضافية",
-  "professional_feature_4": "12 مشارك في الكواليس",
-  "professional_feature_5": "تحميل النصوص المفرغة",
-  "professional_feature_6": "4 مقاعد",
-  "professional_feature_7": "بث مسجل مسبقًا - ساعتان",
-  "professional_feature_8": "شعارات، تراكبات وخلفيات",
-
-  "more_details": "المزيد من التفاصيل",
-
-  "mo": "شهر",
-  "yr": "سنة",
+  "add_members": "إضافة أعضاء",
+  "you_can_add_up_to_guests": "يمكنك إضافة حتى 6 ضيوف",
+  "upgrade_for_more": "قم بالترقية للمزيد",
+  "copy_link": "نسخ الرابط"
 
 
-
-  "Payment Details": "تفاصيل الدفع",
-  "7-day money-back guarantee": "ضمان استرداد الأموال لمدة 7 أيام",
-  "Card Information": "معلومات البطاقة",
-  "Card Number": "رقم البطاقة",
-  "Country/Region": "الدولة/المنطقة",
-  "Subscribe": "اشترك",
-
-
-
-   "content_sharing": "مشاركة المحتوى",
-  "share_screen": "مشاركة الشاشة",
-  "image": "صورة",
-  "video": "فيديو",
-  "presentation_pdf": "عرض / PDF",
-  "selected_message": "تم اختيار {option}"
 }
 
 

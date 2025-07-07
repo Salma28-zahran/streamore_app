@@ -2,12 +2,13 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_sections.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_theme_buttons.dart';
-
 import '../../my_provider.dart';
+import '../../widgets/brand_widgets/section_header.dart';
 
 class BrandTab extends StatefulWidget {
   const BrandTab({super.key});
@@ -17,15 +18,28 @@ class BrandTab extends StatefulWidget {
 }
 
 class _BrandTabState extends State<BrandTab> {
+  XFile? _logoImageFile;
+
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
   bool isLogoVisible = true;
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
+  final List<XFile> _logoImages = [];
+  final List<XFile> _overlayImages = [];
+  final List<XFile> _backgroundImages = [];
+
+  Future<void> _pickImageForSection(List<XFile> targetList) async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => targetList.add(picked));
+    }
+  }
 
   late TextEditingController _colorController;
-  List<String> fontList = ['inter'.tr(), 'poppins'.tr(),];
+  List<String> fontList = ['inter'.tr(), 'poppins'.tr()];
   String selectedSize = 's'.tr();
 
   @override
@@ -53,18 +67,16 @@ class _BrandTabState extends State<BrandTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildSectionHeader(
+          SectionHeader(
             title: "theme".tr(),
             isVisible: isThemeOptionsVisible,
             onToggle: () => setState(() => isThemeOptionsVisible = !isThemeOptionsVisible),
-            font: myProvider.selectedFont,
           ),
           if (isThemeOptionsVisible)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Row(
-                children: ['minimal', 'bubble', 'news'].map((theme) {
-
+                children: ["minimal", "bubble", "news"].map((theme) {
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -74,7 +86,8 @@ class _BrandTabState extends State<BrandTab> {
                         selectedTheme: myProvider.selectedTheme,
                         onSelect: (selected) => myProvider.setSelectedTheme(selected),
                         primaryColor: myProvider.primaryColor,
-                        themeMode: myProvider.themeMode, font: '',
+                        themeMode: myProvider.themeMode,
+                        font: myProvider.selectedFont,
                       ),
                     ),
                   );
@@ -82,11 +95,10 @@ class _BrandTabState extends State<BrandTab> {
               ),
             ),
 
-          buildSectionHeader(
+          SectionHeader(
             title: "primary_color".tr(),
             isVisible: isColorOptionsVisible,
             onToggle: () => setState(() => isColorOptionsVisible = !isColorOptionsVisible),
-            font: myProvider.selectedFont,
           ),
           if (isColorOptionsVisible)
             Padding(
@@ -173,11 +185,10 @@ class _BrandTabState extends State<BrandTab> {
               ),
             ),
 
-          buildSectionHeader(
+          SectionHeader(
             title: "fonts".tr(),
             isVisible: isFontsVisible,
             onToggle: () => setState(() => isFontsVisible = !isFontsVisible),
-            font: myProvider.selectedFont,
           ),
           if (isFontsVisible)
             Padding(
@@ -245,27 +256,14 @@ class _BrandTabState extends State<BrandTab> {
                     ),
                   ),
                   const SizedBox(width: 15),
-                  Text("S".tr(), style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
+                  Text("S", style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
                 ],
               ),
             ),
 
-          buildLogoSection(
-
-            isVisible: isLogoVisible,
-            onToggle: () => setState(() => isLogoVisible = !isLogoVisible),
-            font: myProvider.selectedFont,
-          ),
-          buildOverlaySection(
-            isVisible: isOverlayVisible,
-            onToggle: () => setState(() => isOverlayVisible = !isOverlayVisible),
-            font: myProvider.selectedFont,
-          ),
-          buildBackgroundSection(
-            isVisible: isBackgroundVisible,
-            onToggle: () => setState(() => isBackgroundVisible = !isBackgroundVisible),
-            font: myProvider.selectedFont,
-          ),
+          const LogoSection(),
+          const OverlaySection(),
+          const BackgroundSection(),
 
           const SizedBox(height: 100),
         ],
