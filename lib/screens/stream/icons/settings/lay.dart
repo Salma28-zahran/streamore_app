@@ -26,14 +26,10 @@ class _LayoutScreenState extends State<LayoutScreen> {
     LayoutOption(titleKey: 'cinema_layout'),
   ];
 
-  void selectLayout(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
+  void selectLayout(int index) => setState(() => selectedIndex = index);
 
   String getImageName(String key, bool isSelected) {
-    final prefix = key == 'default' ? 'defaultt' : key;
+    final prefix = key == 'default' ? 'defaultt' : key; 
     return isSelected ? '${prefix}_selected.png' : '$prefix.png';
   }
 
@@ -56,7 +52,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Icon(
               FontAwesomeIcons.bell,
               color: theme.primaryColor,
@@ -73,7 +69,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
           ),
         ),
       ),
-      drawer: MainDrawer(),
+      drawer: const MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -99,7 +95,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
         ),
         const SizedBox(width: 4),
         Text(
-          'layout'.tr(),
+          "layout".tr(),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -115,10 +111,10 @@ class _LayoutScreenState extends State<LayoutScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     final layoutOrder = [
-      0, 1, 
-      3, 2, 
-      5, 4, 
-      6     
+      0, 1,
+      3, 2,
+      5, 4,
+      6,
     ];
 
     return Column(
@@ -130,7 +126,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 for (int col = 0; col < 2; col++)
-                  Container(
+                  SizedBox(
                     width: (MediaQuery.of(context).size.width - 48) / 2,
                     child: _buildGridItem(
                       layoutOrder[row * 2 + col],
@@ -141,9 +137,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
               ],
             ),
           ),
-
         Center(
-          child: Container(
+          child: SizedBox(
             width: (MediaQuery.of(context).size.width - 48) / 2,
             child: _buildGridItem(layoutOrder[6], isDark, textColor),
           ),
@@ -156,7 +151,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
     final theme = Theme.of(context);
     final layout = layouts[index];
     final isSelected = index == selectedIndex;
-    final imagePath = 'assets/images/${getImageName(layout.titleKey, isSelected)}';
+    final imagePath =
+        'assets/images/${getImageName(layout.titleKey, isSelected)}';
 
     return GestureDetector(
       onTap: () => selectLayout(index),
@@ -180,7 +176,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
               height: 84,
               width: 84,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => Icon(
+              errorBuilder: (_, __, ___) => const Icon(
                 Icons.image_not_supported,
                 size: 48,
                 color: Colors.grey,

@@ -1,3 +1,4 @@
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -155,7 +156,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               Icon(
                 FontAwesomeIcons.bell,
                 size: media.width * 0.055,
-                color: theme.primaryColor,
+
+                color: Theme.of(context).colorScheme.primary,
               ),
               if (hasNotification)
                 Positioned(
@@ -198,7 +200,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: theme.primaryColor,
+
+          backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),

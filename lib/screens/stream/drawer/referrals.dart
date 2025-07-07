@@ -4,19 +4,26 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
-class Referrals extends StatelessWidget {
+class Referrals extends StatefulWidget {
   static const String routeName = "/referrals";
 
   const Referrals({super.key});
 
   @override
+  State<Referrals> createState() => _ReferralsState();
+}
+
+class _ReferralsState extends State<Referrals> {
+  bool _isOverlayEnabled2 = false;
+  @override
   Widget build(BuildContext context) {
     bool hasNotification = false;
+
+
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           "Streamore",
@@ -26,39 +33,43 @@ class Referrals extends StatelessWidget {
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Stack(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.bell,
-                    color: Theme.of(context).primaryColorDark,
-                    size: 24,
-                  ),
-                  if (hasNotification)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10,left: 10),
+            child: Stack(
+              children: [
+                Icon(
+                  FontAwesomeIcons.bell,
+                  color: Theme.of(context).primaryColorDark,
+                  size: 24,
+                ),
+                if (hasNotification)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
+          ),
+        ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(color: Theme.of(context).dividerColor,
-              thickness: 1, height: 1),
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(
+            color: Theme.of(context).dividerColor,
+            thickness: 0.5,
+            height: 1,
+          ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.only(left: 21),
@@ -92,8 +103,20 @@ class Referrals extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                       Icon(Icons.toggle_on,color: Theme.of(context).primaryColor,size: 28,),
-                        SizedBox(width: 6,),
+                        Transform.scale(
+                          scaleX: 28 / 59,
+                          scaleY: 13 / 34,
+                          child: Switch(
+                            value: _isOverlayEnabled2,
+                            onChanged: (value) {
+                              setState(() {
+                                _isOverlayEnabled2 = value;
+                              });
+                            },
+                          ),
+                        ),
+
+                        SizedBox(width: 2,),
                         Container(
                           width: 273,
                           height: 38,

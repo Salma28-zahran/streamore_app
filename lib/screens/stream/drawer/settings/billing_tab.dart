@@ -32,7 +32,7 @@ class _BillingTabState extends State<BillingTab> {
             context: context,
             title: 'storage'.tr(),
             progress: 29 / (5 * 60),
-            label: ' minutes_of_hours'.tr(),
+            label: 'minutes_of_hours'.tr(),
             fontSize: fontSize,
             textColor: textColor,
           ),
@@ -47,9 +47,14 @@ class _BillingTabState extends State<BillingTab> {
           _buildTextCard(
             'payment_method'.tr(),
             Text(
-              'currency_usd\$'.tr(),
-              style: GoogleFonts.poppins(fontSize: fontSize, color: textColor),
+              r'currency_usd$'.tr(),
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                color: textColor,
+              ),
             ),
+
+
           ),
           _buildActionCard(
             title: 'billing_info'.tr(),

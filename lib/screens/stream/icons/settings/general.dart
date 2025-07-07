@@ -23,7 +23,7 @@ class _GeneralState extends State<General> {
 
   String selectedOrientation = 'portrait'.tr();
 
-  final List<String> items = ['high_definition_720p'.tr(), 'medium_definition_480p '.tr(),"low_definition_144p ".tr()];
+  final List<String> items = ['high_definition_720p'.tr(), 'medium_definition_480p'.tr(),"low_definition_144p".tr()];
   String? selectedValue;
   bool hasNotification = false;
 
@@ -45,7 +45,7 @@ class _GeneralState extends State<General> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10,left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -79,6 +79,7 @@ class _GeneralState extends State<General> {
           ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -100,7 +101,7 @@ class _GeneralState extends State<General> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 17),
                   child: Text(
-                    'general '.tr(),
+                    'general'.tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 20,
@@ -120,7 +121,7 @@ class _GeneralState extends State<General> {
 
             // Stream quality
             Padding(
-              padding: const EdgeInsets.only(left: 21, top: 24),
+              padding: const EdgeInsets.only(left: 21, top: 24,right: 21),
               child: Text(
                 "stream_quality".tr(),
                 style: GoogleFonts.poppins(
@@ -134,7 +135,7 @@ class _GeneralState extends State<General> {
             ),
             const SizedBox(height: 9),
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: 21,right: 21),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton2<String>(
                   isExpanded: true,
@@ -238,7 +239,7 @@ class _GeneralState extends State<General> {
 
             // Name Label
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: 21,right: 21),
               child: Text(
                 "name".tr(),
                 style: GoogleFonts.poppins(
@@ -255,7 +256,7 @@ class _GeneralState extends State<General> {
 
             // Name TextField
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: 21,right: 21),
               child: SizedBox(
                 width: 262,
                 height: 34,
@@ -290,7 +291,7 @@ class _GeneralState extends State<General> {
 
             // Orientation Title
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: 21,right: 21),
               child: Text(
                 "orientation".tr(),
                 style: GoogleFonts.poppins(
@@ -303,7 +304,7 @@ class _GeneralState extends State<General> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 21),
+              padding: const EdgeInsets.only(left: 21,right: 21),
               child: Row(
                 children: [
                   Radio<String>(

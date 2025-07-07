@@ -31,7 +31,7 @@ class Settings extends StatelessWidget {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.only(right: 10,left: 10),
               child: Stack(
                 children: [
                   Icon(
@@ -60,7 +60,7 @@ class Settings extends StatelessWidget {
             preferredSize: const Size.fromHeight(1),
             child: Divider(
               color: Theme.of(context).dividerColor,
-              thickness: 1,
+              thickness: 0.5,
               height: 1,
             ),
           ),
@@ -70,7 +70,7 @@ class Settings extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 23, top: 34),
+              padding: const EdgeInsets.only(left: 23, top: 34,right: 23),
               child: Text(
                 "settings".tr(),
                 style: GoogleFonts.poppins(

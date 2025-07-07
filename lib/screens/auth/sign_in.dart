@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   static const String routeName = "/signin";
 
   const SignIn({super.key});
 
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +94,7 @@ class SignIn extends StatelessWidget {
                 color: Color(0xffF3F3F3),
                 child:
                 TextField(
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: "password".tr(),
                     hintStyle: GoogleFonts.poppins(
@@ -95,7 +102,17 @@ class SignIn extends StatelessWidget {
                       fontSize: 12,
                     ),
                     prefixIcon: Icon(Icons.lock),
-                    suffixIcon: Icon(FontAwesomeIcons.eye),
+                    suffixIcon: IconButton(
+                  icon: Icon(
+                  _obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                ),
                     iconColor: Color(0xff626262),
 
                     filled: true,

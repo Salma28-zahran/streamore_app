@@ -42,7 +42,6 @@ class _CameraState extends State<Camera> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10,left: 10),
-
             child: Stack(
               children: [
                 Icon(
@@ -76,6 +75,7 @@ class _CameraState extends State<Camera> {
           ),
         ),
       ),
+
       drawer: MainDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
