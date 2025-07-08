@@ -71,7 +71,8 @@ class Settings extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 23, top: 34,right: 23),
-              child: Text(
+              child:
+              Text(
                 "settings".tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 20,

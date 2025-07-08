@@ -212,18 +212,11 @@
   "background": "Background",
 
  "layout": "Layout",
- "default": "Default",
- "cropped_layout": "Cropped Layout",
- "group_layout": "Group Layout",
- "spotlight_layout": "Spotlight Layout",
- "screen_layout": "Screen Layout",
- "picture_in_picture": "Picture-in-picture",
- "news_layout": "News Layout",
- "cinema_layout": "Cinema Layout"
 
 
 
-  "professional_feature_1": "Full HD (1080P)",
+
+ "professional_feature_1": "Full HD (1080P)",
   "professional_feature_2": "Multistream - 8 destinations",
   "professional_feature_3": "Extra camera",
   "professional_feature_4": "12 backstage participants",
@@ -252,5 +245,18 @@
   "image": "Image",
   "video": "Video",
   "presentation_pdf": "Presentation/PDF",
-  "selected_message": "{option} selected"
+  "selected_message": "{option} selected",
+
+ "choose_an_image": "Choose an Image",
+ "country": "Country",
+ "phone_number": "Phone Number",
+ "change_password": "Change Password",
+ "egypt": "egypt",
+ "ksa": "ksa",
+
+ "current_password": "Current Password",
+ "forgot_your_current_password": "Forgot Your Current Password?",
+"confirm": "Confirm",
+ "password_not_match": "password not match"
+
 }

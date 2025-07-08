@@ -13,7 +13,11 @@ import 'package:streamore_app/screens/stream/drawer/destination.dart';
 import 'package:streamore_app/screens/stream/drawer/library.dart';
 import 'package:streamore_app/screens/stream/drawer/members.dart';
 import 'package:streamore_app/screens/stream/drawer/referrals.dart';
-import 'package:streamore_app/screens/stream/drawer/settings/profile.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/profile/change_password.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/profile/forget_pass1.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/profile/forget_pass2.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/profile/forget_pass3.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/profile/profile.dart';
 import 'package:streamore_app/screens/stream/drawer/settings/settings.dart';
 import 'package:streamore_app/screens/stream/icons/settings/audio.dart';
 import 'package:streamore_app/screens/stream/icons/settings/back.dart';
@@ -85,6 +89,13 @@ class MyApp extends StatelessWidget {
         Profile.routeName:       (context) => const Profile(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
         ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
+        ChangePassword.routeName:(context)=> const ChangePassword(),
+        ForgetPass1.routeName:(context)=>const ForgetPass1(),
+        ForgetPass2.routeName:(context)=>ForgetPass2(),
+        ForgetPass3.routeName:(context)=>ForgetPass3(),
+
+
+
       },
     );
   }

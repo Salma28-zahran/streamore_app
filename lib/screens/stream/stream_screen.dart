@@ -37,18 +37,11 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool hasNotification = false;
 
     return Scaffold(
-      drawer: const MainDrawer(),
+      drawer:  MainDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Text(
-          "Streamore",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: Theme.of(context).appBarTheme.foregroundColor,
-          ),
-        ),
+        title: Image.asset("assets/images/app_name.png"),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

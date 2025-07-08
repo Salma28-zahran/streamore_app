@@ -69,7 +69,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
           ),
         ),
       ),
-      drawer: const MainDrawer(),
+      drawer:  MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
