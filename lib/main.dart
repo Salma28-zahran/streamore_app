@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme.themeData,
       themeMode: provider.themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: OnBoardingScreen.routeName,
+      initialRoute: StreamScreen.routeName,
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
         SignIn.routeName:        (context) => const SignIn(),
@@ -85,6 +85,7 @@ class MyApp extends StatelessWidget {
         Profile.routeName:       (context) => const Profile(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
         ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
+        BannersContant.routeName : (context) => const BannersContant(),
       },
     );
   }

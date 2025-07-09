@@ -11,6 +11,9 @@ class MyProvider extends ChangeNotifier {
   String get selectedTheme => _selectedTheme;
   Color get primaryColor => _primaryColor;
 
+    // ==== Folder Clicked State ====
+  bool bFolderClicked = false;
+
   // ==== Setters ====
   void setSelectedTheme(String theme) {
     _selectedTheme = theme;
@@ -27,6 +30,14 @@ class MyProvider extends ChangeNotifier {
     themeMode = themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
+
+    // ==== Folder Clicked State Setter ====
+  void setBFolderClicked(bool value) {
+    bFolderClicked = value;
+    notifyListeners();
+  }
+
+
   String _selectedFont = 'Inter';
 
   String get selectedFont => _selectedFont;

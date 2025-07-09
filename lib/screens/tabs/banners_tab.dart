@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/screens/tabs/banners_ex.dart';
+import 'package:provider/provider.dart';
 
 class Folder {
   String? name;
@@ -74,12 +76,11 @@ class _BannersTabState extends State<BannersTab> {
   }
 
   @override
-void dispose() {
-  folderController.dispose();
-  tickerController.dispose();
-  super.dispose();
-}
-
+  void dispose() {
+    folderController.dispose();
+    tickerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,60 +127,67 @@ void dispose() {
                 ],
               ),
               const SizedBox(height: 16),
-              if (showAddFolderCard)
-                _buildAddFolderCard(),
+              if (showAddFolderCard) _buildAddFolderCard(),
               if (showFolders)
                 ValueListenableBuilder<List<Folder>>(
-  valueListenable: folders,
-  builder: (context, folderList, _) {
-    if (folderList.isEmpty) {
-      return Text("no_folders_yet".tr());
-    }
-    return SizedBox(
-      height: folderList.length * 86,
-      child: ReorderableListView.builder(
-        itemCount: folderList.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        onReorder: (oldIndex, newIndex) {
-          if (newIndex > oldIndex) newIndex -= 1;
-          final item = folderList.removeAt(oldIndex);
-          folderList.insert(newIndex, item);
-          folders.notifyListeners();
-        },
-        itemBuilder: (context, index) {
-          final folder = folderList[index];
-          return KeyedSubtree(
-            key: ValueKey("folder_$index".tr()),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => BannersContant(folder: folder),
-  ),
-);
+                  valueListenable: folders,
+                  builder: (context, folderList, _) {
+                    if (folderList.isEmpty) {
+                      return Text("no_folders_yet".tr());
+                    }
+                    return SizedBox(
+                      height: folderList.length * 86,
+                      child: ReorderableListView.builder(
+                        itemCount: folderList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        onReorder: (oldIndex, newIndex) {
+                          if (newIndex > oldIndex) newIndex -= 1;
+                          final item = folderList.removeAt(oldIndex);
+                          folderList.insert(newIndex, item);
+                          folders.notifyListeners();
+                        },
+                        itemBuilder: (context, index) {
+                          final folder = folderList[index];
+                          return KeyedSubtree(
+                            key: ValueKey("folder_$index".tr()),
+                            child: GestureDetector(
+                              onTap: () {
+                                Provider.of<MyProvider>(
+                                  context,
+                                  listen: false,
+                                ).setBFolderClicked(true);
 
-              },
-              child: _buildItemTile(
-                context,
-                title: folder.name,
-                count: folder.itemCount,
-                isEditing: folder.isEditing,
-                onSubmit: (value) => _submitFolderName(value),
-                onEdit: () => setState(() => folder.isEditing = true),
-                onRemove: () {
-                  folderList.removeAt(index);
-                  folders.notifyListeners();
-                },
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  },
-),
+                                Future.delayed(Duration(milliseconds: 100), () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BannersContant(),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: _buildItemTile(
+                                context,
+                                title: folder.name,
+                                count: folder.itemCount,
+                                isEditing: folder.isEditing,
+                                onSubmit: (value) => _submitFolderName(value),
+                                onEdit:
+                                    () =>
+                                        setState(() => folder.isEditing = true),
+                                onRemove: () {
+                                  folderList.removeAt(index);
+                                  folders.notifyListeners();
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
 
               const SizedBox(height: 24),
 
@@ -218,8 +226,7 @@ void dispose() {
                 ],
               ),
               const SizedBox(height: 3),
-              if (showAddTickerCard)
-                _buildAddTickerCard(),
+              if (showAddTickerCard) _buildAddTickerCard(),
               if (showTickers)
                 ValueListenableBuilder<List<TickerItem>>(
                   valueListenable: tickers,
@@ -248,10 +255,9 @@ void dispose() {
                               title: ticker.name,
                               count: ticker.itemCount,
                               isEditing: ticker.isEditing,
-                              onSubmit: (value) =>
-                                  _submitTickerName(value),
-                              onEdit: () =>
-                                  setState(() => ticker.isEditing = true),
+                              onSubmit: (value) => _submitTickerName(value),
+                              onEdit:
+                                  () => setState(() => ticker.isEditing = true),
                               onRemove: () {
                                 tickerList.removeAt(index);
                                 tickers.notifyListeners();
@@ -271,14 +277,14 @@ void dispose() {
   }
 
   Widget _buildItemTile(
-      BuildContext context, {
-        required String? title,
-        required int count,
-        required bool isEditing,
-        required Function(String) onSubmit,
-        required VoidCallback onEdit,
-        required VoidCallback onRemove,
-      }) {
+    BuildContext context, {
+    required String? title,
+    required int count,
+    required bool isEditing,
+    required Function(String) onSubmit,
+    required VoidCallback onEdit,
+    required VoidCallback onRemove,
+  }) {
     return Container(
       width: double.infinity,
       height: 70,
@@ -287,9 +293,7 @@ void dispose() {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Row(
         children: [
@@ -298,40 +302,41 @@ void dispose() {
           const Icon(Icons.folder_outlined, color: Colors.black),
           const SizedBox(width: 12),
           Expanded(
-            child: isEditing
-                ? TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: "name".tr(),
-                      border: InputBorder.none,
+            child:
+                isEditing
+                    ? TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: "name".tr(),
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          onSubmit(value);
+                        }
+                      },
+                    )
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title ?? "unnamed".tr(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$count item${count == 1 ? '' : 's'}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
                     ),
-                    onSubmitted: (value) {
-                      if (value.trim().isNotEmpty) {
-                        onSubmit(value);
-                      }
-                    },
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title ?? "unnamed".tr(),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '$count item${count == 1 ? '' : 's'}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert, color: Colors.black),
@@ -342,28 +347,32 @@ void dispose() {
                 onRemove();
               }
             },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'edit'.tr(),
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, color: Colors.grey),
-                    SizedBox(width: 8),
-                    Text('edit'.tr()),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'remove'.tr(),
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('remove'.tr(), style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'edit'.tr(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit, color: Colors.grey),
+                        SizedBox(width: 8),
+                        Text('edit'.tr()),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'remove'.tr(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text(
+                          'remove'.tr(),
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
       ),
@@ -385,10 +394,11 @@ void dispose() {
             decoration: InputDecoration(
               hintText: "Folder Name",
               hintStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero, 
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             ),
           ),
           SizedBox(height: 10),
@@ -401,20 +411,17 @@ void dispose() {
                     showAddFolderCard = false;
                   });
                 },
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.grey),
-                ),
+                child: Text("Cancel", style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () {
-                  _submitFolderName(folderController.text); 
+                  _submitFolderName(folderController.text);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, 
+                  backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, 
+                    borderRadius: BorderRadius.zero,
                   ),
                 ),
                 child: Text(
@@ -448,10 +455,11 @@ void dispose() {
             decoration: InputDecoration(
               hintText: "Ticker Name",
               hintStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero, 
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 16,
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             ),
           ),
           SizedBox(height: 10),
@@ -464,20 +472,17 @@ void dispose() {
                     showAddTickerCard = false;
                   });
                 },
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.grey),
-                ),
+                child: Text("Cancel", style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () {
-                  _submitTickerName(tickerController.text); 
+                  _submitTickerName(tickerController.text);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, 
+                  backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, 
+                    borderRadius: BorderRadius.zero,
                   ),
                 ),
                 child: Text(

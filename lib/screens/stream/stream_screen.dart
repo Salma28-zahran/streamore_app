@@ -1,16 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/screens/tabs/banners_ex.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
 import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
+import 'package:provider/provider.dart';
+
 
 class StreamScreen extends StatefulWidget {
   static const String routeName = "/stream";
@@ -21,9 +22,17 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
+
 class _StreamScreenState extends State<StreamScreen> {
   bool _micOn = true;
   bool _camOn = true;
+
+//   @override
+// void dispose() {
+//   Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
+//   super.dispose();
+// }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +45,10 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool isDark = myprovider.themeMode == ThemeMode.dark;
 
     final bool hasNotification = false;
+
+     bool isFolderClicked = myprovider.bFolderClicked; 
+
+
 
     return Scaffold(
       drawer:  MainDrawer(),
@@ -157,7 +170,6 @@ class _StreamScreenState extends State<StreamScreen> {
                     child: icon == Icons.cast_sharp
                         ? GestureDetector(
                             onTap: () {
-                              // Show the Bottom Sheet when cast_sharp icon is tapped
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -228,11 +240,13 @@ class _StreamScreenState extends State<StreamScreen> {
                           Tab(text: "comments".tr()),
                         ],
                       ),
-                      const Expanded(
+                       Expanded(
                         child: TabBarView(
                           children: [
                             BrandTab(),
-                            BannersTab(),
+                              isFolderClicked
+                                ? BannersContant() 
+                                : BannersTab(), 
                             CommentsTab(),
                           ],
                         ),
