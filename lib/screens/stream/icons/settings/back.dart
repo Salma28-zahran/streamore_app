@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
-import 'package:provider/provider.dart';
 
 class Back extends StatefulWidget {
   static const routeName = "/back";
@@ -17,6 +20,7 @@ class Back extends StatefulWidget {
 
 class _BackState extends State<Back> {
   bool _isOverlayEnabled = false;
+  List<File?> selectedImages = [null, null]; // 🟡 مربعين للصور
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class _BackState extends State<Back> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10,left: 10),
+            padding: const EdgeInsets.only(right: 10, left: 10),
             child: Stack(
               children: [
                 Icon(
@@ -75,7 +79,6 @@ class _BackState extends State<Back> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Back button and title
           Row(
             children: [
               IconButton(
@@ -166,7 +169,8 @@ class _BackState extends State<Back> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 14, bottom: 10, top: 10,right: 14),
+            padding: const EdgeInsets.only(
+                left: 14, bottom: 10, top: 10, right: 14),
             child: Text(
               "virtual_background".tr(),
               style: GoogleFonts.poppins(
@@ -175,19 +179,18 @@ class _BackState extends State<Back> {
               ),
             ),
           ),
-          SizedBox(height:15 ,),
-
+          const SizedBox(height: 15),
           Padding(
-            padding: const EdgeInsets.only(left: 14,right: 14),
+            padding: const EdgeInsets.only(left: 14, right: 14),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   _buildBackgroundBox(type: 'none'),
                   const SizedBox(width: 10),
-                  _buildBackgroundBox(type: 'image'),
+                  _buildBackgroundBox(type: 'image', index: 0),
                   const SizedBox(width: 10),
-                  _buildBackgroundBox(type: 'image'),
+                  _buildBackgroundBox(type: 'image', index: 1),
                   const SizedBox(width: 10),
                   _buildBackgroundBox(type: 'add'),
                 ],
@@ -199,9 +202,7 @@ class _BackState extends State<Back> {
     );
   }
 
-  Widget _buildBackgroundBox({required String type}) {
-    double size = 70;
-
+  Widget _buildBackgroundBox({required String type, int? index}) {
     if (type == 'none') {
       return Container(
         width: 74,
@@ -220,6 +221,7 @@ class _BackState extends State<Back> {
         ),
       );
     } else if (type == 'image') {
+      final image = selectedImages[index!];
       return Container(
         width: 74,
         height: 45,
@@ -227,16 +229,45 @@ class _BackState extends State<Back> {
           color: Colors.grey[400],
           borderRadius: BorderRadius.circular(2),
         ),
+        child: image != null
+            ? ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: Image.file(
+            image,
+            fit: BoxFit.cover,
+            width: 74,
+            height: 45,
+          ),
+        )
+            : const SizedBox.shrink(), // ❌ بدون أيقونة صورة
       );
     } else {
-      return Container(
-        width: 74,
-        height: 45,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(2),
+      return GestureDetector(
+        onTap: () async {
+          final picker = ImagePicker();
+          final pickedFile =
+          await picker.pickImage(source: ImageSource.gallery);
+          if (pickedFile != null) {
+            setState(() {
+              final firstEmptyIndex =
+              selectedImages.indexWhere((image) => image == null);
+              if (firstEmptyIndex != -1) {
+                selectedImages[firstEmptyIndex] = File(pickedFile.path);
+              } else {
+                selectedImages.add(File(pickedFile.path));
+              }
+            });
+          }
+        },
+        child: Container(
+          width: 74,
+          height: 45,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: Icon(Icons.add, color: Colors.grey),
         ),
-        child: Icon(Icons.add, color: Colors.grey),
       );
     }
   }
