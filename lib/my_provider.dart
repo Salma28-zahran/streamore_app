@@ -36,4 +36,27 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _orientation = "portrait";
+  String get orientation => _orientation;
+
+
+  set orientation(String newValue) {
+    _orientation = newValue;
+    notifyListeners();
+  }
+  bool _shouldGoToFullImage = false;
+  bool get shouldGoToFullImage => _shouldGoToFullImage;
+
+  void setOrientation(String newValue) {
+    _orientation = newValue;
+    notifyListeners();
+  }
+
+
+
+  void setShouldGoToFullImage(bool value) {
+    _shouldGoToFullImage = value;
+    notifyListeners();
+  }
+
 }

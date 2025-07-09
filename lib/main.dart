@@ -19,6 +19,7 @@ import 'package:streamore_app/screens/stream/drawer/settings/profile/forget_pass
 import 'package:streamore_app/screens/stream/drawer/settings/profile/forget_pass3.dart';
 import 'package:streamore_app/screens/stream/drawer/settings/profile/profile.dart';
 import 'package:streamore_app/screens/stream/drawer/settings/settings.dart';
+import 'package:streamore_app/screens/stream/icons/full_image_screen.dart';
 import 'package:streamore_app/screens/stream/icons/settings/audio.dart';
 import 'package:streamore_app/screens/stream/icons/settings/back.dart';
 import 'package:streamore_app/screens/stream/icons/settings/camera.dart';
@@ -66,7 +67,8 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme.themeData,
       themeMode: provider.themeMode,
       debugShowCheckedModeBanner: false,
-      initialRoute: StreamScreen.routeName,
+      initialRoute: OnBoardingScreen.routeName,
+
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
         SignIn.routeName:        (context) => const SignIn(),
@@ -93,6 +95,7 @@ class MyApp extends StatelessWidget {
         ForgetPass1.routeName:(context)=>const ForgetPass1(),
         ForgetPass2.routeName:(context)=>ForgetPass2(),
         ForgetPass3.routeName:(context)=>ForgetPass3(),
+        FullImageScreen.routeName:(context)=>FullImageScreen(),
 
 
 
