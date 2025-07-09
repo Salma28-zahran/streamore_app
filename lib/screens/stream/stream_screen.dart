@@ -11,7 +11,7 @@ import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 
 class StreamScreen extends StatefulWidget {
   static const String routeName = "/stream";
@@ -22,17 +22,15 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
-
 class _StreamScreenState extends State<StreamScreen> {
   bool _micOn = true;
   bool _camOn = true;
 
-//   @override
-// void dispose() {
-//   Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
-//   super.dispose();
-// }
-
+  //   @override
+  // void dispose() {
+  //   Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +44,10 @@ class _StreamScreenState extends State<StreamScreen> {
 
     final bool hasNotification = false;
 
-     bool isFolderClicked = myprovider.bFolderClicked; 
-
-
+    bool isFolderClicked = myprovider.bFolderClicked;
 
     return Scaffold(
-      drawer:  MainDrawer(),
+      drawer: MainDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -139,7 +135,9 @@ class _StreamScreenState extends State<StreamScreen> {
                 Padding(
                   padding: EdgeInsets.only(right: size.width * 0.04),
                   child: GestureDetector(
-                    onTap: () => setState(() => _micOn = !_micOn),
+                    onTap: () async {
+                      await _requestMicPermission();
+                    },
                     child: _circleIcon(
                       isOn: _micOn,
                       onIcon: Icons.mic,
@@ -167,33 +165,44 @@ class _StreamScreenState extends State<StreamScreen> {
                 for (var icon in [Icons.cast_sharp, Icons.person_add])
                   Padding(
                     padding: EdgeInsets.only(right: size.width * 0.06),
-                    child: icon == Icons.cast_sharp
-                        ? GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) {
-                                  return const BottomSheetWidget();
-                                },
-                              );
-                            },
-                            child: _buildIcon(
-                              Icons.cast_sharp,
+                    child:
+                        icon == Icons.cast_sharp
+                            ? GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) {
+                                    return const BottomSheetWidget();
+                                  },
+                                );
+                              },
+                              child: _buildIcon(
+                                Icons.cast_sharp,
+                                iconSize,
+                                context,
+                                myprovider,
+                                isSmall,
+                              ),
+                            )
+                            : _buildIcon(
+                              icon,
                               iconSize,
                               context,
                               myprovider,
                               isSmall,
                             ),
-                          )
-                        : _buildIcon(
-                            icon, iconSize, context, myprovider, isSmall),
                   ),
                 Padding(
                   padding: const EdgeInsets.only(right: 13),
                   child: _buildIcon(
-                      Icons.settings, iconSize, context, myprovider, isSmall),
+                    Icons.settings,
+                    iconSize,
+                    context,
+                    myprovider,
+                    isSmall,
+                  ),
                 ),
               ],
             ),
@@ -240,13 +249,11 @@ class _StreamScreenState extends State<StreamScreen> {
                           Tab(text: "comments".tr()),
                         ],
                       ),
-                       Expanded(
+                      Expanded(
                         child: TabBarView(
                           children: [
                             BrandTab(),
-                              isFolderClicked
-                                ? BannersContant() 
-                                : BannersTab(), 
+                            isFolderClicked ? BannersContant() : BannersTab(),
                             CommentsTab(),
                           ],
                         ),
@@ -275,11 +282,12 @@ class _StreamScreenState extends State<StreamScreen> {
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size),
-        color: isOn
-            ? (currentMode == ThemeMode.dark
-                ? const Color(0xff212b49)
-                : const Color(0xff5E5E66))
-            : const Color(0xff350808),
+        color:
+            isOn
+                ? (currentMode == ThemeMode.dark
+                    ? const Color(0xff212b49)
+                    : const Color(0xff5E5E66))
+                : const Color(0xff350808),
       ),
       child: Icon(
         isOn ? onIcon : offIcon,
@@ -297,17 +305,19 @@ class _StreamScreenState extends State<StreamScreen> {
     bool isSmall,
   ) {
     return GestureDetector(
-      onTap: icon == Icons.settings
-          ? () => Navigator.pushNamed(context, "/settings_icon")
-          : null,
+      onTap:
+          icon == Icons.settings
+              ? () => Navigator.pushNamed(context, "/settings_icon")
+              : null,
       child: Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(190),
-          color: myprovider.themeMode == ThemeMode.dark
-              ? const Color(0xff212b49)
-              : const Color(0xff5E5E66),
+          color:
+              myprovider.themeMode == ThemeMode.dark
+                  ? const Color(0xff212b49)
+                  : const Color(0xff5E5E66),
         ),
         child: Icon(
           icon,
@@ -315,6 +325,39 @@ class _StreamScreenState extends State<StreamScreen> {
           size: isSmall ? 20 : 24,
         ),
       ),
+    );
+  }
+
+  Future<void> _requestMicPermission() async {
+    PermissionStatus status = await Permission.microphone.request();
+
+    if (status.isGranted) {
+      setState(() {
+        _micOn = !_micOn; 
+      });
+    } else if (status.isDenied) {
+      _showPermissionDeniedDialog();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text("Permission Denied"),
+            content: Text(
+              "You need to grant microphone access to use this feature.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          ),
     );
   }
 }

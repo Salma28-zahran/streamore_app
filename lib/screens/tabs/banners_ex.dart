@@ -15,7 +15,7 @@ class _BannersContantState extends State<BannersContant> {
   TextEditingController bannerController = TextEditingController();
   List<String> banners = [];
   int? selectedIndex;
-  Set<int> shownBanners = {}; 
+  Set<int> shownBanners = {}; // Keep track of shown banners
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +148,11 @@ class _BannersContantState extends State<BannersContant> {
     bool isSelected = selectedIndex == index;
     bool isShown = shownBanners.contains(index);
 
+    // Debugging output to track the state of banners and shownBanners
+    print("Banners List: $banners");
+    print("Shown Banners: $shownBanners");
+    print("Selected Index: $selectedIndex");
+
     return Stack(
       children: [
         Container(
@@ -178,16 +183,18 @@ class _BannersContantState extends State<BannersContant> {
           ),
         ),
 
+        // Show/Hide toggle
         if (isSelected)
           Positioned.fill(
             child: Center(
               child: GestureDetector(
                 onTap: () {
                   setState(() {
+                    // Toggle visibility in shownBanners set
                     if (isShown) {
-                      shownBanners.remove(index);
+                      shownBanners.remove(index); // Hides the banner
                     } else {
-                      shownBanners.add(index);
+                      shownBanners.add(index); // Shows the banner
                     }
                   });
                 },
@@ -205,7 +212,7 @@ class _BannersContantState extends State<BannersContant> {
                       Transform.translate(
                         offset: const Offset(0, -2),
                         child: Text(
-                          isShown ? "Hide" : "Show",
+                          isShown ? "Hide" : "Show",  // The toggle text should change between "Show" and "Hide"
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -220,6 +227,7 @@ class _BannersContantState extends State<BannersContant> {
             ),
           ),
 
+        // Delete button
         if (isSelected)
           Positioned(
             right: 8,
@@ -227,9 +235,9 @@ class _BannersContantState extends State<BannersContant> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  banners.removeAt(index);
-                  selectedIndex = null;
-                  shownBanners.remove(index); 
+                  banners.removeAt(index); // Remove the banner from the list
+                  selectedIndex = null;     // Deselect the banner
+                  shownBanners.remove(index); // Make sure it's also removed from shownBanners
                 });
               },
               child: const Icon(
@@ -246,7 +254,7 @@ class _BannersContantState extends State<BannersContant> {
             child: InkWell(
               onTap: () {
                 setState(() {
-                  selectedIndex = isSelected ? null : index;
+                  selectedIndex = isSelected ? null : index; // Toggle banner selection
                 });
               },
             ),
