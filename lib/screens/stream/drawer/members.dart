@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/widgets/invite_member_dialog.dart';
 
 class Members extends StatefulWidget {
   static const String routeName = "/members";
@@ -16,11 +17,22 @@ class Members extends StatefulWidget {
 
 class _MembersState extends State<Members> {
   final List<String> items = [
-    'admin'.tr(),
-    'guest'.tr(),
+    'admin',
+    'guest',
   ];
 
+  List<Map<String, String>> membersList = [];
+
   String? selectedValue;
+
+  void addMember(String email, String role) {
+    setState(() {
+      membersList.add({
+        'email': email,
+        'role': role.tr(),
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,7 @@ class _MembersState extends State<Members> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10,left: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Stack(
               children: [
                 Icon(
@@ -74,9 +86,8 @@ class _MembersState extends State<Members> {
           ),
         ),
       ),
-
       body: Padding(
-        padding: EdgeInsets.only(left: 10,right: 18),
+        padding: const EdgeInsets.only(left: 10, right: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,7 +103,7 @@ class _MembersState extends State<Members> {
             SizedBox(height: 21),
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: 218,
                   height: 34,
                   child: TextField(
@@ -104,19 +115,19 @@ class _MembersState extends State<Members> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(2),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Color(0xff5E5E66),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(2),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Color(0xff5E5E66),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(2),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Color(0xff5E5E66),
                           width: 1,
                         ),
@@ -131,7 +142,6 @@ class _MembersState extends State<Members> {
                   child: DropdownButton2<String>(
                     isExpanded: true,
                     hint: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(
                           Icons.list,
@@ -145,31 +155,30 @@ class _MembersState extends State<Members> {
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color:
-                              Theme.of(context).textTheme.bodyLarge?.color!,
+                              color: Theme.of(context).textTheme.bodyLarge?.color!,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    items: items
-                        .map((String item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 7),
-                        child: Text(
-                          item,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                    items: items.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 7),
+                          child: Text(
+                            item.tr(),
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ))
-                        .toList(),
+                      );
+                    }).toList(),
                     value: selectedValue,
                     onChanged: (value) {
                       setState(() {
@@ -188,13 +197,10 @@ class _MembersState extends State<Members> {
                       elevation: 0,
                     ),
                     iconStyleData: IconStyleData(
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_outlined,
-                      ),
+                      icon: Icon(Icons.keyboard_arrow_down_outlined),
                       iconSize: 18,
                       iconEnabledColor: Color(0xff5E5E66),
-                      iconDisabledColor:
-                      Theme.of(context).tabBarTheme.unselectedLabelColor,
+                      iconDisabledColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
                     ),
                     dropdownStyleData: DropdownStyleData(
                       offset: Offset(0, -1),
@@ -217,9 +223,8 @@ class _MembersState extends State<Members> {
                     menuItemStyleData: MenuItemStyleData(
                       height: 24,
                       padding: EdgeInsets.only(left: 4, right: 21),
-                      overlayColor:
-                      MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
+                      overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (states) {
                           if (states.contains(MaterialState.hovered) ||
                               states.contains(MaterialState.focused) ||
                               states.contains(MaterialState.pressed)) {
@@ -236,273 +241,21 @@ class _MembersState extends State<Members> {
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                print('clicked');
                 showDialog(
                   context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Theme.of(context).cardColor,
-                      contentPadding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      content: Stack(
-                        children: [
-                          Container(
-                            width: 319,
-                            height: 295,
-                            padding: EdgeInsets.all(0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 24),
-                                Text(
-                                  'invite_a_member'.tr(),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                SizedBox(height: 3),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40),
-                                  child: Container(
-                                    width: 228,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'lorem_ipsum_dolor_sit_amet_consectetur'.tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xff5E5E66),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 60),
-                                          child: Text(
-                                            'adipisicing_elit'.tr(),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w400,
-                                              color: Color(0xff5E5E66),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: Text(
-                                          "email".tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Container(
-                                        width: 284,
-                                        height: 34,
-                                        child: TextField(
-                                          style: GoogleFonts.poppins(fontSize: 12),
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(4),
-                                              borderSide: BorderSide(
-                                                color: Colors.grey.shade700,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            hintText: "enter_email".tr(),
-                                            hintStyle: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 12),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: Text(
-                                          "role".tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      DropdownButtonHideUnderline(
-                                        child: DropdownButton2<String>(
-                                          isExpanded: true,
-                                          hint: Text(
-                                            'select_a_role'.tr(),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          items: items
-                                              .map((String item) => DropdownMenuItem<String>(
-                                            value: item,
-                                            child: Text(
-                                              item,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ))
-                                              .toList(),
-                                          value: selectedValue,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              selectedValue = value;
-                                            });
-                                          },
-                                          buttonStyleData: ButtonStyleData(
-                                            height: 38,
-                                            padding: EdgeInsets.symmetric(horizontal: 10),
-                                            elevation: 0,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Color(0xffC1C1C1),
-                                              ),
-                                              borderRadius: BorderRadius.circular(4),
-                                            ),
-                                          ),
-                                          iconStyleData: IconStyleData(
-                                            icon: Icon(Icons.keyboard_arrow_down_outlined),
-                                            iconSize: 18,
-                                            iconEnabledColor: Color(0xff5E5E66),
-                                            iconDisabledColor:
-                                            Theme.of(context).tabBarTheme.unselectedLabelColor,
-                                          ),
-                                          dropdownStyleData: DropdownStyleData(
-                                            offset: Offset(0, 5),
-                                            maxHeight: 70,
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context).cardColor,
-                                              borderRadius: BorderRadius.circular(4),
-                                              border: Border.all(
-                                                color: Color(0xff5E5E66),
-                                                width: 1,
-                                              ),
-                                            ),
-                                            scrollbarTheme: ScrollbarThemeData(
-                                              radius: Radius.circular(40),
-                                              thickness: MaterialStateProperty.all(0),
-                                              thumbVisibility: MaterialStateProperty.all(false),
-                                            ),
-                                          ),
-                                          menuItemStyleData: MenuItemStyleData(
-                                            height: 24,
-                                            padding: EdgeInsets.only(left: 4, right: 21),
-                                            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                                                  (Set<MaterialState> states) {
-                                                if (states.contains(MaterialState.hovered) ||
-                                                    states.contains(MaterialState.focused) ||
-                                                    states.contains(MaterialState.pressed)) {
-                                                  return Color(0xff679FFF);
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 28,),
-                                SizedBox(
-                                  width: 284,
-                                  height: 34,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Theme.of(context).primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      elevation: 0,
-                                    ),
-                                    child: Text(
-                                      'invite'.tr(),
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.black,
-                                size: 15,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  builder: (_) => InviteMemberDialog(
+                    selectedRole: selectedValue,
+                    onRoleChanged: (val) {
+                      setState(() => selectedValue = val);
+                    },
+                    onInvite: (email, role) {
+                      addMember(email, role);
+                    },
+                      roles: items,
+                  ),
                 );
               },
-              style:
-              ElevatedButton.styleFrom(
+              style: ElevatedButton.styleFrom(
                 minimumSize: Size(141, 38),
                 side: BorderSide(
                   color: Color(0xff1865E8),
@@ -552,6 +305,50 @@ class _MembersState extends State<Members> {
                   ),
                 ),
               ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: membersList.length,
+                itemBuilder: (context, index) {
+                  final member = membersList[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Container(
+                      height: 40,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(member['email'] ?? '',
+                              style: GoogleFonts.poppins(fontSize: 12)),
+                          Row(
+                            children: [
+                              Text(member['role'] ?? '',
+                                  style: GoogleFonts.poppins(fontSize: 12)),
+                              SizedBox(width: 10),
+                              IconButton(
+                                icon: Icon(Icons.remove_circle, color: Colors.red),
+                                iconSize: 20,
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                                onPressed: () {
+                                  setState(() {
+                                    membersList.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             )
           ],
         ),
