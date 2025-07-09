@@ -34,8 +34,16 @@ class _MembersState extends State<Members> {
     });
   }
 
+  void removeMember(int index) {
+    setState(() {
+      membersList.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context).size;
+
     bool hasNotification = false;
     return Scaffold(
       drawer: MainDrawer(),
@@ -46,27 +54,27 @@ class _MembersState extends State<Members> {
           "Streamore",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: mq.width * 0.055,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: mq.width * 0.025),
             child: Stack(
               children: [
                 Icon(
                   FontAwesomeIcons.bell,
                   color: Theme.of(context).primaryColorDark,
-                  size: 24,
+                  size: mq.width * 0.06,
                 ),
                 if (hasNotification)
                   Positioned(
                     right: 0,
                     top: 0,
                     child: Container(
-                      width: 8,
-                      height: 8,
+                      width: mq.width * 0.02,
+                      height: mq.width * 0.02,
                       decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
@@ -78,7 +86,7 @@ class _MembersState extends State<Members> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
+          preferredSize: Size.fromHeight(1),
           child: Divider(
             color: Theme.of(context).dividerColor,
             thickness: 0.5,
@@ -87,31 +95,34 @@ class _MembersState extends State<Members> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 18),
+        padding: EdgeInsets.only(
+          left: mq.width * 0.025,
+          right: mq.width * 0.045,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16),
+            SizedBox(height: mq.height * 0.02),
             Text(
               "members".tr(),
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
-                fontSize: 12,
+                fontSize: mq.width * 0.03,
                 color: Theme.of(context).appBarTheme.foregroundColor,
               ),
             ),
-            SizedBox(height: 21),
+            SizedBox(height: mq.height * 0.025),
             Row(
               children: [
                 SizedBox(
-                  width: 218,
-                  height: 34,
+                  width: mq.width * 0.55,
+                  height: mq.height * 0.045,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "search".tr(),
                       hintStyle: TextStyle(
                         color: Theme.of(context).cardColor,
-                        fontSize: 12,
+                        fontSize: mq.width * 0.03,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(2),
@@ -137,7 +148,7 @@ class _MembersState extends State<Members> {
                     ),
                   ),
                 ),
-                SizedBox(width: 18),
+                SizedBox(width: mq.width * 0.045),
                 DropdownButtonHideUnderline(
                   child: DropdownButton2<String>(
                     isExpanded: true,
@@ -145,15 +156,15 @@ class _MembersState extends State<Members> {
                       children: [
                         Icon(
                           Icons.list,
-                          size: 16,
+                          size: mq.width * 0.04,
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        SizedBox(width: 2),
+                        SizedBox(width: mq.width * 0.005),
                         Expanded(
                           child: Text(
                             'select_a_role'.tr(),
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: mq.width * 0.03,
                               fontWeight: FontWeight.w400,
                               color: Theme.of(context).textTheme.bodyLarge?.color!,
                             ),
@@ -166,11 +177,11 @@ class _MembersState extends State<Members> {
                       return DropdownMenuItem<String>(
                         value: item,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 7),
+                          padding: EdgeInsets.only(left: mq.width * 0.02),
                           child: Text(
                             item.tr(),
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: mq.width * 0.03,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
                             ),
@@ -186,8 +197,8 @@ class _MembersState extends State<Members> {
                       });
                     },
                     buttonStyleData: ButtonStyleData(
-                      height: 34,
-                      width: 125,
+                      height: mq.height * 0.045,
+                      width: mq.width * 0.3,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Color(0xff5E5E66),
@@ -198,14 +209,14 @@ class _MembersState extends State<Members> {
                     ),
                     iconStyleData: IconStyleData(
                       icon: Icon(Icons.keyboard_arrow_down_outlined),
-                      iconSize: 18,
+                      iconSize: mq.width * 0.045,
                       iconEnabledColor: Color(0xff5E5E66),
                       iconDisabledColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
                     ),
                     dropdownStyleData: DropdownStyleData(
                       offset: Offset(0, -1),
-                      maxHeight: 70,
-                      width: 125,
+                      maxHeight: mq.height * 0.09,
+                      width: mq.width * 0.3,
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(4),
@@ -221,8 +232,11 @@ class _MembersState extends State<Members> {
                       ),
                     ),
                     menuItemStyleData: MenuItemStyleData(
-                      height: 24,
-                      padding: EdgeInsets.only(left: 4, right: 21),
+                      height: mq.height * 0.03,
+                      padding: EdgeInsets.only(
+                        left: mq.width * 0.01,
+                        right: mq.width * 0.05,
+                      ),
                       overlayColor: MaterialStateProperty.resolveWith<Color?>(
                             (states) {
                           if (states.contains(MaterialState.hovered) ||
@@ -238,7 +252,7 @@ class _MembersState extends State<Members> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            SizedBox(height: mq.height * 0.015),
             ElevatedButton(
               onPressed: () {
                 showDialog(
@@ -251,12 +265,12 @@ class _MembersState extends State<Members> {
                     onInvite: (email, role) {
                       addMember(email, role);
                     },
-                      roles: items,
+                    roles: items,
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(141, 38),
+                minimumSize: Size(mq.width * 0.35, mq.height * 0.05),
                 side: BorderSide(
                   color: Color(0xff1865E8),
                   width: 1.5,
@@ -271,11 +285,11 @@ class _MembersState extends State<Members> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.add, color: Theme.of(context).primaryColor),
-                  SizedBox(width: 5),
+                  SizedBox(width: mq.width * 0.01),
                   Text(
                     "invite_a_member".tr(),
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: mq.width * 0.035,
                       fontWeight: FontWeight.w400,
                       color: Color(0xff1865E8),
                     ),
@@ -283,7 +297,7 @@ class _MembersState extends State<Members> {
                 ],
               ),
             ),
-            SizedBox(height: 31),
+            SizedBox(height: mq.height * 0.04),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -291,16 +305,16 @@ class _MembersState extends State<Members> {
                   "member".tr(),
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
-                    fontSize: 10,
+                    fontSize: mq.width * 0.025,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 65),
+                  padding: EdgeInsets.only(right: mq.width * 0.15),
                   child: Text(
                     "role".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w400,
-                      fontSize: 10,
+                      fontSize: mq.width * 0.025,
                     ),
                   ),
                 ),
@@ -312,10 +326,10 @@ class _MembersState extends State<Members> {
                 itemBuilder: (context, index) {
                   final member = membersList[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    padding: EdgeInsets.symmetric(vertical: mq.height * 0.005),
                     child: Container(
-                      height: 40,
-                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      height: mq.height * 0.055,
+                      padding: EdgeInsets.symmetric(horizontal: mq.width * 0.03),
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(4),
@@ -324,21 +338,19 @@ class _MembersState extends State<Members> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(member['email'] ?? '',
-                              style: GoogleFonts.poppins(fontSize: 12)),
+                              style: GoogleFonts.poppins(fontSize: mq.width * 0.03)),
                           Row(
                             children: [
                               Text(member['role'] ?? '',
-                                  style: GoogleFonts.poppins(fontSize: 12)),
-                              SizedBox(width: 10),
+                                  style: GoogleFonts.poppins(fontSize: mq.width * 0.03)),
+                              SizedBox(width: mq.width * 0.025),
                               IconButton(
                                 icon: Icon(Icons.remove_circle, color: Colors.red),
-                                iconSize: 20,
+                                iconSize: mq.width * 0.05,
                                 padding: EdgeInsets.zero,
                                 constraints: BoxConstraints(),
                                 onPressed: () {
-                                  setState(() {
-                                    membersList.removeAt(index);
-                                  });
+                                  removeMember(index);
                                 },
                               ),
                             ],

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class InviteMemberDialog extends StatelessWidget {
+class InviteMemberDialog extends StatefulWidget {
   final List<String> roles;
   final String? selectedRole;
   final Function(String?) onRoleChanged;
@@ -18,8 +18,22 @@ class InviteMemberDialog extends StatelessWidget {
   });
 
   @override
+  State<InviteMemberDialog> createState() => _InviteMemberDialogState();
+}
+
+class _InviteMemberDialogState extends State<InviteMemberDialog> {
+  final TextEditingController emailController = TextEditingController();
+  String? localSelectedRole;
+
+  @override
+  void initState() {
+    super.initState();
+    localSelectedRole = widget.selectedRole;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
+    final mq = MediaQuery.of(context).size;
 
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor,
@@ -30,42 +44,42 @@ class InviteMemberDialog extends StatelessWidget {
       content: Stack(
         children: [
           Container(
-            width: 319,
-            height: 295,
+            width: mq.width * 0.85,
+            height: mq.height * 0.45,
             padding: EdgeInsets.all(0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 24),
+                SizedBox(height: mq.height * 0.03),
                 Text(
                   'invite_a_member'.tr(),
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: mq.width * 0.04,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 3),
+                SizedBox(height: mq.height * 0.02),
                 Padding(
-                  padding: const EdgeInsets.only(left: 40),
+                  padding: EdgeInsets.only(left: mq.width * 0.1),
                   child: Container(
-                    width: 228,
+                    width: mq.width * 0.55,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'lorem_ipsum_dolor_sit_amet_consectetur'.tr(),
                           style: GoogleFonts.poppins(
-                            fontSize: 10,
+                            fontSize: mq.width * 0.025,
                             fontWeight: FontWeight.w400,
                             color: Color(0xff5E5E66),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 60),
+                          padding: EdgeInsets.only(left: mq.width * 0.15),
                           child: Text(
                             'adipisicing_elit'.tr(),
                             style: GoogleFonts.poppins(
-                              fontSize: 10,
+                              fontSize: mq.width * 0.025,
                               fontWeight: FontWeight.w400,
                               color: Color(0xff5E5E66),
                             ),
@@ -75,29 +89,29 @@ class InviteMemberDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: mq.height * 0.015),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: mq.width * 0.02),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 4),
+                        padding: EdgeInsets.only(left: mq.width * 0.01),
                         child: Text(
                           "email".tr(),
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: mq.width * 0.032,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: mq.height * 0.005),
                       Container(
-                        width: 284,
-                        height: 34,
+                        width: mq.width * 0.75,
+                        height: mq.height * 0.05,
                         child: TextField(
                           controller: emailController,
-                          style: GoogleFonts.poppins(fontSize: 12),
+                          style: GoogleFonts.poppins(fontSize: mq.width * 0.03),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(4),
@@ -122,7 +136,7 @@ class InviteMemberDialog extends StatelessWidget {
                             ),
                             hintText: "enter_email".tr(),
                             hintStyle: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: mq.width * 0.03,
                               color: Colors.grey,
                             ),
                           ),
@@ -131,51 +145,56 @@ class InviteMemberDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: mq.height * 0.015),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: mq.width * 0.04),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 4),
+                        padding: EdgeInsets.only(left: mq.width * 0.01),
                         child: Text(
                           "role".tr(),
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: mq.width * 0.032,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: mq.height * 0.005),
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
                           isExpanded: true,
                           hint: Text(
                             'select_a_role'.tr(),
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: mq.width * 0.03,
                               fontWeight: FontWeight.w400,
                               color: Colors.grey,
                             ),
                           ),
-                          items: roles
+                          items: widget.roles
                               .map((String item) => DropdownMenuItem<String>(
                             value: item,
                             child: Text(
                               item,
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: mq.width * 0.03,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                             ),
                           ))
                               .toList(),
-                          value: selectedRole,
-                          onChanged: onRoleChanged,
+                          value: localSelectedRole,
+                          onChanged: (val) {
+                            setState(() {
+                              localSelectedRole = val;
+                            });
+                            widget.onRoleChanged(val);
+                          },
                           buttonStyleData: ButtonStyleData(
-                            height: 38,
+                            height: mq.height * 0.06,
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             elevation: 0,
                             decoration: BoxDecoration(
@@ -187,7 +206,7 @@ class InviteMemberDialog extends StatelessWidget {
                           ),
                           iconStyleData: IconStyleData(
                             icon: Icon(Icons.keyboard_arrow_down_outlined),
-                            iconSize: 18,
+                            iconSize: mq.width * 0.045,
                             iconEnabledColor: Color(0xff5E5E66),
                             iconDisabledColor: Theme.of(context)
                                 .tabBarTheme
@@ -195,7 +214,7 @@ class InviteMemberDialog extends StatelessWidget {
                           ),
                           dropdownStyleData: DropdownStyleData(
                             offset: Offset(0, 5),
-                            maxHeight: 70,
+                            maxHeight: mq.height * 0.1,
                             decoration: BoxDecoration(
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(4),
@@ -212,8 +231,10 @@ class InviteMemberDialog extends StatelessWidget {
                             ),
                           ),
                           menuItemStyleData: MenuItemStyleData(
-                            height: 24,
-                            padding: EdgeInsets.only(left: 4, right: 21),
+                            height: mq.height * 0.04,
+                            padding: EdgeInsets.only(
+                                left: mq.width * 0.01,
+                                right: mq.width * 0.05),
                             overlayColor:
                             MaterialStateProperty.resolveWith<Color?>(
                                   (Set<MaterialState> states) {
@@ -231,15 +252,16 @@ class InviteMemberDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 28),
+                SizedBox(height: mq.height * 0.035),
                 SizedBox(
-                  width: 284,
-                  height: 34,
+                  width: mq.width * 0.75,
+                  height: mq.height * 0.05,
                   child: ElevatedButton(
                     onPressed: () {
                       if (emailController.text.isNotEmpty &&
-                          selectedRole != null) {
-                        onInvite(emailController.text.trim(), selectedRole!);
+                          localSelectedRole != null) {
+                        widget.onInvite(
+                            emailController.text.trim(), localSelectedRole!);
                         Navigator.of(context).pop();
                       }
                     },
@@ -254,7 +276,7 @@ class InviteMemberDialog extends StatelessWidget {
                       'invite'.tr(),
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 14,
+                        fontSize: mq.width * 0.035,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -270,7 +292,7 @@ class InviteMemberDialog extends StatelessWidget {
               icon: Icon(
                 Icons.close,
                 color: Colors.black,
-                size: 15,
+                size: mq.width * 0.04,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
