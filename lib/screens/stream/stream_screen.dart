@@ -1,17 +1,17 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
-import 'package:streamore_app/screens/tabs/banners_ex.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
-import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
-import '../../my_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 
 class StreamScreen extends StatefulWidget {
   static const String routeName = "/stream";
@@ -25,12 +25,8 @@ class StreamScreen extends StatefulWidget {
 class _StreamScreenState extends State<StreamScreen> {
   bool _micOn = true;
   bool _camOn = true;
-
-  //   @override
-  // void dispose() {
-  //   Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
-  //   super.dispose();
-  // }
+  bool _showZoomIcon = false;
+  bool _isFullScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +36,6 @@ class _StreamScreenState extends State<StreamScreen> {
     final myprovider = Provider.of<MyProvider>(context);
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
-    final bool isDark = myprovider.themeMode == ThemeMode.dark;
-
-    final bool hasNotification = false;
-
-    bool isFolderClicked = myprovider.bFolderClicked;
 
     return Scaffold(
       drawer: MainDrawer(),
@@ -62,27 +53,10 @@ class _StreamScreenState extends State<StreamScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Stack(
-              children: [
-                Icon(
-                  FontAwesomeIcons.bell,
-                  color: Theme.of(context).primaryColorDark,
-                  size: 24,
-                ),
-                if (hasNotification)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
+            child: Icon(
+              FontAwesomeIcons.bell,
+              color: Theme.of(context).primaryColorDark,
+              size: 24,
             ),
           ),
         ],
@@ -95,245 +69,264 @@ class _StreamScreenState extends State<StreamScreen> {
           ),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(7),
-                      child: Image.asset(
-                        "assets/images/profile4.png",
-                        width: profileImageWidth,
-                        height: profileImageHeight,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: buildOverlay(myprovider),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          Padding(
-            padding: EdgeInsets.only(
-              left: size.width * 0.08,
-              top: 8,
-              right: size.width * 0.04,
-            ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.04),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
+                child: Center(
                   child: GestureDetector(
-                    onTap: () async {
-                      await _requestMicPermission();
+                    onTap: () {
+                      setState(() {
+                        _showZoomIcon = true;
+                      });
                     },
-                    child: _circleIcon(
-                      isOn: _micOn,
-                      onIcon: Icons.mic,
-                      offIcon: Icons.mic_off,
-                      size: iconSize,
-                      isSmall: isSmall,
-                      currentMode: myprovider.themeMode,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.06),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _camOn = !_camOn),
-                    child: _circleIcon(
-                      isOn: _camOn,
-                      onIcon: Icons.camera_alt_rounded,
-                      offIcon: Icons.videocam_off,
-                      size: iconSize,
-                      isSmall: isSmall,
-                      currentMode: myprovider.themeMode,
-                    ),
-                  ),
-                ),
-                for (var icon in [Icons.cast_sharp, Icons.person_add])
-                  Padding(
-                    padding: EdgeInsets.only(right: size.width * 0.06),
-                    child:
-                        icon == Icons.cast_sharp
-                            ? GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) {
-                                    return const BottomSheetWidget();
-                                  },
-                                );
-                              },
-                              child: _buildIcon(
-                                Icons.cast_sharp,
-                                iconSize,
-                                context,
-                                myprovider,
-                                isSmall,
-                              ),
-                            )
-                            : _buildIcon(
-                              icon,
-                              iconSize,
-                              context,
-                              myprovider,
-                              isSmall,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: profileImageWidth,
+                          height: profileImageHeight,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: const DecorationImage(
+                              image: AssetImage("assets/images/profile4.png"),
+                              fit: BoxFit.cover,
                             ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 13),
-                  child: _buildIcon(
-                    Icons.settings,
-                    iconSize,
-                    context,
-                    myprovider,
-                    isSmall,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: size.height * 0.015),
-              child: Container(
-                width: profileImageWidth,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.9),
-                      blurRadius: 3,
-                      offset: const Offset(0, 3),
+                          ),
+                        ),
+                        if (_showZoomIcon)
+                          Container(
+                            width: profileImageWidth,
+                            height: profileImageHeight,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        if (_showZoomIcon)
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isFullScreen = true;
+                                _showZoomIcon = false;
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/zoom.png',
+                              width: 60,
+                              height: 60,
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
-                child: DefaultTabController(
-                  length: 3,
-                  child: Column(
-                    children: [
-                      TabBar(
-                        labelColor: Colors.blue,
-                        unselectedLabelColor: Colors.grey,
-                        indicatorColor: Colors.blue,
-                        labelStyle: GoogleFonts.inter(
-                          fontSize: isSmall ? 10 : 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        unselectedLabelStyle: GoogleFonts.inter(
-                          fontSize: isSmall ? 10 : 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        tabs: [
-                          Tab(text: "brand".tr()),
-                          Tab(text: "banners".tr()),
-                          Tab(text: "comments".tr()),
-                        ],
-                      ),
-                      Expanded(
-                        child: TabBarView(
-                          children: [
-                            BrandTab(),
-                            isFolderClicked ? BannersContant() : BannersTab(),
-                            CommentsTab(),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: size.width * 0.08,
+                  top: 8,
+                  right: size.width * 0.04,
+                ),
+                child: Row(
+                  children: [
+                    _buildControlButton(
+                      iconOn: Icons.mic,
+                      iconOff: Icons.mic_off,
+                      isOn: _micOn,
+                      onTap: _requestMicPermission,
+                      size: iconSize,
+                      isSmall: isSmall,
+                      themeMode: myprovider.themeMode,
+                    ),
+                    _buildControlButton(
+                      iconOn: Icons.camera_alt_rounded,
+                      iconOff: Icons.videocam_off,
+                      isOn: _camOn,
+                      onTap: () => setState(() => _camOn = !_camOn),
+                      size: iconSize,
+                      isSmall: isSmall,
+                      themeMode: myprovider.themeMode,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.cast_sharp,
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => const BottomSheetWidget(),
+                        );
+                      },
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.person_add,
+                      onTap: () {},
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.settings,
+                      onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: size.height * 0.015),
+                  child: Container(
+                    width: profileImageWidth,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.9),
+                          blurRadius: 3,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: DefaultTabController(
+                      length: 3,
+                      child: Column(
+                        children: [
+                          TabBar(
+                            labelColor: Colors.blue,
+                            unselectedLabelColor: Colors.grey,
+                            indicatorColor: Colors.blue,
+                            labelStyle: GoogleFonts.inter(
+                              fontSize: isSmall ? 10 : 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            tabs: [
+                              Tab(text: "brand".tr()),
+                              Tab(text: "banners".tr()),
+                              Tab(text: "comments".tr()),
+                            ],
+                          ),
+                          const Expanded(
+                            child: TabBarView(
+                              children: [
+                                BrandTab(),
+                                BannersTab(),
+                                CommentsTab(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+
+          // Full screen view
+          if (_isFullScreen)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isFullScreen = false;
+                });
+              },
+              child: Container(
+                color: Colors.black,
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  "assets/images/profile4.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _circleIcon({
+  Widget _buildControlButton({
+    required IconData iconOn,
+    required IconData iconOff,
     required bool isOn,
-    required IconData onIcon,
-    required IconData offIcon,
+    required VoidCallback onTap,
     required double size,
     required bool isSmall,
-    required ThemeMode currentMode,
+    required ThemeMode themeMode,
   }) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size),
-        color:
-            isOn
-                ? (currentMode == ThemeMode.dark
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size),
+            color: isOn
+                ? (themeMode == ThemeMode.dark
                     ? const Color(0xff212b49)
                     : const Color(0xff5E5E66))
                 : const Color(0xff350808),
-      ),
-      child: Icon(
-        isOn ? onIcon : offIcon,
-        color: isOn ? Theme.of(context).iconTheme.color : Colors.red[400],
-        size: isSmall ? 20 : 24,
+          ),
+          child: Icon(
+            isOn ? iconOn : iconOff,
+            color: isOn ? Colors.white : Colors.red[400],
+            size: isSmall ? 20 : 24,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildIcon(
-    IconData icon,
-    double size,
-    BuildContext context,
-    MyProvider myprovider,
-    bool isSmall,
-  ) {
-    return GestureDetector(
-      onTap:
-          icon == Icons.settings
-              ? () => Navigator.pushNamed(context, "/settings_icon")
-              : null,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(190),
-          color:
-              myprovider.themeMode == ThemeMode.dark
-                  ? const Color(0xff212b49)
-                  : const Color(0xff5E5E66),
-        ),
-        child: Icon(
-          icon,
-          color: Theme.of(context).iconTheme.color,
-          size: isSmall ? 20 : 24,
+  Widget _buildIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+    required double size,
+    required ThemeMode themeMode,
+    required bool isSmall,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size / 2),
+            color: themeMode == ThemeMode.dark
+                ? const Color(0xff212b49)
+                : const Color(0xff5E5E66),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: isSmall ? 20 : 24,
+          ),
         ),
       ),
     );
   }
 
   Future<void> _requestMicPermission() async {
-    PermissionStatus status = await Permission.microphone.request();
-
+    final status = await Permission.microphone.request();
     if (status.isGranted) {
       setState(() {
-        _micOn = !_micOn; 
+        _micOn = !_micOn;
       });
     } else if (status.isDenied) {
       _showPermissionDeniedDialog();
@@ -345,19 +338,16 @@ class _StreamScreenState extends State<StreamScreen> {
   void _showPermissionDeniedDialog() {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text("Permission Denied"),
-            content: Text(
-              "You need to grant microphone access to use this feature.",
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
-              ),
-            ],
+      builder: (_) => AlertDialog(
+        title: const Text("Permission Denied"),
+        content: const Text("You need to grant microphone access to use this feature."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
           ),
+        ],
+      ),
     );
   }
 }
