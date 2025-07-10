@@ -36,8 +36,8 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool isSmall = size.width < 360;
     final double iconSize = isSmall ? 44.0 : 50.0;
     final myprovider = Provider.of<MyProvider>(context);
-    bool isFolderClicked = myprovider.bFolderClicked; 
-     final double profileImageWidth = size.width * 0.9425;
+    bool isFolderClicked = myprovider.bFolderClicked;
+    final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
 
     return Scaffold(
@@ -176,7 +176,8 @@ class _StreamScreenState extends State<StreamScreen> {
                     ),
                     _buildIconButton(
                       icon: Icons.settings,
-                      onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+                      onTap:
+                          () => Navigator.pushNamed(context, "/settings_icon"),
                       size: iconSize,
                       themeMode: myprovider.themeMode,
                       isSmall: isSmall,
@@ -222,17 +223,16 @@ class _StreamScreenState extends State<StreamScreen> {
                           ),
                           Expanded(
                             child: TabBarView(
-  children: [
-    const BrandTab(),
-    myprovider.tFolderClicked
-        ? const TickersContant()
-        : myprovider.bFolderClicked
-            ? const BannersContant()
-            : const BannersTab(),
-    const CommentsTab(),
-  ],
-)
-,
+                              children: [
+                                const BrandTab(),
+                                myprovider.tFolderClicked
+                                    ? const TickersContant()
+                                    : myprovider.bFolderClicked
+                                    ? const BannersContant()
+                                    : const BannersTab(),
+                                const CommentsTab(),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -284,11 +284,12 @@ class _StreamScreenState extends State<StreamScreen> {
           height: size,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size),
-            color: isOn
-                ? (themeMode == ThemeMode.dark
-                    ? const Color(0xff212b49)
-                    : const Color(0xff5E5E66))
-                : const Color(0xff350808),
+            color:
+                isOn
+                    ? (themeMode == ThemeMode.dark
+                        ? const Color(0xff212b49)
+                        : const Color(0xff5E5E66))
+                    : const Color(0xff350808),
           ),
           child: Icon(
             isOn ? iconOn : iconOff,
@@ -316,15 +317,12 @@ class _StreamScreenState extends State<StreamScreen> {
           height: size,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size / 2),
-            color: themeMode == ThemeMode.dark
-                ? const Color(0xff212b49)
-                : const Color(0xff5E5E66),
+            color:
+                themeMode == ThemeMode.dark
+                    ? const Color(0xff212b49)
+                    : const Color(0xff5E5E66),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: isSmall ? 20 : 24,
-          ),
+          child: Icon(icon, color: Colors.white, size: isSmall ? 20 : 24),
         ),
       ),
     );
@@ -346,16 +344,19 @@ class _StreamScreenState extends State<StreamScreen> {
   void _showPermissionDeniedDialog() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Permission Denied"),
-        content: const Text("You need to grant microphone access to use this feature."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("OK"),
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Permission Denied"),
+            content: const Text(
+              "You need to grant microphone access to use this feature.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

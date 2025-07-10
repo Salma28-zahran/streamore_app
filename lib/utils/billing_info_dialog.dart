@@ -25,7 +25,7 @@ void showEditBillingInfoDialog(BuildContext context) {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(6),
-      borderSide: BorderSide(color: primaryColor, width: 1.5), //primary Color 
+      borderSide: BorderSide(color: primaryColor, width: 1.5), 
     ),
   );
 

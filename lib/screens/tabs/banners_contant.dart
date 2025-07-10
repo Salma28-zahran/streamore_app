@@ -63,8 +63,10 @@ class _BannersContantState extends State<BannersContant> {
         leading: IconButton(
           icon: const Icon(Icons.navigate_before, size: 32, color: Color(0xFF666666)),
           onPressed: () {
-            Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
+            // Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
+            // Navigator.pop(context);
             Navigator.pop(context);
+
           },
         ),
         title: const Text(
