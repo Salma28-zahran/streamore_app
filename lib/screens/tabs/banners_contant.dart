@@ -56,12 +56,12 @@ class _BannersContantState extends State<BannersContant> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.navigate_before, size: 32, color: Color(0xFF666666)),
+          icon: Icon(Icons.navigate_before, size: 32, color: Theme.of(context).textTheme.bodyLarge?.color),
           onPressed: () {
             // Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
             // Navigator.pop(context);
@@ -69,17 +69,17 @@ class _BannersContantState extends State<BannersContant> {
 
           },
         ),
-        title: const Text(
+        title: Text(
           "Example Banners",
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 17,
-            color: Color(0xFF666666),
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, size: 24, color: Color(0xFF666666)),
+            icon: Icon(Icons.add, size: 24, color: Theme.of(context).textTheme.bodyLarge?.color),
             onPressed: _toggleAddBannerCard,
           ),
         ],
@@ -186,70 +186,76 @@ class _BannersContantState extends State<BannersContant> {
   }
 
   Widget _buildAddBannerCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFD9D9D9)),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Container(
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F0F0),
-              borderRadius: BorderRadius.circular(6),
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+    decoration: BoxDecoration(
+      color: Theme.of(context).appBarTheme.backgroundColor,
+      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+      borderRadius: BorderRadius.circular(3),
+    ),
+    child: Column(
+      children: [
+        TextField(
+          controller: bannerController,
+          decoration: InputDecoration(
+            hintText: "Banner Content",
+            hintStyle: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade600
+                  : Colors.grey.shade400,
+              fontWeight: FontWeight.bold,
             ),
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              controller: bannerController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Banner Content",
-                hintStyle: TextStyle(color: Color(0xFFBDBDBD)),
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+          ),
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  showAddBannerCard = false;
+                  bannerController.clear(); // Clear the text field
+                });
+              },
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
               ),
-              style: const TextStyle(color: Colors.black),
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: _toggleAddBannerCard,
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(
-                    color: Color(0xFF666666),
-                    fontWeight: FontWeight.w500,
-                  ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: () {
+                _addBanner();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: _addBanner,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0D6EFD),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: const Text(
-                  "Add",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
-                ),
+              child: const Text(
+                "Add",
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 }

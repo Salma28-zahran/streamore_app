@@ -232,5 +232,18 @@
   "image": "صورة",
   "video": "فيديو",
   "presentation_pdf": "عرض / PDF",
-  "selected_message": "تم اختيار {option}"
+  "selected_message": "تم اختيار {option}",
+
+
+
+
+  "Folders": "المجلدات",
+  "Folder Name": "اسم المجلد",
+  "Ticker Name": "اسم التذكرة",
+  "Cancel": "إلغاء",
+  "Add": "إضافة",
+   "items": {
+    "one": "عنصر",
+    "other": "عناصر"
+  }
 }

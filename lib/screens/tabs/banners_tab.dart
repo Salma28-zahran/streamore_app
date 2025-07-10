@@ -108,12 +108,17 @@ class _BannersTabState extends State<BannersTab> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color),
+                        icon: Icon(
+                          Icons.add,
+                          color: theme.textTheme.bodyLarge?.color,
+                        ),
                         onPressed: _addFolder,
                       ),
                       IconButton(
                         icon: Icon(
-                          showFolders ? Icons.keyboard_arrow_down_outlined : Icons.keyboard_arrow_up_outlined,
+                          showFolders
+                              ? Icons.keyboard_arrow_down_outlined
+                              : Icons.keyboard_arrow_up_outlined,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         onPressed: () {
@@ -135,12 +140,15 @@ class _BannersTabState extends State<BannersTab> {
                     if (folderList.isEmpty) {
                       return Text(
                         "no_folders_yet".tr(),
-                        style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                        style: TextStyle(
+                          color: theme.textTheme.bodyLarge?.color,
+                        ),
                       );
                     }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                      physics:
+                          NeverScrollableScrollPhysics(), 
                       itemCount: folderList.length,
                       itemBuilder: (context, index) {
                         final folder = folderList[index];
@@ -157,7 +165,8 @@ class _BannersTabState extends State<BannersTab> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const BannersContant(),
+                                    builder:
+                                        (context) => const BannersContant(),
                                   ),
                                 );
                               });
@@ -168,7 +177,8 @@ class _BannersTabState extends State<BannersTab> {
                               count: folder.itemCount,
                               isEditing: folder.isEditing,
                               onSubmit: (value) => _submitFolderName(value),
-                              onEdit: () => setState(() => folder.isEditing = true),
+                              onEdit:
+                                  () => setState(() => folder.isEditing = true),
                               onRemove: () {
                                 folderList.removeAt(index);
                                 folders.notifyListeners();
@@ -198,12 +208,17 @@ class _BannersTabState extends State<BannersTab> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color),
+                        icon: Icon(
+                          Icons.add,
+                          color: theme.textTheme.bodyLarge?.color,
+                        ),
                         onPressed: _addTicker,
                       ),
                       IconButton(
                         icon: Icon(
-                          showTickers ? Icons.keyboard_arrow_down_outlined : Icons.keyboard_arrow_up_outlined,
+                          showTickers
+                              ? Icons.keyboard_arrow_down_outlined
+                              : Icons.keyboard_arrow_up_outlined,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         onPressed: () {
@@ -225,12 +240,15 @@ class _BannersTabState extends State<BannersTab> {
                     if (tickerList.isEmpty) {
                       return Text(
                         "no_tickers_yet".tr(),
-                        style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                        style: TextStyle(
+                          color: theme.textTheme.bodyLarge?.color,
+                        ),
                       );
                     }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                      physics:
+                          NeverScrollableScrollPhysics(), 
                       itemCount: tickerList.length,
                       itemBuilder: (context, index) {
                         final ticker = tickerList[index];
@@ -243,14 +261,18 @@ class _BannersTabState extends State<BannersTab> {
                                 listen: false,
                               ).setTFolderClicked(true);
 
-                              Future.delayed(const Duration(milliseconds: 100), () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const TickersContant(),
-                                  ),
-                                );
-                              });
+                              Future.delayed(
+                                const Duration(milliseconds: 100),
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const TickersContant(),
+                                    ),
+                                  );
+                                },
+                              );
                             },
                             child: _buildItemTile(
                               context,
@@ -258,7 +280,8 @@ class _BannersTabState extends State<BannersTab> {
                               count: ticker.itemCount,
                               isEditing: ticker.isEditing,
                               onSubmit: (value) => _submitTickerName(value),
-                              onEdit: () => setState(() => ticker.isEditing = true),
+                              onEdit:
+                                  () => setState(() => ticker.isEditing = true),
                               onRemove: () {
                                 tickerList.removeAt(index);
                                 tickers.notifyListeners();
@@ -288,14 +311,16 @@ class _BannersTabState extends State<BannersTab> {
   }) {
     return Container(
       width: double.infinity,
-      height: 90,  
-      margin: const EdgeInsets.symmetric(vertical: 10),  
+      height: 90,
+      margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,  
-        borderRadius: BorderRadius.circular(12),  
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey.withOpacity(0.5),
+          color:
+              Theme.of(context).textTheme.bodyLarge?.color ??
+              Colors.grey.withOpacity(0.5),
           width: 1,
         ),
         boxShadow: [
@@ -303,7 +328,7 @@ class _BannersTabState extends State<BannersTab> {
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, 3),  
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -311,49 +336,57 @@ class _BannersTabState extends State<BannersTab> {
         children: [
           Icon(Icons.drag_indicator, color: Colors.grey),
           const SizedBox(width: 16),
-          Icon(Icons.folder_outlined, color: Theme.of(context).textTheme.bodyLarge?.color),
+          Icon(
+            Icons.folder_outlined,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
           const SizedBox(width: 16),
           Expanded(
-            child: isEditing
-                ? TextField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: "Folder Name",
-                      hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-                      border: InputBorder.none,
+            child:
+                isEditing
+                    ? TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: "folder_name".tr(),
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          onSubmit(value);
+                        }
+                      },
+                    )
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title ?? "Unnamed Folder",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$count ${'items'.plural(count)}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                      ],
                     ),
-                    onSubmitted: (value) {
-                      if (value.trim().isNotEmpty) {
-                        onSubmit(value);
-                      }
-                    },
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title ?? "Unnamed Folder",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '$count item${count == 1 ? '' : 's'}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ),
-                      ),
-                    ],
-                  ),
           ),
-          // Menu button for editing/removing
           PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: Theme.of(context).textTheme.bodyLarge?.color),
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
             onSelected: (value) {
               if (value == 'edit'.tr()) {
                 onEdit();
@@ -361,28 +394,120 @@ class _BannersTabState extends State<BannersTab> {
                 onRemove();
               }
             },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'edit'.tr(),
-                child: Row(
-                  children: [
-                    const Icon(Icons.edit, color: Colors.grey),
-                    const SizedBox(width: 8),
-                    Text('edit'.tr()),
-                  ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'edit'.tr(),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text('edit'.tr()),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'remove'.tr(),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.delete, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(
+                          'remove'.tr(),
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddFolderCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        border: Border.all(
+          color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey,
+        ),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Column(
+        children: [
+          TextField(
+            controller: folderController,
+            decoration: InputDecoration(
+              hintText: "Folders".tr(),
+              hintStyle: TextStyle(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey.shade600
+                        : Colors.grey.shade400,
+                fontWeight: FontWeight.bold,
+              ),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 3,
+                horizontal: 12,
+              ),
+            ),
+            style: TextStyle(
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAddFolderCard = false;
+                    folderController.clear();
+                  });
+                },
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Text(
+                  "Cancel".tr(),
+                  style: TextStyle(
+                    color:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        Colors.grey,
+                  ),
                 ),
               ),
-              PopupMenuItem(
-                value: 'remove'.tr(),
-                child: Row(
-                  children: [
-                    const Icon(Icons.delete, color: Colors.red),
-                    const SizedBox(width: 8),
-                    Text(
-                      'remove'.tr(),
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ],
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  _submitFolderName(folderController.text);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 2,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  "Add".tr(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -392,151 +517,102 @@ class _BannersTabState extends State<BannersTab> {
     );
   }
 
- Widget _buildAddFolderCard() {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-    decoration: BoxDecoration(
-      color: Theme.of(context).appBarTheme.backgroundColor,
-      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
-      borderRadius: BorderRadius.circular(3),
-    ),
-    child: Column(
-      children: [
-        TextField(
-          controller: folderController,
-          decoration: InputDecoration(
-            hintText: "Folder Name",
-            hintStyle: TextStyle(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade600 
-                  : Colors.grey.shade400, 
-              fontWeight: FontWeight.bold,
-            ),
-            filled: true,
-            fillColor: Colors.grey.shade100,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
-          ),
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.black 
-                : Colors.black87, 
-          ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  showAddFolderCard = false;
-                  folderController.clear();
-                });
-              },
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
-              ),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                _submitFolderName(folderController.text);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                "Add",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
-
   Widget _buildAddTickerCard() {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-    decoration: BoxDecoration(
-      color: Theme.of(context).appBarTheme.backgroundColor, // Match folder design color
-      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
-      borderRadius: BorderRadius.circular(3),
-    ),
-    child: Column(
-      children: [
-        TextField(
-          controller: tickerController,
-          decoration: InputDecoration(
-            hintText: "Ticker Name",
-            hintStyle: TextStyle(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade600 // Dark grey for hint in dark mode
-                  : Colors.grey.shade400, // Light grey for hint in light mode
-              fontWeight: FontWeight.bold,
-            ),
-            filled: true,
-            fillColor: Colors.grey.shade100,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
-          ),
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.black // Black text in dark mode
-                : Colors.black87, // Dark grey text in light mode
-          ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      decoration: BoxDecoration(
+        color:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor, 
+        border: Border.all(
+          color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey,
         ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  showAddTickerCard = false;
-                  folderController.clear();
-                });
-              },
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Column(
+        children: [
+          TextField(
+            controller: tickerController,
+            decoration: InputDecoration(
+              hintText: "Ticker Name".tr(),
+              hintStyle: TextStyle(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors
+                            .grey
+                            .shade600 
+                        : Colors
+                            .grey
+                            .shade400, 
+                fontWeight: FontWeight.bold,
+              ),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 3,
+                horizontal: 12,
               ),
             ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                _submitTickerName(tickerController.text);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            style: TextStyle(
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors
+                          .black 
+                      : Colors.black87, 
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAddTickerCard = false;
+                    folderController.clear();
+                  });
+                },
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Text(
+                  "Cancel".tr(),
+                  style: TextStyle(
+                    color:
+                        Theme.of(context).textTheme.bodyLarge?.color ??
+                        Colors.grey,
+                  ),
                 ),
               ),
-              child: const Text(
-                "Add",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  _submitTickerName(tickerController.text);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 2,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  "Add".tr(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

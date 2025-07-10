@@ -252,5 +252,16 @@
   "image": "Image",
   "video": "Video",
   "presentation_pdf": "Presentation/PDF",
-  "selected_message": "{option} selected"
+  "selected_message": "{option} selected",
+
+
+  "Folders": "Folders",
+  "Folder Name": "Folder Name",
+  "Ticker Name": "Ticker Name",
+  "Cancel": "Cancel",
+  "Add": "Add",
+   "items": {
+    "one": "item",
+    "other": "items"
+  }
 }

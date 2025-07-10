@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
 
 class TickersContant extends StatefulWidget {
+  static const String routeName = "/tickers";
   const TickersContant({super.key});
 
   @override
@@ -10,74 +11,72 @@ class TickersContant extends StatefulWidget {
 }
 
 class _TickersContantState extends State<TickersContant> {
-  bool showAddBannerCard = false;
-  TextEditingController bannerController = TextEditingController();
-  List<String> banners = [];
-  Set<int> shownBanners = {};
-  Set<int> tappedBanners = {};
+  bool showAddTickerCard = false;
+  TextEditingController tickerController = TextEditingController();
+  List<String> tickers = [];
+  Set<int> shownTickers = {};
+  Set<int> tappedTickers = {};
 
-  void _toggleAddBannerCard() {
+  void _toggleAddTickerCard() {
     setState(() {
-      showAddBannerCard = !showAddBannerCard;
-      bannerController.clear(); 
+      showAddTickerCard = !showAddTickerCard;
+      tickerController.clear();
     });
   }
 
-  void _addBanner() {
-    final text = bannerController.text.trim();
+  void _addTicker() {
+    final text = tickerController.text.trim();
     if (text.isNotEmpty) {
       setState(() {
-        banners.add(text);
-        bannerController.clear();
-        showAddBannerCard = false;
+        tickers.add(text);
+        tickerController.clear();
+        showAddTickerCard = false;
       });
     }
   }
 
   void _toggleShowHide(int index) {
     setState(() {
-      if (shownBanners.contains(index)) {
-        shownBanners.remove(index);
+      if (shownTickers.contains(index)) {
+        shownTickers.remove(index);
       } else {
-        shownBanners.add(index);
+        shownTickers.add(index);
       }
     });
   }
 
-  void _deleteBanner(int index) {
+  void _deleteTicker(int index) {
     setState(() {
-      banners.removeAt(index);
-      shownBanners.remove(index);
-      tappedBanners.remove(index);
+      tickers.removeAt(index);
+      shownTickers.remove(index);
+      tappedTickers.remove(index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.navigate_before, size: 32, color: Color(0xFF666666)),
+          icon: Icon(Icons.navigate_before, size: 32, color: Theme.of(context).textTheme.bodyLarge?.color),
           onPressed: () {
-            Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
             Navigator.pop(context);
           },
         ),
-        title: const Text(
-          "Example Tikers",
+        title: Text(
+          "Example Tickers",
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 17,
-            color: Color(0xFF666666),
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, size: 24, color: Color(0xFF666666)),
-            onPressed: _toggleAddBannerCard,
+            icon: Icon(Icons.add, size: 24, color: Theme.of(context).textTheme.bodyLarge?.color),
+            onPressed: _toggleAddTickerCard,
           ),
         ],
       ),
@@ -85,19 +84,19 @@ class _TickersContantState extends State<TickersContant> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            if (showAddBannerCard)
-              _buildAddBannerCard(),
+            if (showAddTickerCard)
+              _buildAddTickerCard(),
 
             const SizedBox(height: 16),
 
-            ...banners.asMap().entries.map((entry) {
+            ...tickers.asMap().entries.map((entry) {
               final index = entry.key;
               final text = entry.value;
-              final isTapped = tappedBanners.contains(index);
-              final isShown = shownBanners.contains(index);
+              final isTapped = tappedTickers.contains(index);
+              final isShown = shownTickers.contains(index);
 
               return GestureDetector(
-                onTap: () => setState(() => tappedBanners.add(index)),
+                onTap: () => setState(() => tappedTickers.add(index)),
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -163,7 +162,7 @@ class _TickersContantState extends State<TickersContant> {
                       if (isTapped) ...[
                         const SizedBox(width: 12),
                         GestureDetector(
-                          onTap: () => _deleteBanner(index),
+                          onTap: () => _deleteTicker(index),
                           child: const Icon(
                             Icons.delete_outline,
                             size: 22,
@@ -182,65 +181,70 @@ class _TickersContantState extends State<TickersContant> {
     );
   }
 
-  Widget _buildAddBannerCard() {
+  Widget _buildAddTickerCard() {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFD9D9D9)),
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+        borderRadius: BorderRadius.circular(3),
       ),
-      padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Container(
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F0F0),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              controller: bannerController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Tikers Content",
-                hintStyle: TextStyle(color: Color(0xFFBDBDBD)),
+          TextField(
+            controller: tickerController,
+            decoration: InputDecoration(
+              hintText: "Ticker Content",
+              hintStyle: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade400,
+                fontWeight: FontWeight.bold,
               ),
-              style: const TextStyle(color: Colors.black),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+            ),
+            style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black87,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: _toggleAddBannerCard,
-                child: const Text(
+                onPressed: () {
+                  setState(() {
+                    showAddTickerCard = false;
+                    tickerController.clear(); // Clear the text field
+                  });
+                },
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Text(
                   "Cancel",
-                  style: TextStyle(
-                    color: Color(0xFF666666),
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
                 ),
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: _addBanner,
+                onPressed: () {
+                  _addTicker();
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0D6EFD),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: const Text(
                   "Add",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
