@@ -93,7 +93,7 @@ class _BannersTabState extends State<BannersTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// ----------------- BANNERS SECTION -----------------
+              /// ----------------- FOLDERS SECTION -----------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -108,14 +108,12 @@ class _BannersTabState extends State<BannersTab> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color,),
+                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color),
                         onPressed: _addFolder,
                       ),
                       IconButton(
                         icon: Icon(
-                          showFolders
-                              ? Icons.keyboard_arrow_down_outlined
-                              :  Icons.keyboard_arrow_up_outlined,
+                          showFolders ? Icons.keyboard_arrow_down_outlined : Icons.keyboard_arrow_up_outlined,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         onPressed: () {
@@ -135,56 +133,50 @@ class _BannersTabState extends State<BannersTab> {
                   valueListenable: folders,
                   builder: (context, folderList, _) {
                     if (folderList.isEmpty) {
-                      return Text("no_folders_yet".tr(),style: TextStyle(color: theme.textTheme.bodyLarge?.color,),);
+                      return Text(
+                        "no_folders_yet".tr(),
+                        style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                      );
                     }
-                    return SizedBox(
-                      height: folderList.length * 86,
-                      child: ReorderableListView.builder(
-                        itemCount: folderList.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onReorder: (oldIndex, newIndex) {
-                          if (newIndex > oldIndex) newIndex -= 1;
-                          final item = folderList.removeAt(oldIndex);
-                          folderList.insert(newIndex, item);
-                          folders.notifyListeners();
-                        },
-                        itemBuilder: (context, index) {
-                          final folder = folderList[index];
-                          return KeyedSubtree(
-                            key: ValueKey("folder_$index"),
-                            child: GestureDetector(
-                              onTap: () {
-                                Provider.of<MyProvider>(
-                                  context,
-                                  listen: false,
-                                ).setBFolderClicked(true);
-
-                                Future.delayed(Duration(milliseconds: 100), () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const BannersContant(),
-                                    ),
-                                  );
-                                });
-                              },
-                              child: _buildItemTile(
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                      itemCount: folderList.length,
+                      itemBuilder: (context, index) {
+                        final folder = folderList[index];
+                        return KeyedSubtree(
+                          key: ValueKey("folder_$index"),
+                          child: GestureDetector(
+                            onTap: () {
+                              Provider.of<MyProvider>(
                                 context,
-                                title: folder.name,
-                                count: folder.itemCount,
-                                isEditing: folder.isEditing,
-                                onSubmit: (value) => _submitFolderName(value),
-                                onEdit: () => setState(() => folder.isEditing = true),
-                                onRemove: () {
-                                  folderList.removeAt(index);
-                                  folders.notifyListeners();
-                                },
-                              ),
+                                listen: false,
+                              ).setBFolderClicked(true);
+
+                              Future.delayed(Duration(milliseconds: 100), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const BannersContant(),
+                                  ),
+                                );
+                              });
+                            },
+                            child: _buildItemTile(
+                              context,
+                              title: folder.name,
+                              count: folder.itemCount,
+                              isEditing: folder.isEditing,
+                              onSubmit: (value) => _submitFolderName(value),
+                              onEdit: () => setState(() => folder.isEditing = true),
+                              onRemove: () {
+                                folderList.removeAt(index);
+                                folders.notifyListeners();
+                              },
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -206,14 +198,12 @@ class _BannersTabState extends State<BannersTab> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color,),
+                        icon: Icon(Icons.add, color: theme.textTheme.bodyLarge?.color),
                         onPressed: _addTicker,
                       ),
                       IconButton(
                         icon: Icon(
-                          showTickers
-                              ? Icons.keyboard_arrow_down_outlined
-                             : Icons.keyboard_arrow_up_outlined,
+                          showTickers ? Icons.keyboard_arrow_down_outlined : Icons.keyboard_arrow_up_outlined,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         onPressed: () {
@@ -233,56 +223,50 @@ class _BannersTabState extends State<BannersTab> {
                   valueListenable: tickers,
                   builder: (context, tickerList, _) {
                     if (tickerList.isEmpty) {
-                      return Text("no_tickers_yet".tr(),style: TextStyle(color: theme.textTheme.bodyLarge?.color,));
+                      return Text(
+                        "no_tickers_yet".tr(),
+                        style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                      );
                     }
-                    return SizedBox(
-                      height: tickerList.length * 86,
-                      child: ReorderableListView.builder(
-                        itemCount: tickerList.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onReorder: (oldIndex, newIndex) {
-                          if (newIndex > oldIndex) newIndex -= 1;
-                          final item = tickerList.removeAt(oldIndex);
-                          tickerList.insert(newIndex, item);
-                          tickers.notifyListeners();
-                        },
-                        itemBuilder: (context, index) {
-                          final ticker = tickerList[index];
-                          return KeyedSubtree(
-                            key: ValueKey("ticker_$index"),
-                            child: GestureDetector(
-                              onTap: () {
-                                Provider.of<MyProvider>(
-                                  context,
-                                  listen: false,
-                                ).setTFolderClicked(true);
-
-                                Future.delayed(const Duration(milliseconds: 100), () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const TickersContant(),
-                                    ),
-                                  );
-                                });
-                              },
-                              child: _buildItemTile(
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
+                      itemCount: tickerList.length,
+                      itemBuilder: (context, index) {
+                        final ticker = tickerList[index];
+                        return KeyedSubtree(
+                          key: ValueKey("ticker_$index"),
+                          child: GestureDetector(
+                            onTap: () {
+                              Provider.of<MyProvider>(
                                 context,
-                                title: ticker.name,
-                                count: ticker.itemCount,
-                                isEditing: ticker.isEditing,
-                                onSubmit: (value) => _submitTickerName(value),
-                                onEdit: () => setState(() => ticker.isEditing = true),
-                                onRemove: () {
-                                  tickerList.removeAt(index);
-                                  tickers.notifyListeners();
-                                },
-                              ),
+                                listen: false,
+                              ).setTFolderClicked(true);
+
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const TickersContant(),
+                                  ),
+                                );
+                              });
+                            },
+                            child: _buildItemTile(
+                              context,
+                              title: ticker.name,
+                              count: ticker.itemCount,
+                              isEditing: ticker.isEditing,
+                              onSubmit: (value) => _submitTickerName(value),
+                              onEdit: () => setState(() => ticker.isEditing = true),
+                              onRemove: () {
+                                tickerList.removeAt(index);
+                                tickers.notifyListeners();
+                              },
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -301,15 +285,15 @@ class _BannersTabState extends State<BannersTab> {
     required Function(String) onSubmit,
     required VoidCallback onEdit,
     required VoidCallback onRemove,
-}) {
+  }) {
     return Container(
       width: double.infinity,
-      height: 90,  // Adjust height to make it more visually balanced
-      margin: const EdgeInsets.symmetric(vertical: 10),  // More space between cards
+      height: 90,  
+      margin: const EdgeInsets.symmetric(vertical: 10),  
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,  // Background color of the card
-        borderRadius: BorderRadius.circular(12),  // Rounded corners
+        color: Theme.of(context).cardColor,  
+        borderRadius: BorderRadius.circular(12),  
         border: Border.all(
           color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey.withOpacity(0.5),
           width: 1,
@@ -319,16 +303,14 @@ class _BannersTabState extends State<BannersTab> {
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, 3),  // Shadow effect
+            offset: Offset(0, 3),  
           ),
         ],
       ),
       child: Row(
         children: [
-          // Drag indicator icon
           Icon(Icons.drag_indicator, color: Colors.grey),
           const SizedBox(width: 16),
-          // Folder icon
           Icon(Icons.folder_outlined, color: Theme.of(context).textTheme.bodyLarge?.color),
           const SizedBox(width: 16),
           Expanded(
@@ -337,7 +319,7 @@ class _BannersTabState extends State<BannersTab> {
                     autofocus: true,
                     decoration: InputDecoration(
                       hintText: "Folder Name",
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                       border: InputBorder.none,
                     ),
                     onSubmitted: (value) {
@@ -408,17 +390,16 @@ class _BannersTabState extends State<BannersTab> {
         ],
       ),
     );
-}
+  }
 
-
-  Widget _buildAddFolderCard() {
+ Widget _buildAddFolderCard() {
   return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8), 
-    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10), 
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
     decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color??Colors.grey,),
-      borderRadius: BorderRadius.circular(3), 
+      color: Theme.of(context).appBarTheme.backgroundColor,
+      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+      borderRadius: BorderRadius.circular(3),
     ),
     child: Column(
       children: [
@@ -426,14 +407,24 @@ class _BannersTabState extends State<BannersTab> {
           controller: folderController,
           decoration: InputDecoration(
             hintText: "Folder Name",
-            hintStyle: TextStyle(color:  Theme.of(context).disabledColor, fontWeight: FontWeight.bold), 
-            filled: true, 
-            fillColor: Colors.grey.shade100, 
-            border: InputBorder.none, 
-            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12), 
+            hintStyle: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade600 
+                  : Colors.grey.shade400, 
+              fontWeight: FontWeight.bold,
+            ),
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+          ),
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black 
+                : Colors.black87, 
           ),
         ),
-        const SizedBox(height: 4), 
+        const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -441,32 +432,30 @@ class _BannersTabState extends State<BannersTab> {
               onPressed: () {
                 setState(() {
                   showAddFolderCard = false;
+                  folderController.clear();
                 });
               },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
               ),
-              child: Text("Cancel", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color??Colors.grey,)),
             ),
-            const SizedBox(width: 8), 
+            const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
                 _submitFolderName(folderController.text);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2), 
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), 
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               child: const Text(
                 "Add",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -479,14 +468,12 @@ class _BannersTabState extends State<BannersTab> {
 
   Widget _buildAddTickerCard() {
   return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8), // Reduced margin
-    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10), 
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
     decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(
-        color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey, 
-      ),
-      borderRadius: BorderRadius.circular(3), 
+      color: Theme.of(context).appBarTheme.backgroundColor, // Match folder design color
+      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+      borderRadius: BorderRadius.circular(3),
     ),
     child: Column(
       children: [
@@ -495,16 +482,23 @@ class _BannersTabState extends State<BannersTab> {
           decoration: InputDecoration(
             hintText: "Ticker Name",
             hintStyle: TextStyle(
-              color: Theme.of(context).disabledColor, 
-              fontWeight: FontWeight.bold, 
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade600 // Dark grey for hint in dark mode
+                  : Colors.grey.shade400, // Light grey for hint in light mode
+              fontWeight: FontWeight.bold,
             ),
-            filled: true, 
-            fillColor: Colors.grey.shade100, 
-            border: InputBorder.none, 
-            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12), 
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
+          ),
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black // Black text in dark mode
+                : Colors.black87, // Dark grey text in light mode
           ),
         ),
-        const SizedBox(height: 4), 
+        const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -512,37 +506,30 @@ class _BannersTabState extends State<BannersTab> {
               onPressed: () {
                 setState(() {
                   showAddTickerCard = false;
+                  folderController.clear();
                 });
               },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero, 
-              ),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
               child: Text(
                 "Cancel",
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey, 
-                ),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
               ),
             ),
-            const SizedBox(width: 8), 
+            const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
                 _submitTickerName(tickerController.text);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary, 
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2), 
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), 
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               child: const Text(
                 "Add",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ],
