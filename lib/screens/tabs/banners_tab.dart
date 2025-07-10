@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:streamore_app/my_provider.dart';
-import 'package:streamore_app/screens/tabs/banners_ex.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/screens/tabs/banners_contant.dart';
+import 'package:streamore_app/screens/tabs/tickers_contant.dart';
 
 class Folder {
   String? name;
@@ -91,7 +92,7 @@ class _BannersTabState extends State<BannersTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Folders section
+              /// ----------------- BANNERS SECTION -----------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -150,7 +151,7 @@ class _BannersTabState extends State<BannersTab> {
                         itemBuilder: (context, index) {
                           final folder = folderList[index];
                           return KeyedSubtree(
-                            key: ValueKey("folder_$index".tr()),
+                            key: ValueKey("folder_$index"),
                             child: GestureDetector(
                               onTap: () {
                                 Provider.of<MyProvider>(
@@ -162,7 +163,7 @@ class _BannersTabState extends State<BannersTab> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BannersContant(),
+                                      builder: (context) => const BannersContant(),
                                     ),
                                   );
                                 });
@@ -173,9 +174,7 @@ class _BannersTabState extends State<BannersTab> {
                                 count: folder.itemCount,
                                 isEditing: folder.isEditing,
                                 onSubmit: (value) => _submitFolderName(value),
-                                onEdit:
-                                    () =>
-                                        setState(() => folder.isEditing = true),
+                                onEdit: () => setState(() => folder.isEditing = true),
                                 onRemove: () {
                                   folderList.removeAt(index);
                                   folders.notifyListeners();
@@ -191,6 +190,7 @@ class _BannersTabState extends State<BannersTab> {
 
               const SizedBox(height: 24),
 
+              /// ----------------- TICKERS SECTION -----------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -249,19 +249,35 @@ class _BannersTabState extends State<BannersTab> {
                         itemBuilder: (context, index) {
                           final ticker = tickerList[index];
                           return KeyedSubtree(
-                            key: ValueKey("ticker_$index".tr()),
-                            child: _buildItemTile(
-                              context,
-                              title: ticker.name,
-                              count: ticker.itemCount,
-                              isEditing: ticker.isEditing,
-                              onSubmit: (value) => _submitTickerName(value),
-                              onEdit:
-                                  () => setState(() => ticker.isEditing = true),
-                              onRemove: () {
-                                tickerList.removeAt(index);
-                                tickers.notifyListeners();
+                            key: ValueKey("ticker_$index"),
+                            child: GestureDetector(
+                              onTap: () {
+                                Provider.of<MyProvider>(
+                                  context,
+                                  listen: false,
+                                ).setTFolderClicked(true);
+
+                                Future.delayed(const Duration(milliseconds: 100), () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const TickersContant(),
+                                    ),
+                                  );
+                                });
                               },
+                              child: _buildItemTile(
+                                context,
+                                title: ticker.name,
+                                count: ticker.itemCount,
+                                isEditing: ticker.isEditing,
+                                onSubmit: (value) => _submitTickerName(value),
+                                onEdit: () => setState(() => ticker.isEditing = true),
+                                onRemove: () {
+                                  tickerList.removeAt(index);
+                                  tickers.notifyListeners();
+                                },
+                              ),
                             ),
                           );
                         },
@@ -297,46 +313,45 @@ class _BannersTabState extends State<BannersTab> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.drag_handle, color: Colors.grey),
+          const Icon(Icons.drag_indicator, color: Colors.grey),
           const SizedBox(width: 8),
           const Icon(Icons.folder_outlined, color: Colors.black),
           const SizedBox(width: 12),
           Expanded(
-            child:
-                isEditing
-                    ? TextField(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: "name".tr(),
-                        border: InputBorder.none,
-                      ),
-                      onSubmitted: (value) {
-                        if (value.trim().isNotEmpty) {
-                          onSubmit(value);
-                        }
-                      },
-                    )
-                    : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          title ?? "unnamed".tr(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '$count item${count == 1 ? '' : 's'}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
+            child: isEditing
+                ? TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: "name".tr(),
+                      border: InputBorder.none,
                     ),
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        onSubmit(value);
+                      }
+                    },
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title ?? "unnamed".tr(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$count item${count == 1 ? '' : 's'}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert, color: Colors.black),
@@ -347,32 +362,31 @@ class _BannersTabState extends State<BannersTab> {
                 onRemove();
               }
             },
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    value: 'edit'.tr(),
-                    child: Row(
-                      children: [
-                        Icon(Icons.edit, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Text('edit'.tr()),
-                      ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'edit'.tr(),
+                child: Row(
+                  children: [
+                    const Icon(Icons.edit, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text('edit'.tr()),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'remove'.tr(),
+                child: Row(
+                  children: [
+                    const Icon(Icons.delete, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Text(
+                      'remove'.tr(),
+                      style: const TextStyle(color: Colors.red),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: 'remove'.tr(),
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text(
-                          'remove'.tr(),
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -393,15 +407,15 @@ class _BannersTabState extends State<BannersTab> {
             controller: folderController,
             decoration: InputDecoration(
               hintText: "Folder Name",
-              hintStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-              contentPadding: EdgeInsets.symmetric(
+              hintStyle: const TextStyle(color: Colors.grey),
+              border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+              contentPadding: const EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: 16,
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -411,7 +425,7 @@ class _BannersTabState extends State<BannersTab> {
                     showAddFolderCard = false;
                   });
                 },
-                child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -419,12 +433,12 @@ class _BannersTabState extends State<BannersTab> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Add",
                   style: TextStyle(
                     color: Colors.white,
@@ -454,15 +468,15 @@ class _BannersTabState extends State<BannersTab> {
             controller: tickerController,
             decoration: InputDecoration(
               hintText: "Ticker Name",
-              hintStyle: TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-              contentPadding: EdgeInsets.symmetric(
+              hintStyle: const TextStyle(color: Colors.grey),
+              border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+              contentPadding: const EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: 16,
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -472,7 +486,7 @@ class _BannersTabState extends State<BannersTab> {
                     showAddTickerCard = false;
                   });
                 },
-                child: Text("Cancel", style: TextStyle(color: Colors.grey)),
+                child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -480,12 +494,12 @@ class _BannersTabState extends State<BannersTab> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                  shape: RoundedRectangleBorder(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Add",
                   style: TextStyle(
                     color: Colors.white,

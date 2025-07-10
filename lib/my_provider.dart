@@ -12,7 +12,12 @@ class MyProvider extends ChangeNotifier {
   Color get primaryColor => _primaryColor;
 
     // ==== Folder Clicked State ====
-  bool bFolderClicked = false;
+  bool _bFolderClicked = false;
+  bool _tFolderClicked = false;
+
+  bool get bFolderClicked => _bFolderClicked;
+  bool get tFolderClicked => _tFolderClicked;
+
 
   // ==== Setters ====
   void setSelectedTheme(String theme) {
@@ -33,9 +38,15 @@ class MyProvider extends ChangeNotifier {
 
     // ==== Folder Clicked State Setter ====
   void setBFolderClicked(bool value) {
-    bFolderClicked = value;
+    _bFolderClicked = value;
     notifyListeners();
   }
+
+  void setTFolderClicked(bool value) {
+    _tFolderClicked = value;
+    notifyListeners();
+  }
+  
 
 
   String _selectedFont = 'Inter';

@@ -4,7 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:streamore_app/screens/tabs/banners_ex.dart';
+import 'package:streamore_app/screens/tabs/banners_contant.dart';
+import 'package:streamore_app/screens/tabs/tickers_contant.dart';
 
 import '../../my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
@@ -221,14 +222,17 @@ class _StreamScreenState extends State<StreamScreen> {
                           ),
                           Expanded(
                             child: TabBarView(
-                              children: [
-                                const BrandTab(),
-                                isFolderClicked
-                                    ? const BannersContant()
-                                    : const BannersTab(),
-                                const CommentsTab(),
-                              ],
-                            ),
+  children: [
+    const BrandTab(),
+    myprovider.tFolderClicked
+        ? const TickersContant()
+        : myprovider.bFolderClicked
+            ? const BannersContant()
+            : const BannersTab(),
+    const CommentsTab(),
+  ],
+)
+,
                           ),
                         ],
                       ),
