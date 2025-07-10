@@ -59,4 +59,26 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  bool _isOverlayEnabled = false;
+  final List<String> _comments = [];
+
+  bool get isOverlayEnabled => _isOverlayEnabled;
+  List<String> get comments => List.unmodifiable(_comments);
+
+  void toggleOverlay(bool value) {
+    _isOverlayEnabled = value;
+    notifyListeners();
+  }
+
+  void addComment(String comment) {
+    _comments.add(comment);
+    notifyListeners();
+  }
+
+  void clearComments() {
+    _comments.clear();
+    notifyListeners();
+  }
+
 }

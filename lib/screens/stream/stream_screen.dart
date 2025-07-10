@@ -34,6 +34,8 @@ class _StreamScreenState extends State<StreamScreen> {
     final selectedTheme = myprovider.selectedTheme;
     final font = myprovider.selectedFont;
     final primaryColor = myprovider.primaryColor;
+    final myProvider = Provider.of<MyProvider>(context);
+
 
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
@@ -87,30 +89,99 @@ class _StreamScreenState extends State<StreamScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(7),
-                      child: Image.asset(
-                        "assets/images/profile4.png",
-                        width: profileImageWidth,
-                        height: profileImageHeight,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: _buildThemeOverlay(myprovider),
-                    ),
-                  ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                child: Image.asset(
+                  "assets/images/profile4.png",
+                  width: profileImageWidth,
+                  height: profileImageHeight,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: _buildThemeOverlay(myProvider),
+              ),
+              Positioned(
+                bottom: 100,
+                left: 16,
+                right: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: myProvider.comments.map((comment) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.person,
+                            size: 24,
+                            color: Colors.white54,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "UserName",
+                                  style: TextStyle(
+                                    color: Colors.white60,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  comment,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ],
           ),
+        ],
+      ),
+      ),
 
           Padding(
             padding: EdgeInsets.only(
