@@ -41,7 +41,6 @@ class _BrandTabState extends State<BrandTab> {
     }
   }
 
-  // Handle image click
   void _handleImageClick(XFile image) {
     print("Selected Image: ${image.path}");
   }

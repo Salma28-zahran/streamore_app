@@ -14,13 +14,48 @@ class _BannersContantState extends State<BannersContant> {
   bool showAddBannerCard = false;
   TextEditingController bannerController = TextEditingController();
   List<String> banners = [];
-  int? selectedIndex;
-  Set<int> shownBanners = {}; // Keep track of shown banners
+  Set<int> shownBanners = {};
+  Set<int> tappedBanners = {};
+
+  void _toggleAddBannerCard() {
+    setState(() {
+      showAddBannerCard = !showAddBannerCard;
+      bannerController.clear(); 
+    });
+  }
+
+  void _addBanner() {
+    final text = bannerController.text.trim();
+    if (text.isNotEmpty) {
+      setState(() {
+        banners.add(text);
+        bannerController.clear();
+        showAddBannerCard = false;
+      });
+    }
+  }
+
+  void _toggleShowHide(int index) {
+    setState(() {
+      if (shownBanners.contains(index)) {
+        shownBanners.remove(index);
+      } else {
+        shownBanners.add(index);
+      }
+    });
+  }
+
+  void _deleteBanner(int index) {
+    setState(() {
+      banners.removeAt(index);
+      shownBanners.remove(index);
+      tappedBanners.remove(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -43,11 +78,7 @@ class _BannersContantState extends State<BannersContant> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add, size: 24, color: Color(0xFF666666)),
-            onPressed: () {
-              setState(() {
-                showAddBannerCard = !showAddBannerCard;
-              });
-            },
+            onPressed: _toggleAddBannerCard,
           ),
         ],
       ),
@@ -55,9 +86,97 @@ class _BannersContantState extends State<BannersContant> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            if (showAddBannerCard) _buildAddBannerCard(),
+            if (showAddBannerCard)
+              _buildAddBannerCard(),
+
             const SizedBox(height: 16),
-            ...banners.asMap().entries.map((entry) => _buildBannerTile(entry.value, entry.key)).toList(),
+
+            ...banners.asMap().entries.map((entry) {
+              final index = entry.key;
+              final text = entry.value;
+              final isTapped = tappedBanners.contains(index);
+              final isShown = shownBanners.contains(index);
+
+              return GestureDetector(
+                onTap: () => setState(() => tappedBanners.add(index)),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F0F0),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.drag_indicator, color: Color(0xFFBDBDBD), size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Opacity(
+                                opacity: isTapped ? 0.4 : 1.0,
+                                child: Text(
+                                  text,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF666666),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (isTapped)
+                              GestureDetector(
+                                onTap: () => _toggleShowHide(index),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: const Color(0xFF666666), width: 1.5),
+                                      ),
+                                      child: Icon(
+                                        isShown ? Icons.remove : Icons.add,
+                                        size: 16,
+                                        color: const Color(0xFF666666),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      isShown ? "Hide" : "Show",
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF4F4F4F),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (isTapped) ...[
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: () => _deleteBanner(index),
+                          child: const Icon(
+                            Icons.delete_outline,
+                            size: 22,
+                            color: Color(0xFFBDBDBD),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
           ],
         ),
       ),
@@ -97,11 +216,7 @@ class _BannersContantState extends State<BannersContant> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    showAddBannerCard = false;
-                  });
-                },
+                onPressed: _toggleAddBannerCard,
                 child: const Text(
                   "Cancel",
                   style: TextStyle(
@@ -112,15 +227,7 @@ class _BannersContantState extends State<BannersContant> {
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {
-                  if (bannerController.text.trim().isNotEmpty) {
-                    setState(() {
-                      banners.add(bannerController.text.trim());
-                      bannerController.clear();
-                      showAddBannerCard = false;
-                    });
-                  }
-                },
+                onPressed: _addBanner,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0D6EFD),
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -140,153 +247,6 @@ class _BannersContantState extends State<BannersContant> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBannerTile(String text, int index) {
-    bool isSelected = selectedIndex == index;
-    bool isShown = shownBanners.contains(index);
-
-    // Debugging output to track the state of banners and shownBanners
-    print("Banners List: $banners");
-    print("Shown Banners: $shownBanners");
-    print("Selected Index: $selectedIndex");
-
-    return Stack(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF0F0F0),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Opacity(
-            opacity: isSelected ? 0.3 : 1.0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDragDots(),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF333333),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Show/Hide toggle
-        if (isSelected)
-          Positioned.fill(
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    // Toggle visibility in shownBanners set
-                    if (isShown) {
-                      shownBanners.remove(index); // Hides the banner
-                    } else {
-                      shownBanners.add(index); // Shows the banner
-                    }
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        isShown ? Icons.remove_circle_outline : Icons.add_circle_outline,
-                        size: 16,
-                        color: const Color(0xFF333333),
-                      ),
-                      const SizedBox(width: 6),
-                      Transform.translate(
-                        offset: const Offset(0, -2),
-                        child: Text(
-                          isShown ? "Hide" : "Show",  // The toggle text should change between "Show" and "Hide"
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF333333),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-        // Delete button
-        if (isSelected)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  banners.removeAt(index); // Remove the banner from the list
-                  selectedIndex = null;     // Deselect the banner
-                  shownBanners.remove(index); // Make sure it's also removed from shownBanners
-                });
-              },
-              child: const Icon(
-                Icons.delete_outline,
-                size: 20,
-                color: Color(0xFF666666),
-              ),
-            ),
-          ),
-
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  selectedIndex = isSelected ? null : index; // Toggle banner selection
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDragDots() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(3, (_) {
-        return Row(
-          children: [
-            _dot(),
-            const SizedBox(width: 3),
-            _dot(),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget _dot() {
-    return Container(
-      width: 4,
-      height: 4,
-      margin: const EdgeInsets.symmetric(vertical: 1),
-      decoration: const BoxDecoration(
-        color: Color(0xFFBDBDBD),
-        shape: BoxShape.circle,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:streamore_app/screens/tabs/banners_ex.dart';
 
 import '../../my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
@@ -34,7 +35,8 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool isSmall = size.width < 360;
     final double iconSize = isSmall ? 44.0 : 50.0;
     final myprovider = Provider.of<MyProvider>(context);
-    final double profileImageWidth = size.width * 0.9425;
+    bool isFolderClicked = myprovider.bFolderClicked; 
+     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
 
     return Scaffold(
@@ -217,12 +219,14 @@ class _StreamScreenState extends State<StreamScreen> {
                               Tab(text: "comments".tr()),
                             ],
                           ),
-                          const Expanded(
+                          Expanded(
                             child: TabBarView(
                               children: [
-                                BrandTab(),
-                                BannersTab(),
-                                CommentsTab(),
+                                const BrandTab(),
+                                isFolderClicked
+                                    ? const BannersContant()
+                                    : const BannersTab(),
+                                const CommentsTab(),
                               ],
                             ),
                           ),
@@ -235,7 +239,7 @@ class _StreamScreenState extends State<StreamScreen> {
             ],
           ),
 
-          // Full screen view
+          // Fullscreen profile view
           if (_isFullScreen)
             GestureDetector(
               onTap: () {
