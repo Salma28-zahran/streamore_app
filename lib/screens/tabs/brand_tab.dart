@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_sections.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_theme_buttons.dart';
 import '../../my_provider.dart';
+import '../../widgets/brand_widgets/brand_utils/font_utils.dart';
 import '../../widgets/brand_widgets/section_header.dart';
 
 class BrandTab extends StatefulWidget {

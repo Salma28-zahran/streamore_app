@@ -10,6 +10,7 @@ import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
+import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
 
 class StreamScreen extends StatefulWidget {
   static const String routeName = "/stream";
@@ -30,6 +31,10 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool isSmall = size.width < 360;
     final double iconSize = isSmall ? 44.0 : 50.0;
     final myprovider = Provider.of<MyProvider>(context);
+    final selectedTheme = myprovider.selectedTheme;
+    final font = myprovider.selectedFont;
+    final primaryColor = myprovider.primaryColor;
+
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
     final bool isDark = myprovider.themeMode == ThemeMode.dark;
@@ -37,7 +42,7 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool hasNotification = false;
 
     return Scaffold(
-      drawer:  MainDrawer(),
+      drawer: MainDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -99,7 +104,7 @@ class _StreamScreenState extends State<StreamScreen> {
                     Positioned(
                       bottom: 0,
                       left: 0,
-                      child: buildOverlay(myprovider),
+                      child: _buildThemeOverlay(myprovider),
                     ),
                   ],
                 ),
@@ -146,132 +151,181 @@ class _StreamScreenState extends State<StreamScreen> {
                 for (var icon in [Icons.cast_sharp, Icons.person_add])
                   Padding(
                     padding: EdgeInsets.only(right: size.width * 0.06),
-                    child: icon == Icons.person_add
-                        ? GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  backgroundColor: Theme.of(context).cardColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  title: Text(
-                                    "add_members".tr(),
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color:
-                                          isDark ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: 'you_can_add_up_to_guests'.tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            color: Colors.grey[700],
+                    child:
+                        icon == Icons.person_add
+                            ? GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => AlertDialog(
+                                        backgroundColor:
+                                            Theme.of(context).cardColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
+                                        ),
+                                        title: Text(
+                                          "add_members".tr(),
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                        ),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            TextSpan(
-                                              text: 'upgrade_for_more'.tr(),
-                                              style: GoogleFonts.poppins(
-                                                color: Colors.blue,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
+                                            RichText(
+                                              text: TextSpan(
+                                                text:
+                                                    'you_can_add_up_to_guests'
+                                                        .tr(),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  color: Colors.grey[700],
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        'upgrade_for_more'.tr(),
+                                                    style: GoogleFonts.poppins(
+                                                      color: Colors.blue,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                    recognizer:
+                                                        TapGestureRecognizer()
+                                                          ..onTap = () {
+                                                            // action here
+                                                          },
+                                                  ),
+                                                ],
                                               ),
-                                              recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                  // action here
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 16),
+                                            // لينك الاجتماع
+                                            Container(
+                                              width: double.infinity,
+                                              height: 26,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                  ),
+                                              alignment: Alignment.centerLeft,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.grey,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                color:
+                                                    Theme.of(context).cardColor,
+                                              ),
+                                              child: Text(
+                                                "https://www.examplecode.com/xyz-pwd-srt",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            // زر Copy
+                                            SizedBox(
+                                              width: 110,
+                                              height: 28,
+                                              child: ElevatedButton.icon(
+                                                onPressed: () {
+                                                  // copy link logic
                                                 },
+                                                icon: const Icon(
+                                                  Icons.copy,
+                                                  size: 18,
+                                                ),
+                                                label: Text(
+                                                  "copy_link".tr(),
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: const Color(
+                                                    0xff1865E8,
+                                                  ),
+                                                  foregroundColor: Colors.white,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                  minimumSize: const Size(
+                                                    0,
+                                                    36,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          6,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      // لينك الاجتماع
-                                      Container(
-                                        width: double.infinity,
-                                        height: 26,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12),
-                                        alignment: Alignment.centerLeft,
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.grey),
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          color: Theme.of(context).cardColor,
-                                        ),
-                                        child: Text(
-                                          "https://www.examplecode.com/xyz-pwd-srt",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            color: isDark
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      // زر Copy
-                                      SizedBox(
-                                        width: 110,
-                                        height: 28,
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {
-                                            // copy link logic
-                                          },
-                                          icon: const Icon(Icons.copy,
-                                              size: 18),
-                                          label: Text(
-                                            "copy_link".tr(),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold,
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                              24,
+                                              20,
+                                              24,
+                                              10,
                                             ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color(0xff1865E8),
-                                            foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            minimumSize: const Size(0, 36),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                            ),
-                                          ),
+                                        actionsPadding: const EdgeInsets.only(
+                                          bottom: 10,
+                                          right: 0,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                      24, 20, 24, 10),
-                                  actionsPadding: const EdgeInsets.only(
-                                      bottom: 10, right: 0),
-                                ),
-                              );
-                            },
-                            child: _buildIcon(icon, iconSize, context,
-                                myprovider, isSmall),
-                          )
-                        : _buildIcon(
-                            icon, iconSize, context, myprovider, isSmall),
+                                );
+                              },
+                              child: _buildIcon(
+                                icon,
+                                iconSize,
+                                context,
+                                myprovider,
+                                isSmall,
+                              ),
+                            )
+                            : _buildIcon(
+                              icon,
+                              iconSize,
+                              context,
+                              myprovider,
+                              isSmall,
+                            ),
                   ),
                 Padding(
                   padding: const EdgeInsets.only(right: 13),
                   child: _buildIcon(
-                      Icons.settings, iconSize, context, myprovider, isSmall),
+                    Icons.settings,
+                    iconSize,
+                    context,
+                    myprovider,
+                    isSmall,
+                  ),
                 ),
               ],
             ),
@@ -320,11 +374,7 @@ class _StreamScreenState extends State<StreamScreen> {
                       ),
                       const Expanded(
                         child: TabBarView(
-                          children: [
-                            BrandTab(),
-                            BannersTab(),
-                            CommentsTab(),
-                          ],
+                          children: [BrandTab(), BannersTab(), CommentsTab()],
                         ),
                       ),
                     ],
@@ -351,11 +401,12 @@ class _StreamScreenState extends State<StreamScreen> {
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size),
-        color: isOn
-            ? (currentMode == ThemeMode.dark
-                ? const Color(0xff212b49)
-                : const Color(0xff5E5E66))
-            : const Color(0xff350808),
+        color:
+            isOn
+                ? (currentMode == ThemeMode.dark
+                    ? const Color(0xff212b49)
+                    : const Color(0xff5E5E66))
+                : const Color(0xff350808),
       ),
       child: Icon(
         isOn ? onIcon : offIcon,
@@ -373,17 +424,19 @@ class _StreamScreenState extends State<StreamScreen> {
     bool isSmall,
   ) {
     return GestureDetector(
-      onTap: icon == Icons.settings
-          ? () => Navigator.pushNamed(context, "/settings_icon")
-          : null,
+      onTap:
+          icon == Icons.settings
+              ? () => Navigator.pushNamed(context, "/settings_icon")
+              : null,
       child: Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(190),
-          color: myprovider.themeMode == ThemeMode.dark
-              ? const Color(0xff212b49)
-              : const Color(0xff5E5E66),
+          color:
+              myprovider.themeMode == ThemeMode.dark
+                  ? const Color(0xff212b49)
+                  : const Color(0xff5E5E66),
         ),
         child: Icon(
           icon,
@@ -392,5 +445,77 @@ class _StreamScreenState extends State<StreamScreen> {
         ),
       ),
     );
+  }
+}
+
+Widget _buildThemeOverlay(MyProvider provider) {
+  final theme = provider.selectedTheme;
+  final color = provider.primaryColor;
+  final font = provider.selectedFont;
+
+  switch (theme) {
+    case 'bubble':
+      return Padding(
+        padding:  EdgeInsets.all(11),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: Text(
+            "User Name",
+            style: getFontStyle(font, fontSize: 12, color: Colors.white),
+          ),
+        ),
+      );
+
+    case 'minimal':
+      return
+       Padding(
+         padding:  EdgeInsets.only(bottom: 11),
+         child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(width: 12, height: 24, color: color),
+                Container(
+                  width: 76,
+                  height: 23,
+                  color: Colors.white,
+                  child: Center(
+                    child: Text(
+                      'User Name',
+                      style: getFontStyle(
+                        font,
+                        fontSize: 12,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+               ),
+       );
+
+    case 'news':
+    default:
+      return Padding(
+        padding:  EdgeInsets.all(11),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: color,
+
+            borderRadius: BorderRadius.circular(0),
+          ),
+          child: Text(
+            "User Name",
+            style: getFontStyle(font, fontSize: 12, color: Colors.white),
+          ),
+        ),
+      );
   }
 }
