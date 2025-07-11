@@ -12,7 +12,6 @@ import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
-import 'package:streamore_app/widgets/overlay_style.dart';
 import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 
 class StreamScreen extends StatefulWidget {
