@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:streamore_app/my_provider.dart';
+import 'package:provider/provider.dart';
 
 class BannersContant extends StatefulWidget {
   static const String routeName = "/ex";
@@ -61,7 +63,9 @@ class _BannersContantState extends State<BannersContant> {
         leading: IconButton(
           icon: Icon(Icons.navigate_before, size: 32, color: Theme.of(context).textTheme.bodyLarge?.color),
           onPressed: () {
-            Navigator.pop(context);
+            Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
+
+            print('Navigator pop executed');
           },
         ),
         title: Text(

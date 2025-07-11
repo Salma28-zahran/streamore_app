@@ -147,8 +147,7 @@ class _BannersTabState extends State<BannersTab> {
                     }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics:
-                          NeverScrollableScrollPhysics(), 
+                      physics: NeverScrollableScrollPhysics(),
                       itemCount: folderList.length,
                       itemBuilder: (context, index) {
                         final folder = folderList[index];
@@ -160,16 +159,7 @@ class _BannersTabState extends State<BannersTab> {
                                 context,
                                 listen: false,
                               ).setBFolderClicked(true);
-
-                              Future.delayed(Duration(milliseconds: 100), () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => const BannersContant(),
-                                  ),
-                                );
-                              });
+                              DefaultTabController.of(context).animateTo(1);
                             },
                             child: _buildItemTile(
                               context,
@@ -247,8 +237,7 @@ class _BannersTabState extends State<BannersTab> {
                     }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics:
-                          NeverScrollableScrollPhysics(), 
+                      physics: NeverScrollableScrollPhysics(),
                       itemCount: tickerList.length,
                       itemBuilder: (context, index) {
                         final ticker = tickerList[index];
@@ -259,20 +248,8 @@ class _BannersTabState extends State<BannersTab> {
                               Provider.of<MyProvider>(
                                 context,
                                 listen: false,
-                              ).setTFolderClicked(true);
-
-                              Future.delayed(
-                                const Duration(milliseconds: 100),
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => const TickersContant(),
-                                    ),
-                                  );
-                                },
-                              );
+                              ).setBFolderClicked(true);
+                              DefaultTabController.of(context).animateTo(1);
                             },
                             child: _buildItemTile(
                               context,
@@ -522,10 +499,7 @@ class _BannersTabState extends State<BannersTab> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       decoration: BoxDecoration(
-        color:
-            Theme.of(
-              context,
-            ).appBarTheme.backgroundColor, 
+        color: Theme.of(context).appBarTheme.backgroundColor,
         border: Border.all(
           color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey,
         ),
@@ -540,12 +514,8 @@ class _BannersTabState extends State<BannersTab> {
               hintStyle: TextStyle(
                 color:
                     Theme.of(context).brightness == Brightness.dark
-                        ? Colors
-                            .grey
-                            .shade600 
-                        : Colors
-                            .grey
-                            .shade400, 
+                        ? Colors.grey.shade600
+                        : Colors.grey.shade400,
                 fontWeight: FontWeight.bold,
               ),
               filled: true,
@@ -559,9 +529,8 @@ class _BannersTabState extends State<BannersTab> {
             style: TextStyle(
               color:
                   Theme.of(context).brightness == Brightness.dark
-                      ? Colors
-                          .black 
-                      : Colors.black87, 
+                      ? Colors.black
+                      : Colors.black87,
             ),
           ),
           const SizedBox(height: 4),

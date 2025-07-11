@@ -24,11 +24,19 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
-class _StreamScreenState extends State<StreamScreen> {
+class _StreamScreenState extends State<StreamScreen>
+    with TickerProviderStateMixin {
   bool _micOn = true;
   bool _camOn = true;
   bool _showZoomIcon = false;
   bool _isFullScreen = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +44,6 @@ class _StreamScreenState extends State<StreamScreen> {
     final bool isSmall = size.width < 360;
     final double iconSize = isSmall ? 44.0 : 50.0;
     final myprovider = Provider.of<MyProvider>(context);
-    bool isFolderClicked = myprovider.bFolderClicked;
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
 
@@ -208,6 +215,7 @@ class _StreamScreenState extends State<StreamScreen> {
                       child: Column(
                         children: [
                           TabBar(
+                            controller: _tabController,
                             labelColor: Colors.blue,
                             unselectedLabelColor: Colors.grey,
                             indicatorColor: Colors.blue,
@@ -223,6 +231,7 @@ class _StreamScreenState extends State<StreamScreen> {
                           ),
                           Expanded(
                             child: TabBarView(
+                              controller: _tabController,
                               children: [
                                 const BrandTab(),
                                 myprovider.tFolderClicked
