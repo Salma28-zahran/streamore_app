@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BannersContant extends StatefulWidget {
   static const String routeName = "/ex";
@@ -56,21 +55,17 @@ class _BannersContantState extends State<BannersContant> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.navigate_before, size: 32, color: Theme.of(context).textTheme.bodyLarge?.color),
           onPressed: () {
-            // Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
-            // Navigator.pop(context);
             Navigator.pop(context);
-
           },
         ),
         title: Text(
-          "Example Banners",
+          "example_banners".tr(),
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 17,
@@ -150,7 +145,7 @@ class _BannersContantState extends State<BannersContant> {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      isShown ? "Hide" : "Show",
+                                      isShown ? "hide".tr() : "show".tr(),
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -186,76 +181,76 @@ class _BannersContantState extends State<BannersContant> {
   }
 
   Widget _buildAddBannerCard() {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-    decoration: BoxDecoration(
-      color: Theme.of(context).appBarTheme.backgroundColor,
-      border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
-      borderRadius: BorderRadius.circular(3),
-    ),
-    child: Column(
-      children: [
-        TextField(
-          controller: bannerController,
-          decoration: InputDecoration(
-            hintText: "Banner Content",
-            hintStyle: TextStyle(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade600
-                  : Colors.grey.shade400,
-              fontWeight: FontWeight.bold,
-            ),
-            filled: true,
-            fillColor: Colors.grey.shade100,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
-          ),
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.black
-                : Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  showAddBannerCard = false;
-                  bannerController.clear(); // Clear the text field
-                });
-              },
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        border: Border.all(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Column(
+        children: [
+          TextField(
+            controller: bannerController,
+            decoration: InputDecoration(
+              hintText: "banner_content".tr(),
+              hintStyle: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade400,
+                fontWeight: FontWeight.bold,
               ),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 3, horizontal: 12),
             ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                _addBanner();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAddBannerCard = false;
+                    bannerController.clear(); 
+                    print('Example Banners Translation: ${'example_banners'.tr()}');// Clear the text field
+                  });
+                },
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Text(
+                  "Cancel".tr(),
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
                 ),
               ),
-              child: const Text(
-                "Add",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  _addBanner();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  "Add".tr(),
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

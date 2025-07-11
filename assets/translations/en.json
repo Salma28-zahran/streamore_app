@@ -263,5 +263,16 @@
    "items": {
     "one": "item",
     "other": "items"
-  }
+  },
+
+  "example_banners": "Example Banners",
+  "banner_content": "Banner Content",
+  "hide": "Hide",
+  "show": "Show",
+
+
+  "example_tickers": "Example Tickers",
+  "ticker_content": "Ticker Content",
+  "cancel": "Cancel",
+  "add": "Add"
 }

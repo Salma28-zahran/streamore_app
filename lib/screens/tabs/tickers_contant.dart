@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
+import 'package:easy_localization/easy_localization.dart'; 
 
 class TickersContant extends StatefulWidget {
   static const String routeName = "/tickers";
@@ -66,7 +67,7 @@ class _TickersContantState extends State<TickersContant> {
           },
         ),
         title: Text(
-          "Example Tickers",
+          "example_tickers".tr(),  
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 17,
@@ -146,7 +147,7 @@ class _TickersContantState extends State<TickersContant> {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      isShown ? "Hide" : "Show",
+                                      isShown ? "hide".tr() : "show".tr(),  
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -195,7 +196,7 @@ class _TickersContantState extends State<TickersContant> {
           TextField(
             controller: tickerController,
             decoration: InputDecoration(
-              hintText: "Ticker Content",
+              hintText: "ticker_content".tr(),  
               hintStyle: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.grey.shade600
@@ -226,7 +227,7 @@ class _TickersContantState extends State<TickersContant> {
                 },
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
-                  "Cancel",
+                  "cancel".tr(),  
                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey),
                 ),
               ),
@@ -242,9 +243,9 @@ class _TickersContantState extends State<TickersContant> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
-                  "Add",
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                child: Text(
+                  "add".tr(),  
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
