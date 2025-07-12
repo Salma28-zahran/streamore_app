@@ -252,52 +252,56 @@ class _StreamScreenState extends State<StreamScreen>
                   ),
                 ),
               ),
-              
             ],
           ),
 
           //************************************************************** */
           Consumer<MyProvider>(
-  builder: (context, provider, child) {
-    return provider.isLogoVisible && provider.logoImageFile != null
-        ? Positioned(
-            top: 20, 
-            right: 40, 
-            child: GestureDetector(
-              onTap: () {
-                print("Logo clicked!");
-                provider.toggleLogoVisibility(); 
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8), 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 5,
-                      offset: Offset(0, 2),
+            builder: (context, provider, child) {
+              if (!provider.isLogoVisible) return SizedBox();
+
+              return Positioned(
+                top: 20,
+                right: 40,
+                child: GestureDetector(
+                  onTap: () {
+                    provider.toggleLogoVisibility();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.file(
-                    File(provider.logoImageFile!.path),
-                    width: 50,   
-                    height: 50,  
-                    fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child:
+                          provider.logoImageFile != null
+                              ? Image.file(
+                                File(provider.logoImageFile!.path),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              )
+                              : Image.asset(
+                                'assets/images/logo.png',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          )
-        : SizedBox(); 
-  },
-),
+              );
+            },
+          ),
 
-
-            
-//******************************************************************* */
+          //******************************************************************* */
           // Fullscreen profile view
           if (_isFullScreen)
             GestureDetector(

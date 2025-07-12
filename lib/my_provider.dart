@@ -4,23 +4,41 @@ import 'package:image_picker/image_picker.dart';
 class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
+  XFile? _logoImageFile;
+  bool _isLogoVisible = false;
+  bool _useDefaultLogo = false;
 
- XFile? _logoImageFile;  
-  bool _isLogoVisible = false;  
+  bool get useDefaultLogo => _useDefaultLogo;
 
   XFile? get logoImageFile => _logoImageFile;
 
   void setLogoImage(XFile? image) {
     _logoImageFile = image;
-    _isLogoVisible = false;  
+    _isLogoVisible = false;
     notifyListeners();
   }
 
   bool get isLogoVisible => _isLogoVisible;
 
   void toggleLogoVisibility() {
-    _isLogoVisible = !_isLogoVisible;
-    notifyListeners();  
+    // if (_logoImageFile == null) {
+    //   _useDefaultLogo = true;
+    // }
+
+    // _isLogoVisible = !_isLogoVisible;
+    // notifyListeners();
+
+    if (!_isLogoVisible) {
+      _isLogoVisible = true;
+      notifyListeners();
+    }
+  }
+
+  void showDefaultLogo() {
+    _logoImageFile = null;
+    _useDefaultLogo = true;
+    _isLogoVisible = true;
+    notifyListeners();
   }
 
   // ==== Theme Overlay State ====
@@ -31,13 +49,12 @@ class MyProvider extends ChangeNotifier {
   String get selectedTheme => _selectedTheme;
   Color get primaryColor => _primaryColor;
 
-    // ==== Folder Clicked State ====
+  // ==== Folder Clicked State ====
   bool _bFolderClicked = false;
   bool _tFolderClicked = false;
 
   bool get bFolderClicked => _bFolderClicked;
   bool get tFolderClicked => _tFolderClicked;
-
 
   // ==== Setters ====
   void setSelectedTheme(String theme) {
@@ -56,7 +73,7 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    // ==== Folder Clicked State Setter ====
+  // ==== Folder Clicked State Setter ====
   void setBFolderClicked(bool value) {
     _bFolderClicked = value;
     notifyListeners();
@@ -66,8 +83,6 @@ class MyProvider extends ChangeNotifier {
     _tFolderClicked = value;
     notifyListeners();
   }
-  
-
 
   String _selectedFont = 'Inter';
 
@@ -77,5 +92,4 @@ class MyProvider extends ChangeNotifier {
     _selectedFont = font;
     notifyListeners();
   }
-
 }
