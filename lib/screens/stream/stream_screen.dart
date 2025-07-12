@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -45,6 +48,7 @@ class _StreamScreenState extends State<StreamScreen>
     final myprovider = Provider.of<MyProvider>(context);
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
+    final XFile? logoImageFile = myprovider.logoImageFile;
 
     return Scaffold(
       drawer: MainDrawer(),
@@ -248,9 +252,52 @@ class _StreamScreenState extends State<StreamScreen>
                   ),
                 ),
               ),
+              
             ],
           ),
 
+          //************************************************************** */
+          Consumer<MyProvider>(
+  builder: (context, provider, child) {
+    return provider.isLogoVisible && provider.logoImageFile != null
+        ? Positioned(
+            top: 20, 
+            right: 40, 
+            child: GestureDetector(
+              onTap: () {
+                print("Logo clicked!");
+                provider.toggleLogoVisibility(); 
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8), 
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    File(provider.logoImageFile!.path),
+                    width: 50,   
+                    height: 50,  
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          )
+        : SizedBox(); 
+  },
+),
+
+
+            
+//******************************************************************* */
           // Fullscreen profile view
           if (_isFullScreen)
             GestureDetector(

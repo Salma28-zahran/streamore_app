@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import '../../my_provider.dart';  
 import 'package:streamore_app/widgets/brand_widgets/section_header.dart';
 
-///——— 1) Logo Section ————————————————————————————————————————————————
 class LogoSection extends StatefulWidget {
   const LogoSection({super.key});
 
@@ -13,13 +14,14 @@ class LogoSection extends StatefulWidget {
 }
 
 class _LogoSectionState extends State<LogoSection> {
-  bool _isVisible = true;
-  XFile? _imageFile;
+  bool _isVisible = true; 
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) setState(() => _imageFile = picked);
+    if (picked != null) {
+      Provider.of<MyProvider>(context, listen: false).setLogoImage(picked);
+    }
   }
 
   @override
@@ -27,7 +29,7 @@ class _LogoSectionState extends State<LogoSection> {
     return Column(
       children: [
         SectionHeader(
-          title: 'logo'.tr(),
+          title: 'logo'.tr(), 
           isVisible: _isVisible,
           onToggle: () => setState(() => _isVisible = !_isVisible),
         ),
@@ -36,14 +38,18 @@ class _LogoSectionState extends State<LogoSection> {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               children: [
-                _buildImageBox(
-                  image: _imageFile == null
-                      ? Image.asset('assets/images/logo.png', width: 40)
-                      : null,
-                  file: _imageFile,
+                Consumer<MyProvider>(
+                  builder: (context, provider, child) {
+                    return _buildImageBox(
+                      image: provider.logoImageFile == null
+                          ? Image.asset('assets/images/logo.png', width: 40) 
+                          : null,
+                      file: provider.logoImageFile, 
+                    );
+                  },
                 ),
                 const SizedBox(width: 10),
-                _buildAddBox(onTap: _pickImage),
+                _buildAddBox(onTap: _pickImage), 
               ],
             ),
           ),
@@ -51,37 +57,65 @@ class _LogoSectionState extends State<LogoSection> {
     );
   }
 
-  Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: Colors.grey[300],
-      ),
-      child: const Icon(Icons.add),
-    ),
-  );
+  Widget _buildImageBox({Image? image, XFile? file}) {
+    Widget content;
 
-  Widget _buildImageBox({Image? image, XFile? file}) => Container(
-    width: 60,
-    height: 60,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(6),
-      color: Colors.grey[300],
-      image: file != null
-          ? DecorationImage(
-        image: FileImage(File(file.path)),
-        fit: BoxFit.cover,
-      )
-          : null,
-    ),
-    child: image != null
-        ? ClipRRect(borderRadius: BorderRadius.circular(6), child: image)
-        : null,
-  );
+    if (file != null) {
+      content = Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.grey[300],
+          image: DecorationImage(
+            image: FileImage(File(file.path)),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else if (image != null) {
+      content = ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: SizedBox(
+          width: 60,
+          height: 60,
+          child: image,
+        ),
+      );
+    } else {
+      content = Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.grey[300],
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Provider.of<MyProvider>(context, listen: false).toggleLogoVisibility();
+      },
+      child: content,
+    );
+  }
+
+  Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.grey[300],
+          ),
+          child: const Icon(Icons.add),
+        ),
+      );
 }
+
+
 
 ///——— 2) Overlay Section ————————————————————————————————————————————————
 class OverlaySection extends StatefulWidget {
@@ -122,7 +156,7 @@ class _OverlaySectionState extends State<OverlaySection> {
                     .toList(growable: false),
                 ...List.generate(
                   7 - _images.length.clamp(0, 7),
-                      (_) => _buildImageBox(),
+                  (_) => _buildImageBox(),
                 ),
                 _buildAddBox(onTap: _pickImage),
               ],
@@ -133,32 +167,43 @@ class _OverlaySectionState extends State<OverlaySection> {
   }
 
   Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
-    onTap: onTap,
-    child: Container(
+        onTap: onTap,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.grey[300],
+          ),
+          child: const Icon(Icons.add),
+        ),
+      );
+
+  Widget _buildImageBox({XFile? file}) {
+    Widget container = Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         color: Colors.grey[300],
+        image: file != null
+            ? DecorationImage(
+                image: FileImage(File(file.path)),
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
-      child: const Icon(Icons.add),
-    ),
-  );
+    );
 
-  Widget _buildImageBox({XFile? file}) => Container(
-    width: 60,
-    height: 60,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(6),
-      color: Colors.grey[300],
-      image: file != null
-          ? DecorationImage(
-        image: FileImage(File(file.path)),
-        fit: BoxFit.cover,
-      )
-          : null,
-    ),
-  );
+    return GestureDetector(
+      onTap: () {
+        if (file != null) {
+          print('Overlay image tapped: ${file.path}');
+        }
+      },
+      child: container,
+    );
+  }
 }
 
 ///——— 3) Background Section ————————————————————————————————————————————
@@ -200,7 +245,7 @@ class _BackgroundSectionState extends State<BackgroundSection> {
                     .toList(growable: false),
                 ...List.generate(
                   7 - _images.length.clamp(0, 7),
-                      (_) => _buildImageBox(),
+                  (_) => _buildImageBox(),
                 ),
                 _buildAddBox(onTap: _pickImage),
               ],
@@ -211,30 +256,42 @@ class _BackgroundSectionState extends State<BackgroundSection> {
   }
 
   Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
-    onTap: onTap,
-    child: Container(
+        onTap: onTap,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.grey[300],
+          ),
+          child: const Icon(Icons.add),
+        ),
+      );
+
+  Widget _buildImageBox({XFile? file}) {
+    Widget container = Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         color: Colors.grey[300],
+        image: file != null
+            ? DecorationImage(
+                image: FileImage(File(file.path)),
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
-      child: const Icon(Icons.add),
-    ),
-  );
+    );
 
-  Widget _buildImageBox({XFile? file}) => Container(
-    width: 60,
-    height: 60,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(6),
-      color: Colors.grey[300],
-      image: file != null
-          ? DecorationImage(
-        image: FileImage(File(file.path)),
-        fit: BoxFit.cover,
-      )
-          : null,
-    ),
-  );
+    return GestureDetector(
+      onTap: () {
+        if (file != null) {
+          print('Background image tapped: ${file.path}');
+        }
+      },
+      child: container,
+    );
+  }
 }
+

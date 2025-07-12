@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
+
+
+ XFile? _logoImageFile;  
+  bool _isLogoVisible = false;  
+
+  XFile? get logoImageFile => _logoImageFile;
+
+  void setLogoImage(XFile? image) {
+    _logoImageFile = image;
+    _isLogoVisible = false;  
+    notifyListeners();
+  }
+
+  bool get isLogoVisible => _isLogoVisible;
+
+  void toggleLogoVisibility() {
+    _isLogoVisible = !_isLogoVisible;
+    notifyListeners();  
+  }
 
   // ==== Theme Overlay State ====
   String _selectedTheme = 'minimal';

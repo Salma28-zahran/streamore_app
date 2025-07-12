@@ -19,35 +19,15 @@ class BrandTab extends StatefulWidget {
 }
 
 class _BrandTabState extends State<BrandTab> {
-  XFile? _logoImageFile;
-
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
   bool isLogoVisible = true;
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
-  final List<XFile> _logoImages = [];
-  final List<XFile> _overlayImages = [];
-  final List<XFile> _backgroundImages = [];
-
-  Future<void> _pickImageForLogo() async {
-    final picker = ImagePicker();
-    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _logoImageFile = picked;
-      });
-    }
-  }
-
-  void _handleImageClick(XFile image) {
-    print("Selected Image: ${image.path}");
-  }
 
   late TextEditingController _colorController;
   List<String> fontList = ['inter'.tr(), 'poppins'.tr()];
-  String selectedSize = 's'.tr();
 
   @override
   void initState() {
@@ -62,6 +42,17 @@ class _BrandTabState extends State<BrandTab> {
   void dispose() {
     _colorController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImageForLogo() async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      Provider.of<MyProvider>(context, listen: false).setLogoImage(picked);
+      print("Logo selected: ${picked.path}");
+    } else {
+      print("No image selected.");
+    }
   }
 
   @override
@@ -172,8 +163,7 @@ class _BrandTabState extends State<BrandTab> {
                         border: Border.all(color: const Color(0xffC8C8C8)),
                       ),
                       child: const Center(
-                        child: Text("#", style: TextStyle(fontSize: 18, color: Color(0xffC8C8C8)))),
-                    ),
+                        child: Text("#", style: TextStyle(fontSize: 18, color: Color(0xffC8C8C8))))),
                     const SizedBox(width: 7),
                     Container(
                       width: 99,
@@ -229,66 +219,49 @@ class _BrandTabState extends State<BrandTab> {
                           color: Colors.white,
                         ),
                       ),
-                      dropdownStyleData: DropdownStyleData(
-                        maxHeight: 200,
-                        width: 270,
-                        offset: const Offset(0, 0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: const Color(0xff5E5E66), width: 1),
-                        ),
-                        scrollbarTheme: ScrollbarThemeData(
-                          radius: const Radius.circular(40),
-                          thickness: MaterialStateProperty.all(0),
-                          thumbVisibility: MaterialStateProperty.all(false),
-                        ),
-                      ),
-                      iconStyleData: const IconStyleData(
-                        icon: Icon(Icons.keyboard_arrow_down_outlined, color: Color(0xff5E5E66), size: 20),
-                      ),
-                      menuItemStyleData: MenuItemStyleData(
-                        height: 24,
-                        padding: const EdgeInsets.only(left: 4, right: 21),
-                        overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
-                          if (states.contains(MaterialState.hovered) ||
-                              states.contains(MaterialState.focused) ||
-                              states.contains(MaterialState.pressed)) {
-                            return const Color(0xff679FFF);
-                          }
-                          return null;
-                        }),
-                      ),
                     ),
                     const SizedBox(width: 15),
                     Text("S", style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
                   ],
                 ),
               ),
-            const LogoSection(),
+            const LogoSection(),  
             const OverlaySection(),
             const BackgroundSection(),
             const SizedBox(height: 100),
-            
-            // Image click and display
-            if (_logoImageFile != null)
-              GestureDetector(
-                onTap: () {
-                  _handleImageClick(_logoImageFile!); // Handle image click here
-                },
-                child: Container(
-                  margin: EdgeInsets.all(20), // Add margin for spacing
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8), // Optional: Adjust corner radius
-                    child: Image.file(
-                      File(_logoImageFile!.path),
-                      width: 100,  // Adjust size as needed
-                      height: 100,  // Adjust size as needed
-                      fit: BoxFit.cover,  // Ensure the image fills the container
+            GestureDetector(
+              onTap: _pickImageForLogo,
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                color: Colors.blueGrey,
+                child: Column(
+                  children: [
+                    Text("Pick a logo", style: getFontStyle(myProvider.selectedFont, fontSize: 20)),
+                    const SizedBox(height: 10),
+                    Icon(
+                      Icons.image,
+                      size: 50,
+                      color: Colors.white,
                     ),
-                  ),
+                  ],
                 ),
               ),
+            ),
+            // Display the logo preview after picking it
+            Consumer<MyProvider>(
+              builder: (context, provider, child) {
+                return provider.logoImageFile != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Image.file(
+                          File(provider.logoImageFile!.path),
+                          height: 100,
+                          width: 100,
+                        ),
+                      )
+                    : SizedBox.shrink();  // Hide logo if not picked
+              },
+            ),
           ],
         ),
       ),
