@@ -22,7 +22,7 @@ class _BrandTabState extends State<BrandTab> {
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
-  bool isLogoVisible = true;
+  bool isLogoVisible = true; // Track logo visibility
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
 
@@ -56,6 +56,17 @@ class _BrandTabState extends State<BrandTab> {
       print("Logo selected: ${picked.path}");
     } else {
       print("No image selected.");
+    }
+  }
+
+  Future<void> _pickImageForOverlay() async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      Provider.of<MyProvider>(context, listen: false).addOverlayImage(picked);
+      print("Overlay selected: ${picked.path}");
+    } else {
+      print("No overlay selected.");
     }
   }
 
@@ -302,7 +313,6 @@ class _BrandTabState extends State<BrandTab> {
                 ),
               ),
             ),
-            // Display the logo preview after picking it
             Consumer<MyProvider>(
               builder: (context, provider, child) {
                 return provider.logoImageFile != null
@@ -312,6 +322,48 @@ class _BrandTabState extends State<BrandTab> {
                         File(provider.logoImageFile!.path),
                         height: 100,
                         width: 100,
+                      ),
+                    )
+                    : SizedBox();
+              },
+            ),
+            GestureDetector(
+              onTap: _pickImageForOverlay,
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                color: Colors.blueGrey,
+                child: Column(
+                  children: [
+                    Text(
+                      "Pick an overlay",
+                      style: getFontStyle(
+                        myProvider.selectedFont,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Icon(Icons.image, size: 50, color: Colors.white),
+                  ],
+                ),
+              ),
+            ),
+            Consumer<MyProvider>(
+              builder: (context, provider, child) {
+                return provider.overlayImages.isNotEmpty
+                    ? Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Wrap(
+                        children:
+                            provider.overlayImages.map((overlay) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.file(
+                                  File(overlay.path),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                              );
+                            }).toList(),
                       ),
                     )
                     : SizedBox();

@@ -301,6 +301,53 @@ class _StreamScreenState extends State<StreamScreen>
             },
           ),
 
+          //************************************************************** */
+          // not finish yest //
+          Consumer<MyProvider>(
+            builder: (context, provider, child) {
+              if (!provider.isOverlayVisible) return SizedBox();
+
+              return Positioned(
+                top: 50,
+                left: 80,
+                child: GestureDetector(
+                  onTap: () {
+                    provider.toggleOverlayVisibility();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child:
+                          provider.selectedOverlayImage != null
+                              ? Image.file(
+                                File(provider.selectedOverlayImage!.path),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              )
+                              : Image.asset(
+                                'assets/images/overlay_placeholder.png',
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
           //******************************************************************* */
           // Fullscreen profile view
           if (_isFullScreen)

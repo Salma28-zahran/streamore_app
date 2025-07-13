@@ -4,34 +4,56 @@ import 'package:image_picker/image_picker.dart';
 class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
-  XFile? _logoImageFile;
+
+  List<XFile> _overlayImages = [];
+  XFile? _selectedOverlayImage;
+  bool _isOverlayVisible = false;
+
+  List<XFile> get overlayImages => _overlayImages;
+  XFile? get selectedOverlayImage => _selectedOverlayImage;
+  bool get isOverlayVisible => _isOverlayVisible;
+
+  void addOverlayImage(XFile image) {
+    if (!_overlayImages.contains(image)) {
+      _overlayImages.add(image);
+      notifyListeners();
+    }
+  }
+
+  void showOverlayImage(XFile image) {
+    _selectedOverlayImage = image;
+    _isOverlayVisible = true;
+    notifyListeners();
+  }
+
+  void toggleOverlayVisibility() {
+    _isOverlayVisible = !_isOverlayVisible;
+    notifyListeners();
+  }
+
+
+// Logo Image properties
+ XFile? _logoImageFile;
   bool _isLogoVisible = false;
   bool _useDefaultLogo = false;
 
-  bool get useDefaultLogo => _useDefaultLogo;
 
+  // Getters for logo
+  bool get isLogoVisible => _isLogoVisible;
+  bool get useDefaultLogo => _useDefaultLogo;
   XFile? get logoImageFile => _logoImageFile;
 
+
+  // Setters and functions for logo
   void setLogoImage(XFile? image) {
     _logoImageFile = image;
     _isLogoVisible = false;
     notifyListeners();
   }
 
-  bool get isLogoVisible => _isLogoVisible;
-
   void toggleLogoVisibility() {
-    // if (_logoImageFile == null) {
-    //   _useDefaultLogo = true;
-    // }
-
-    // _isLogoVisible = !_isLogoVisible;
-    // notifyListeners();
-
-    if (!_isLogoVisible) {
-      _isLogoVisible = true;
-      notifyListeners();
-    }
+    _isLogoVisible = !_isLogoVisible;
+    notifyListeners();
   }
 
   void showDefaultLogo() {
@@ -40,6 +62,7 @@ class MyProvider extends ChangeNotifier {
     _isLogoVisible = true;
     notifyListeners();
   }
+
 
   // ==== Theme Overlay State ====
   String _selectedTheme = 'minimal';
