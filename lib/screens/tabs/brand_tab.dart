@@ -2,14 +2,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_sections.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_theme_buttons.dart';
 import '../../my_provider.dart';
 import '../../widgets/brand_widgets/section_header.dart';
-import 'dart:io';
 
 class BrandTab extends StatefulWidget {
   const BrandTab({super.key});
@@ -22,7 +19,7 @@ class _BrandTabState extends State<BrandTab> {
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
-  bool isLogoVisible = true; // Track logo visibility
+  bool isLogoVisible = true; 
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
 
@@ -48,27 +45,6 @@ class _BrandTabState extends State<BrandTab> {
     super.dispose();
   }
 
-  Future<void> _pickImageForLogo() async {
-    final picker = ImagePicker();
-    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      Provider.of<MyProvider>(context, listen: false).setLogoImage(picked);
-      print("Logo selected: ${picked.path}");
-    } else {
-      print("No image selected.");
-    }
-  }
-
-  Future<void> _pickImageForOverlay() async {
-    final picker = ImagePicker();
-    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      Provider.of<MyProvider>(context, listen: false).addOverlayImage(picked);
-      print("Overlay selected: ${picked.path}");
-    } else {
-      print("No overlay selected.");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -293,82 +269,6 @@ class _BrandTabState extends State<BrandTab> {
             const OverlaySection(),
             const BackgroundSection(),
             const SizedBox(height: 100),
-            GestureDetector(
-              onTap: _pickImageForLogo,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                color: Colors.blueGrey,
-                child: Column(
-                  children: [
-                    Text(
-                      "Pick a logo",
-                      style: getFontStyle(
-                        myProvider.selectedFont,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Icon(Icons.image, size: 50, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
-            Consumer<MyProvider>(
-              builder: (context, provider, child) {
-                return provider.logoImageFile != null
-                    ? Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Image.file(
-                        File(provider.logoImageFile!.path),
-                        height: 100,
-                        width: 100,
-                      ),
-                    )
-                    : SizedBox();
-              },
-            ),
-            GestureDetector(
-              onTap: _pickImageForOverlay,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                color: Colors.blueGrey,
-                child: Column(
-                  children: [
-                    Text(
-                      "Pick an overlay",
-                      style: getFontStyle(
-                        myProvider.selectedFont,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Icon(Icons.image, size: 50, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
-            Consumer<MyProvider>(
-              builder: (context, provider, child) {
-                return provider.overlayImages.isNotEmpty
-                    ? Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Wrap(
-                        children:
-                            provider.overlayImages.map((overlay) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.file(
-                                  File(overlay.path),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                    )
-                    : SizedBox();
-              },
-            ),
           ],
         ),
       ),

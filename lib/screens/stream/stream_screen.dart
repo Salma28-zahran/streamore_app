@@ -303,50 +303,67 @@ class _StreamScreenState extends State<StreamScreen>
 
           //************************************************************** */
           // not finish yest //
-          Consumer<MyProvider>(
-            builder: (context, provider, child) {
-              if (!provider.isOverlayVisible) return SizedBox();
+        Consumer<MyProvider>(
+  builder: (context, provider, child) {
+    if (!provider.isOverlayVisible) return SizedBox();
 
-              return Positioned(
-                top: 50,
-                left: 80,
-                child: GestureDetector(
-                  onTap: () {
-                    provider.toggleOverlayVisibility();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child:
-                          provider.selectedOverlayImage != null
-                              ? Image.file(
-                                File(provider.selectedOverlayImage!.path),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              )
-                              : Image.asset(
-                                'assets/images/overlay_placeholder.png',
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                    ),
+    // Getting the screen size from MediaQuery
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Decrease the size of the overlay by using smaller multipliers
+    double frameWidth = screenWidth * 0.7;  // Smaller width (adjust this to make it smaller)
+    double frameHeight = screenHeight * 0.25; // Smaller height (adjust this to make it smaller)
+    double frameTop = screenHeight * 0.03;   // Adjust the top position as needed
+    
+    // Calculate equal distance from both sides
+    double horizontalPadding = (screenWidth - frameWidth) / 2; // This gives the equal distance on both sides
+
+    return Positioned(
+      top: frameTop,
+      left: horizontalPadding,  // Left distance
+      right: horizontalPadding, // Right distance
+      child: GestureDetector(
+        onTap: () {
+          provider.toggleOverlayVisibility();
+        },
+        child: Container(
+          width: frameWidth,
+          height: frameHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 5,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              // This is the frame (background)
+              Container(
+                width: frameWidth,
+                height: frameHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                    image: provider.selectedOverlayImage != null
+                        ? FileImage(File(provider.selectedOverlayImage!.path))
+                        : AssetImage('assets/images/overlay_placeholder.png') as ImageProvider,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
+        ),
+      ),
+    );
+  },
+)
+,
 
           //******************************************************************* */
           // Fullscreen profile view
