@@ -27,17 +27,23 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final colorScheme = theme.colorScheme;
 
+    double fontSizeTitle = screenWidth > 600 ? 36 : 28;
+    double fontSizeDescription = screenWidth > 600 ? 16 : 14;
+    double padding = screenWidth > 600 ? 24 : 16;
+    double planCardPadding = screenWidth > 600 ? 20 : 16;
+    double buttonWidth = screenWidth > 600 ? 300 : screenWidth * 0.8;
+
     return Scaffold(
       appBar: _buildAppBar(theme),
       drawer: MainDrawer(),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: padding),
         children: [
-          const SizedBox(height: 24),
-          _buildTitle(theme),
-          const SizedBox(height: 28),
+          SizedBox(height: 24),
+          _buildTitle(theme, fontSizeTitle),
+          SizedBox(height: 28),
           _buildPlanToggle(context, screenWidth, colorScheme.primary, colorScheme.onSurface),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildPlanCard(
             title: 'basic'.tr(),
             priceMain: selectedTabIndex == 0 ? "\$25" : "\$250",
@@ -46,8 +52,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             features: getFeatureList('basic_feature_', 8),
             planType: 'basic'.tr(),
             priceDisplay: selectedTabIndex == 0 ? '\$25/${'mo'.tr()}' : '\$250/${'yr'.tr()}',
+            fontSize: fontSizeDescription,
+            padding: planCardPadding,
+            buttonWidth: buttonWidth,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildPlanCard(
             title: 'professional'.tr(),
             priceMain: selectedTabIndex == 0 ? "\$50" : "\$500",
@@ -56,8 +65,11 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
             features: getFeatureList('professional_feature_', 8),
             planType: 'professional'.tr(),
             priceDisplay: selectedTabIndex == 0 ? '\$50/${'mo'.tr()}' : '\$500/${'yr'.tr()}',
+            fontSize: fontSizeDescription,
+            padding: planCardPadding,
+            buttonWidth: buttonWidth,
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
         ],
       ),
     );
@@ -105,12 +117,12 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     );
   }
 
-  Widget _buildTitle(ThemeData theme) {
+  Widget _buildTitle(ThemeData theme, double fontSizeTitle) {
     return Center(
       child: Text(
         'choose_your_plan'.tr(),
         style: GoogleFonts.poppins(
-          fontSize: 16,
+          fontSize: fontSizeTitle,
           fontWeight: FontWeight.bold,
           color: theme.colorScheme.primary,
         ),
@@ -192,6 +204,9 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     required List<String> features,
     required String planType,
     required String priceDisplay,
+    required double fontSize,
+    required double padding,
+    required double buttonWidth,
   }) {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
@@ -199,7 +214,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     final descriptionColor = theme.textTheme.bodyLarge?.color;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: theme.cardColor,
         border: Border.all(color: theme.dividerColor),
@@ -211,12 +226,12 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
           Text(
             title,
             style: GoogleFonts.poppins(
-              fontSize: 36,
+              fontSize: fontSize,
               fontWeight: FontWeight.bold,
               color: primaryColor,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             description,
             style: GoogleFonts.poppins(
@@ -225,7 +240,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
               color: lighten(descriptionColor ?? textColor, 0.5),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           RichText(
             text: TextSpan(
               text: priceMain,
@@ -246,9 +261,9 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          const Divider(height: 1),
-          const SizedBox(height: 12),
+          SizedBox(height: 8),
+          Divider(height: 1),
+          SizedBox(height: 12),
           ...features.map(
             (feature) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
@@ -256,7 +271,7 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.check, color: primaryColor, size: 18),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       feature,
@@ -271,9 +286,9 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           SizedBox(
-            width: double.infinity,
+            width: buttonWidth,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,

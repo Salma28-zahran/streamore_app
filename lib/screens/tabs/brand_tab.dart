@@ -19,7 +19,7 @@ class _BrandTabState extends State<BrandTab> {
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
-  bool isLogoVisible = true; 
+  bool isLogoVisible = true;
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
 
@@ -31,11 +31,10 @@ class _BrandTabState extends State<BrandTab> {
     super.initState();
     final myProvider = Provider.of<MyProvider>(context, listen: false);
     _colorController = TextEditingController(
-      text:
-          myProvider.primaryColor.value
-              .toRadixString(16)
-              .substring(2)
-              .toUpperCase(),
+      text: myProvider.primaryColor.value
+          .toRadixString(16)
+          .substring(2)
+          .toUpperCase(),
     );
   }
 
@@ -44,7 +43,6 @@ class _BrandTabState extends State<BrandTab> {
     _colorController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,53 +60,38 @@ class _BrandTabState extends State<BrandTab> {
             SectionHeader(
               title: "theme".tr(),
               isVisible: isThemeOptionsVisible,
-              onToggle:
-                  () => setState(
-                    () => isThemeOptionsVisible = !isThemeOptionsVisible,
-                  ),
+              onToggle: () => setState(() => isThemeOptionsVisible = !isThemeOptionsVisible),
             ),
             if (isThemeOptionsVisible)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 10,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Row(
-                  children:
-                      ["minimal", "bubble", "news"].map((theme) {
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: buildThemeButton(
-                              context: context,
-                              theme: theme,
-                              selectedTheme: myProvider.selectedTheme,
-                              onSelect:
-                                  (selected) =>
-                                      myProvider.setSelectedTheme(selected),
-                              primaryColor: myProvider.primaryColor,
-                              themeMode: myProvider.themeMode,
-                              font: myProvider.selectedFont,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                  children: ["minimal", "bubble", "news"].map((theme) {
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: buildThemeButton(
+                          context: context,
+                          theme: theme,
+                          selectedTheme: myProvider.selectedTheme,
+                          onSelect: (selected) => myProvider.setSelectedTheme(selected),
+                          primaryColor: myProvider.primaryColor,
+                          themeMode: myProvider.themeMode,
+                          font: myProvider.selectedFont,
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             SectionHeader(
               title: "primary_color".tr(),
               isVisible: isColorOptionsVisible,
-              onToggle:
-                  () => setState(
-                    () => isColorOptionsVisible = !isColorOptionsVisible,
-                  ),
+              onToggle: () => setState(() => isColorOptionsVisible = !isColorOptionsVisible),
             ),
             if (isColorOptionsVisible)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 child: Row(
                   children: [
                     GestureDetector(
@@ -132,10 +115,7 @@ class _BrandTabState extends State<BrandTab> {
                                   onColorChanged: (color) {
                                     myProvider.setPrimaryColor(color);
                                     _colorController.text =
-                                        color.value
-                                            .toRadixString(16)
-                                            .substring(2)
-                                            .toUpperCase();
+                                        color.value.toRadixString(16).substring(2).toUpperCase();
                                   },
                                 ),
                               ),
@@ -177,10 +157,7 @@ class _BrandTabState extends State<BrandTab> {
                       child: const Center(
                         child: Text(
                           "#",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xffC8C8C8),
-                          ),
+                          style: TextStyle(fontSize: 18, color: Color(0xffC8C8C8)),
                         ),
                       ),
                     ),
@@ -216,31 +193,28 @@ class _BrandTabState extends State<BrandTab> {
                 padding: const EdgeInsets.only(left: 15),
                 child: Row(
                   children: [
-                    DropdownButton2<String>(
+                    DropdownButton2<String>( 
                       isExpanded: true,
                       value: myProvider.selectedFont,
-                      items:
-                          fontList.map((font) {
-                            return DropdownMenuItem<String>(
-                              value: font,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 7),
-                                child: Text(
-                                  font,
-                                  style: getFontStyle(
-                                    myProvider.selectedFont,
-                                    fontSize: 12,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                      items: fontList.map((font) {
+                        return DropdownMenuItem<String>(
+                          value: font,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 7),
+                            child: Text(
+                              font,
+                              style: getFontStyle(
+                                myProvider.selectedFont,
+                                fontSize: 12,
                               ),
-                            );
-                          }).toList(),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      }).toList(),
                       onChanged: (value) {
-                        Provider.of<MyProvider>(
-                          context,
-                          listen: false,
-                        ).setSelectedFont(value!);
+                        Provider.of<MyProvider>(context, listen: false)
+                            .setSelectedFont(value!);
                       },
                       buttonStyleData: ButtonStyleData(
                         height: 38,
@@ -267,7 +241,7 @@ class _BrandTabState extends State<BrandTab> {
               ),
             const LogoSection(),
             const OverlaySection(),
-            const BackgroundSection(),
+            const BackgroundSection(),  
             const SizedBox(height: 100),
           ],
         ),

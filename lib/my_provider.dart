@@ -9,6 +9,22 @@ class MyProvider extends ChangeNotifier {
   XFile? _selectedOverlayImage;
   bool _isOverlayVisible = false;
 
+ bool _isBackgroundVisible = false;
+  XFile? _selectedBackgroundImage;
+
+  bool get isBackgroundVisible => _isBackgroundVisible;
+  XFile? get selectedBackgroundImage => _selectedBackgroundImage;
+
+  void toggleBackgroundVisibility() {
+    _isBackgroundVisible = !_isBackgroundVisible;
+    notifyListeners();
+  }
+
+  void setBackgroundImage(XFile image) {
+    _selectedBackgroundImage = image;
+    notifyListeners();
+  }
+
   List<XFile> get overlayImages => _overlayImages;
   XFile? get selectedOverlayImage => _selectedOverlayImage;
   bool get isOverlayVisible => _isOverlayVisible;
