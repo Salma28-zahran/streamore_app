@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/utils/payment_details_dialog.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 class ChoosePlanScreen extends StatefulWidget {
   static const routeName = '/choose-plan';
@@ -28,7 +29,8 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      appBar: _buildAppBar(theme),
+      appBar: CustomAppBar(hasNotification: false),
+
       drawer: MainDrawer(),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -63,47 +65,6 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
     );
   }
 
-  AppBar _buildAppBar(ThemeData theme) {
-    return AppBar(
-      automaticallyImplyLeading: true,
-      backgroundColor: theme.appBarTheme.backgroundColor,
-      title: Text(
-        'streamore'.tr(),
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.bold,
-          fontSize: 22,
-          color: theme.appBarTheme.foregroundColor,
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Stack(
-            children: [
-              Icon(FontAwesomeIcons.bell, color: theme.primaryColorDark, size: 24),
-              if (hasNotification)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Divider(color: theme.dividerColor, thickness: 1, height: 1),
-      ),
-    );
-  }
 
   Widget _buildTitle(ThemeData theme) {
     return Center(

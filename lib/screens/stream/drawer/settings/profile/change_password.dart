@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String routeName = "/change_pass";
@@ -58,42 +59,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
     return Scaffold(
       drawer: MainDrawer(),
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Image.asset("assets/images/app_name.png"),
-        actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: hp * 0.4),
-            child: Stack(
-              children: [
-                Icon(
-                  FontAwesomeIcons.bell,
-                  color: Theme.of(context).primaryColorDark,
-                  size: 24,
-                ),
-                if (hasNotification)
-                  const Positioned(
-                    right: 0,
-                    top: 0,
-                    child: CircleAvatar(
-                      radius: 4,
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            color: Theme.of(context).dividerColor,
-            thickness: 0.5,
-            height: 1,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(hasNotification: false),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: h * 0.03),
         child: Column(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 class ContactUsScreen extends StatefulWidget {
   static const String routeName = '/contact-us';
@@ -42,7 +43,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: MainDrawer(),
-      appBar: _buildAppBar(media, hasNotification, theme),
+      appBar: CustomAppBar(hasNotification: false),
+
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -136,56 +138,6 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     );
   }
 
-  AppBar _buildAppBar(Size media, bool hasNotification, ThemeData theme) {
-    return AppBar(
-      backgroundColor: theme.appBarTheme.backgroundColor,
-      elevation: 0,
-      title: Text(
-        "Streamore",
-        style: GoogleFonts.poppins(
-          fontSize: media.width * 0.05,
-          fontWeight: FontWeight.bold,
-          color: theme.appBarTheme.foregroundColor,
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: media.width * 0.03),
-          child: Stack(
-            children: [
-              Icon(
-                FontAwesomeIcons.bell,
-                size: media.width * 0.055,
-
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              if (hasNotification)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Divider(
-          height: 1,
-          thickness: 1,
-          color: theme.dividerColor,
-        ),
-      ),
-    );
-  }
 
   Widget _buildSendButton(double fontSize, ThemeData theme) {
     return SizedBox(

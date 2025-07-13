@@ -8,6 +8,7 @@ import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
@@ -45,46 +46,8 @@ class _StreamScreenState extends State<StreamScreen> {
 
     return Scaffold(
       drawer: MainDrawer(),
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Image.asset("assets/images/app_name.png"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Stack(
-              children: [
-                Icon(
-                  FontAwesomeIcons.bell,
-                  color: Theme.of(context).primaryColorDark,
-                  size: 24,
-                ),
-                if (hasNotification)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            color: Theme.of(context).dividerColor,
-            thickness: 0.5,
-            height: 1,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(hasNotification: false),
+
       body: Column(
         children: [
           Padding(
@@ -535,7 +498,7 @@ Widget _buildThemeOverlay(MyProvider provider) {
             borderRadius: BorderRadius.circular(100),
           ),
           child: Text(
-            "User Name",
+            "user_name".tr(),
             style: getFontStyle(font, fontSize: 12, color: Colors.white),
           ),
         ),
@@ -556,7 +519,7 @@ Widget _buildThemeOverlay(MyProvider provider) {
                   color: Colors.white,
                   child: Center(
                     child: Text(
-                      'User Name',
+                      "user_name".tr(),
                       style: getFontStyle(
                         font,
                         fontSize: 12,
@@ -583,7 +546,7 @@ Widget _buildThemeOverlay(MyProvider provider) {
             borderRadius: BorderRadius.circular(0),
           ),
           child: Text(
-            "User Name",
+            "user_name".tr(),
             style: getFontStyle(font, fontSize: 12, color: Colors.white),
           ),
         ),

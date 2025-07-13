@@ -95,7 +95,7 @@ void dispose() {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Banners".tr(),
+                    "banners".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,

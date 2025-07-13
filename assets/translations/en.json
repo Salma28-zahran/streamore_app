@@ -257,6 +257,10 @@
  "current_password": "Current Password",
  "forgot_your_current_password": "Forgot Your Current Password?",
 "confirm": "Confirm",
- "password_not_match": "password not match"
+ "password_not_match": "password not match",
+
+ "you_have_no_recordings_at_the_moment": "You Have No Recordings At The Moment",
+ "user_name": "User Name",
+ "none": "None"
 
 }

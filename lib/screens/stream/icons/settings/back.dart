@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 class Back extends StatefulWidget {
   static const routeName = "/back";
@@ -20,7 +21,7 @@ class Back extends StatefulWidget {
 
 class _BackState extends State<Back> {
   bool _isOverlayEnabled = false;
-  List<File?> selectedImages = [null, null]; // 🟡 مربعين للصور
+  List<File?> selectedImages = [null, null];
 
   @override
   Widget build(BuildContext context) {
@@ -28,53 +29,8 @@ class _BackState extends State<Back> {
     var myprovider = Provider.of<MyProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Text(
-          "Streamore",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: Theme.of(context).appBarTheme.foregroundColor,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10, left: 10),
-            child: Stack(
-              children: [
-                Icon(
-                  FontAwesomeIcons.bell,
-                  color: Theme.of(context).primaryColorDark,
-                  size: 24,
-                ),
-                if (hasNotification)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            color: Theme.of(context).dividerColor,
-            thickness: 0.5,
-            height: 1,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(hasNotification: false),
+
       drawer: MainDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +172,7 @@ class _BackState extends State<Back> {
           children: [
             Icon(Icons.block, color: Colors.grey),
             const SizedBox(height: 4),
-            Text("None", style: GoogleFonts.poppins(fontSize: 10)),
+            Text("none".tr(), style: GoogleFonts.poppins(fontSize: 10)),
           ],
         ),
       );
@@ -239,7 +195,7 @@ class _BackState extends State<Back> {
             height: 45,
           ),
         )
-            : const SizedBox.shrink(), // ❌ بدون أيقونة صورة
+            : const SizedBox.shrink(),
       );
     } else {
       return GestureDetector(

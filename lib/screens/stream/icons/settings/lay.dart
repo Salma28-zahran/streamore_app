@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 class LayoutScreen extends StatefulWidget {
   static const routeName = "/lay";
@@ -39,36 +40,8 @@ class _LayoutScreenState extends State<LayoutScreen> {
     final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: theme.appBarTheme.backgroundColor,
-        title: Text(
-          "streamore",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: theme.appBarTheme.foregroundColor,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Icon(
-              FontAwesomeIcons.bell,
-              color: theme.primaryColor,
-              size: 22,
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            color: theme.dividerColor,
-            thickness: 0.5,
-            height: 1,
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(hasNotification: false),
+
       drawer:  MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),

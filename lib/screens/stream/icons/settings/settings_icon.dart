@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/my_provider.dart' show MyProvider;
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 
 class SettingsIcon extends StatefulWidget {
@@ -61,53 +62,8 @@ class _SettingsIconState extends State<SettingsIcon> {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          title: Text(
-            "Streamore",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: Theme.of(context).appBarTheme.foregroundColor,
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, left: 10),
-              child: Stack(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.bell,
-                    color: Theme.of(context).primaryColorDark,
-                    size: 24,
-                  ),
-                  if (hasNotification)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Divider(
-              color: Theme.of(context).dividerColor,
-              thickness: 0.5,
-              height: 1,
-            ),
-          ),
-        ),
+        appBar: CustomAppBar(hasNotification: false),
+
         drawer: MainDrawer(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

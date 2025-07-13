@@ -50,13 +50,18 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 99),
-              child: Center(
-                child: Image.asset("assets/images/verify1.png"),
+          children: [Padding(
+            padding: const EdgeInsets.only(top: 99),
+            child: SizedBox(
+              width: 310,
+              height: 55,
+              child: Image.asset(
+                "assets/images/app_name.png",
+                fit: BoxFit.contain,
               ),
             ),
+          ),
+
             SizedBox(height: 48),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

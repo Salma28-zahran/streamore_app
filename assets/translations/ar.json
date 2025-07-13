@@ -101,7 +101,6 @@
   "invite": "دعوة",
   "invite_members": "دعوة أعضاء",
   "member": "عضو",
-  "you_have_no_recordings_at_the_moment": "لا توجد تسجيلات حالية",
   "record_now": "ابدأ التسجيل الآن",
   "referral_methods": "طرق الإحالة",
   "include_your_referral_link_in_your_upcoming_stream": "قم بإدراج رابط الإحالة الخاص بك في البث القادم",
@@ -224,7 +223,12 @@
   "current_password": "كلمة المرور الحالية",
   "forgot_your_current_password": "هل نسيت كلمة المرور الحالية؟",
   "confirm": "تأكيد",
-  "password_not_match": "كلمة المرور غير متطابقة"
+  "password_not_match": "كلمة المرور غير متطابقة",
+  "you_have_no_recordings_at_the_moment": "لا توجد تسجيلات لديك في الوقت الحالي",
+  "user_name": "اسم المستخدم",
+  "none": "لا يوجد"
+
+
 
 
 

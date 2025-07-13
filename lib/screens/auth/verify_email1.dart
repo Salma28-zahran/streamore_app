@@ -16,9 +16,17 @@ class VerifyEmail1 extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 99),
-              child: Center(child: Image.asset("assets/images/verify1.png")),
+              child: SizedBox(
+                width: 310,
+                height: 55,
+                child: Image.asset(
+                  "assets/images/app_name.png",
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
-            SizedBox(height: 34,),
+
+            SizedBox(height: 28,),
             Text("please_verify_your_email".tr(),
               style:GoogleFonts.poppins(
                 fontSize: 20,
