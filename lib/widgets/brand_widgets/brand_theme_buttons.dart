@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
 
-TextStyle getFontStyle(String font, {
+TextStyle getFonatStyle(String font, {
   double fontSize = 14,
   FontWeight fontWeight = FontWeight.w400,
   Color? color,

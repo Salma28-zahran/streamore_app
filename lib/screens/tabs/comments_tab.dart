@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../my_provider.dart';
 
 class CommentsTab extends StatefulWidget {
   static const String routeName = "/comments";
@@ -13,27 +15,24 @@ class CommentsTab extends StatefulWidget {
 
 class _CommentsTabState extends State<CommentsTab> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _comments = [];
-
-  bool _isOverlayEnabled = false;
 
   void _sendComment() {
-    String comment = _controller.text.trim();
-
+    final comment = _controller.text.trim();
     if (comment.isNotEmpty) {
-      setState(() {
-        _comments.add(comment);
-      });
+      Provider.of<MyProvider>(context, listen: false).addComment(comment);
       _controller.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final myProvider = Provider.of<MyProvider>(context);
+
     return Scaffold(
       body: Column(
         children: [
-          if (_comments.isEmpty)
+
+          if (myProvider.comments.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 14),
               child: Row(
@@ -57,24 +56,19 @@ class _CommentsTabState extends State<CommentsTab> {
 
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
-            child:
-            Row(
+            child: Row(
               children: [
                 Transform.scale(
                   scaleX: 28 / 59,
                   scaleY: 13 / 34,
                   child: Switch(
-                    value: _isOverlayEnabled,
+                    value: myProvider.isOverlayEnabled,
                     onChanged: (value) {
-                      setState(() {
-                        _isOverlayEnabled = value;
-                      });
+                      myProvider.toggleOverlay(value);
                     },
                     activeColor: Theme.of(context).colorScheme.primary,
-
                   ),
                 ),
-
                 Text(
                   "overlay".tr(),
                   style: GoogleFonts.inter(fontSize: 14),
@@ -83,8 +77,9 @@ class _CommentsTabState extends State<CommentsTab> {
             ),
           ),
 
+
           Expanded(
-            child: _comments.isEmpty
+            child: myProvider.comments.isEmpty
                 ? Center(
               child: Text(
                 "no_comments".tr(),
@@ -96,7 +91,7 @@ class _CommentsTabState extends State<CommentsTab> {
             )
                 : ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: _comments.length,
+              itemCount: myProvider.comments.length,
               itemBuilder: (context, index) {
                 return Container(
                   margin: const EdgeInsets.symmetric(vertical: 6),
@@ -115,7 +110,7 @@ class _CommentsTabState extends State<CommentsTab> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          _comments[index],
+                          myProvider.comments[index],
                           style: GoogleFonts.inter(fontSize: 14),
                         ),
                       ),
@@ -125,6 +120,7 @@ class _CommentsTabState extends State<CommentsTab> {
               },
             ),
           ),
+
 
           SafeArea(
             child: Padding(
@@ -140,7 +136,7 @@ class _CommentsTabState extends State<CommentsTab> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: TextField(
                         controller: _controller,
-                        decoration:  InputDecoration(
+                        decoration: InputDecoration(
                           hintText: "comment".tr(),
                           border: InputBorder.none,
                         ),

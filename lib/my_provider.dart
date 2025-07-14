@@ -150,3 +150,50 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+  String _orientation = "portrait";
+  String get orientation => _orientation;
+
+
+  set orientation(String newValue) {
+    _orientation = newValue;
+    notifyListeners();
+  }
+  bool _shouldGoToFullImage = false;
+  bool get shouldGoToFullImage => _shouldGoToFullImage;
+
+  void setOrientation(String newValue) {
+    _orientation = newValue;
+    notifyListeners();
+  }
+
+
+
+  void setShouldGoToFullImage(bool value) {
+    _shouldGoToFullImage = value;
+    notifyListeners();
+  }
+
+
+  bool _isOverlayEnabled = false;
+  final List<String> _comments = [];
+
+  bool get isOverlayEnabled => _isOverlayEnabled;
+  List<String> get comments => List.unmodifiable(_comments);
+
+  void toggleOverlay(bool value) {
+    _isOverlayEnabled = value;
+    notifyListeners();
+  }
+
+  void addComment(String comment) {
+    _comments.add(comment);
+    notifyListeners();
+  }
+
+  void clearComments() {
+    _comments.clear();
+    notifyListeners();
+  }
+
+}

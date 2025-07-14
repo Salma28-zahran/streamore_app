@@ -99,6 +99,7 @@ class _BannersTabState extends State<BannersTab> {
                 children: [
                   Text(
                     "Folders".tr(),
+                    "banners".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
