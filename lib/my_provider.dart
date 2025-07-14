@@ -4,16 +4,37 @@ import 'package:image_picker/image_picker.dart';
 class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
-
-  List<XFile> _overlayImages = [];
-  XFile? _selectedOverlayImage;
+ List<XFile> _overlayImages = [];
+  XFile? _selectedOverlayImage =null;
   bool _isOverlayVisible = false;
 
- bool _isBackgroundVisible = false;
-  XFile? _selectedBackgroundImage;
+  List<XFile> _backgroundImages = [];
+  XFile? _selectedBackgroundImage = null;   
+  bool _isBackgroundVisible = false;  
+  
 
+  // Getters for background
+  List<XFile> get backgroundImages => _backgroundImages;
   bool get isBackgroundVisible => _isBackgroundVisible;
   XFile? get selectedBackgroundImage => _selectedBackgroundImage;
+
+  List<XFile> get overlayImages => _overlayImages;
+  XFile? get selectedOverlayImage => _selectedOverlayImage;
+  bool get isOverlayVisible => _isOverlayVisible;
+
+  // Background image manipulation
+  void addBackgroundImage(XFile image) {
+    if (!_backgroundImages.contains(image)) {
+      _backgroundImages.add(image);
+      notifyListeners();
+    }
+  }
+
+  void showBackgroundImage(XFile image) {
+    _selectedBackgroundImage = image;
+    _isBackgroundVisible = true; 
+    notifyListeners();
+  }
 
   void toggleBackgroundVisibility() {
     _isBackgroundVisible = !_isBackgroundVisible;
@@ -25,9 +46,6 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<XFile> get overlayImages => _overlayImages;
-  XFile? get selectedOverlayImage => _selectedOverlayImage;
-  bool get isOverlayVisible => _isOverlayVisible;
 
   void addOverlayImage(XFile image) {
     if (!_overlayImages.contains(image)) {

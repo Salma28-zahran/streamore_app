@@ -26,7 +26,8 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
-class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMixin {
+class _StreamScreenState extends State<StreamScreen>
+    with TickerProviderStateMixin {
   bool _micOn = true;
   bool _camOn = true;
   bool _showZoomIcon = false;
@@ -185,7 +186,8 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
                     ),
                     _buildIconButton(
                       icon: Icons.settings,
-                      onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+                      onTap:
+                          () => Navigator.pushNamed(context, "/settings_icon"),
                       size: iconSize,
                       themeMode: myprovider.themeMode,
                       isSmall: isSmall,
@@ -238,8 +240,8 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
                                 myprovider.tFolderClicked
                                     ? const TickersContant()
                                     : myprovider.bFolderClicked
-                                        ? const BannersContant()
-                                        : const BannersTab(),
+                                    ? const BannersContant()
+                                    : const BannersTab(),
                                 const CommentsTab(),
                               ],
                             ),
@@ -250,41 +252,64 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
                   ),
                 ),
               ),
-              Consumer<MyProvider>(
-      builder: (context, provider, child) {
-        if (!provider.isBackgroundVisible) return SizedBox(); 
-
-        double screenWidth = MediaQuery.of(context).size.width;
-        double screenHeight = MediaQuery.of(context).size.height;
-
-        return Positioned(
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          child: GestureDetector(
-            onTap: () {
-              provider.toggleBackgroundVisibility(); 
-              print("Hellllloooooooooooooo"); // letter ------------->
-            },
-            child: Container(
-              width: screenWidth,
-              height: screenHeight,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: provider.selectedBackgroundImage != null
-                      ? FileImage(File(provider.selectedBackgroundImage!.path))
-                      : AssetImage('assets/images/background_placeholder.png') as ImageProvider,
-                  fit: BoxFit.cover, 
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ),
             ],
           ),
+
+          // *********************************** Background ****************************************//
+          Consumer<MyProvider>(
+            builder: (context, provider, child) {
+              if (!provider.isBackgroundVisible ||
+                  provider.selectedBackgroundImage == null) {
+                return SizedBox();
+              }
+
+              double profileImageWidth =
+                  MediaQuery.of(context).size.width * 0.9425;
+              double profileImageHeight =
+                  MediaQuery.of(context).size.height * 0.28;
+
+              return Positioned(
+                top: 0,
+                left:
+                    (MediaQuery.of(context).size.width - profileImageWidth) / 2,
+                right:
+                    (MediaQuery.of(context).size.width - profileImageWidth) / 2,
+                child: GestureDetector(
+                  onTap: () {
+                    print("Tapped on background!");
+                    provider.toggleBackgroundVisibility();
+                    print(
+                      "isBackgroundVisible: ${provider.isBackgroundVisible}",
+                    );
+                    print(
+                      "selectedBackgroundImage: ${provider.selectedBackgroundImage?.path}",
+                    );
+                  },
+                  child: Container(
+                    width: profileImageWidth,
+                    height: profileImageHeight,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      image: DecorationImage(
+                        image:
+                            provider.selectedBackgroundImage != null
+                                ? FileImage(
+                                  File(provider.selectedBackgroundImage!.path),
+                                )
+                                : AssetImage(
+                                      'assets/images/background_placeholder.png',
+                                    )
+                                    as ImageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // ***********************************overly*****************************************************//
           Consumer<MyProvider>(
             builder: (context, provider, child) {
               if (!provider.isOverlayVisible) return SizedBox();
@@ -319,22 +344,23 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
                         ),
                       ],
                     ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: frameWidth,
-                          height: frameHeight,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: provider.selectedOverlayImage != null
-                                  ? FileImage(File(provider.selectedOverlayImage!.path))
-                                  : AssetImage('assets/images/overlay_placeholder.png') as ImageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                    child: Container(
+                      width: frameWidth,
+                      height: frameHeight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image:
+                              provider.selectedOverlayImage != null
+                                  ? FileImage(
+                                    File(provider.selectedOverlayImage!.path),
+                                  )
+                                  : AssetImage(
+                                    'assets/images/overlay_placeholder.png',
+                                  ),
+                          fit: BoxFit.cover,
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -342,8 +368,7 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
             },
           ),
 
-
-          
+          // Logo
           Consumer<MyProvider>(
             builder: (context, provider, child) {
               if (!provider.isLogoVisible) return SizedBox();
@@ -368,19 +393,20 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: provider.logoImageFile != null
-                          ? Image.file(
-                              File(provider.logoImageFile!.path),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/images/logo.png',
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
+                      child:
+                          provider.logoImageFile != null
+                              ? Image.file(
+                                File(provider.logoImageFile!.path),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              )
+                              : Image.asset(
+                                'assets/images/logo.png',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
                     ),
                   ),
                 ),
@@ -388,6 +414,7 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
             },
           ),
 
+          // Fullscreen image display
           if (_isFullScreen)
             GestureDetector(
               onTap: () {
@@ -406,7 +433,6 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
               ),
             ),
         ],
-        
       ),
     );
   }
@@ -429,11 +455,12 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
           height: size,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size),
-            color: isOn
-                ? (themeMode == ThemeMode.dark
-                    ? const Color(0xff212b49)
-                    : const Color(0xff5E5E66))
-                : const Color(0xff350808),
+            color:
+                isOn
+                    ? (themeMode == ThemeMode.dark
+                        ? const Color(0xff212b49)
+                        : const Color(0xff5E5E66))
+                    : const Color(0xff350808),
           ),
           child: Icon(
             isOn ? iconOn : iconOff,
@@ -461,9 +488,10 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
           height: size,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size / 2),
-            color: themeMode == ThemeMode.dark
-                ? const Color(0xff212b49)
-                : const Color(0xff5E5E66),
+            color:
+                themeMode == ThemeMode.dark
+                    ? const Color(0xff212b49)
+                    : const Color(0xff5E5E66),
           ),
           child: Icon(icon, color: Colors.white, size: isSmall ? 20 : 24),
         ),
@@ -487,18 +515,19 @@ class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMix
   void _showPermissionDeniedDialog() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Permission Denied"),
-        content: const Text(
-          "You need to grant microphone access to use this feature.",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("OK"),
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Permission Denied"),
+            content: const Text(
+              "You need to grant microphone access to use this feature.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

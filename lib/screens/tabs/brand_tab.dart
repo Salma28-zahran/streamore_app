@@ -19,9 +19,6 @@ class _BrandTabState extends State<BrandTab> {
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
   bool isFontsVisible = true;
-  bool isLogoVisible = true;
-  bool isOverlayVisible = true;
-  bool isBackgroundVisible = true;
 
   late TextEditingController _colorController;
   List<String> fontList = ['inter'.tr(), 'poppins'.tr()];

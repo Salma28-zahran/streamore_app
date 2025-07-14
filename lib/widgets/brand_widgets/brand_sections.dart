@@ -39,16 +39,16 @@ class _LogoSectionState extends State<LogoSection> {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               children: [
-                Consumer<MyProvider>(
-                  builder: (context, provider, child) {
-                    return _buildImageBox(
-                      image: provider.logoImageFile == null
-                          ? Image.asset('assets/images/logo.png', width: 40)
-                          : null,
-                      file: provider.logoImageFile,
-                    );
-                  },
-                ),
+                Consumer<MyProvider>(builder: (context, provider, child) {
+                  return _buildImageBox(
+                    image: provider.logoImageFile == null
+                        ? Image.asset('assets/images/logo.png', width: 40)
+                        : null,
+                    file: provider.logoImageFile,
+                    provider: provider,
+                    isDefault: provider.logoImageFile == null, 
+                  );
+                }),
                 const SizedBox(width: 10),
                 _buildAddBox(onTap: _pickImage),
               ],
@@ -58,26 +58,33 @@ class _LogoSectionState extends State<LogoSection> {
     );
   }
 
-  Widget _buildImageBox({Image? image, XFile? file}) {
+  Widget _buildImageBox({Image? image, XFile? file, MyProvider? provider, bool isDefault = false}) {
+    bool isSelected = (provider?.logoImageFile == file) || (isDefault && provider?.logoImageFile == null);
+
     Widget content;
 
-    if (file != null) {
+    if (file != null || isDefault) {
       content = Container(
         width: 60,
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: Colors.grey[300],
-          image: DecorationImage(
-            image: FileImage(File(file.path)),
-            fit: BoxFit.cover,
-          ),
+          image: file != null
+              ? DecorationImage(
+                  image: FileImage(File(file.path)),
+                  fit: BoxFit.cover,
+                )
+              : image != null
+                  ? DecorationImage(
+                      image: image.image,
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+          border: isSelected
+              ? Border.all(color: Colors.blue, width: 3)
+              : Border.all(color: Colors.transparent), 
         ),
-      );
-    } else if (image != null) {
-      content = ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: SizedBox(width: 60, height: 60, child: image),
       );
     } else {
       content = Container(
@@ -93,36 +100,39 @@ class _LogoSectionState extends State<LogoSection> {
     return GestureDetector(
       onTap: () {
         final provider = Provider.of<MyProvider>(context, listen: false);
-        if (provider.logoImageFile == null) {
-          provider.showDefaultLogo(); // <-- Show default logo
+        if (provider.logoImageFile == null && !isDefault) {
+          provider.showDefaultLogo(); 
         } else {
-          provider.toggleLogoVisibility();
+          provider.toggleLogoVisibility(); 
         }
       },
       child: content,
     );
   }
 
-  Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: Colors.grey[300],
+  Widget _buildAddBox({required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.grey[300],
+        ),
+        child: const Icon(Icons.add),
       ),
-      child: const Icon(Icons.add),
-    ),
-  );
+    );
+  }
 }
+
 
 ///— Overlay Section ————————————————————————————————————————————————
 class OverlaySection extends StatefulWidget {
   const OverlaySection({super.key});
 
   @override
-  State<OverlaySection> createState() => _OverlaySectionState();
+  _OverlaySectionState createState() => _OverlaySectionState();
 }
 
 class _OverlaySectionState extends State<OverlaySection> {
@@ -130,9 +140,14 @@ class _OverlaySectionState extends State<OverlaySection> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      Provider.of<MyProvider>(context, listen: false).addOverlayImage(picked);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      context.read<MyProvider>().addOverlayImage(pickedFile);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No image selected')),
+      );
     }
   }
 
@@ -141,7 +156,7 @@ class _OverlaySectionState extends State<OverlaySection> {
     return Column(
       children: [
         SectionHeader(
-          title: 'overlay'.tr(),
+          title: 'overlay'.tr(), // Localization key
           isVisible: _isVisible,
           onToggle: () => setState(() => _isVisible = !_isVisible),
         ),
@@ -154,15 +169,142 @@ class _OverlaySectionState extends State<OverlaySection> {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    ...provider.overlayImages
-                        .map((f) => _buildImageBox(file: f, provider: provider))
-                        .toList(growable: false),
+                    ..._buildImageList(provider),
+                    _buildAddImageBox(onTap: _pickImage),
+                  ],
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
 
-                    ...List.generate(
-                      7 - provider.overlayImages.length.clamp(0, 7),
-                      (_) => _buildImageBox(),
-                    ),
-                    _buildAddBox(onTap: _pickImage),
+  List<Widget> _buildImageList(MyProvider provider) {
+    int remainingSlots = 7 - provider.overlayImages.length;
+
+    List<Widget> imageBoxes = provider.overlayImages
+        .map((file) => _buildImageBox(overlayImage: file, provider: provider))
+        .toList();
+
+    imageBoxes.addAll(List.generate(
+      remainingSlots.clamp(0, 7), 
+      (_) => _buildImageBox(),
+    ));
+
+    return imageBoxes;
+  }
+
+ Widget _buildImageBox({XFile? overlayImage, MyProvider? provider}) {
+  bool isSelected = provider?.selectedOverlayImage == overlayImage;
+
+  return GestureDetector(
+    onTap: () {
+      if (overlayImage != null) {
+        provider?.showOverlayImage(overlayImage);
+      }
+    },
+    child: Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.grey[300],
+        image: overlayImage != null
+            ? DecorationImage(
+                image: FileImage(File(overlayImage.path)),
+                fit: BoxFit.cover,
+              )
+            : null,
+        border: overlayImage != null
+            ? Border.all(
+                color: isSelected ? Colors.blue : Colors.transparent, 
+                width: 3,
+              )
+            : Border.all(
+                color: Colors.transparent, 
+              ),
+      ),
+    ),
+  );
+}
+
+
+
+  // Add image box for picking a new image
+  Widget _buildAddImageBox({required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.grey[300],
+        ),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+
+
+///— Background Section ————————————————————————————————————————————
+class BackgroundSection extends StatefulWidget {
+  const BackgroundSection({super.key});
+
+  @override
+  State<BackgroundSection> createState() => _BackgroundSectionState();
+}
+
+class _BackgroundSectionState extends State<BackgroundSection> {
+  bool _isVisible = true;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      context.read<MyProvider>().addBackgroundImage(pickedFile);
+    }
+  }
+
+  List<Widget> _buildImageList(MyProvider provider) {
+    int remainingSlots = 7 - provider.backgroundImages.length;
+
+    List<Widget> imageBoxes = provider.backgroundImages
+        .map((file) => _buildImageBox(file: file, provider: provider))
+        .toList();
+
+    imageBoxes.addAll(List.generate(
+      remainingSlots.clamp(0, 7), 
+      (_) => _buildImageBox(),
+    ));
+
+    return imageBoxes;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SectionHeader(
+          title: 'background'.tr(), 
+          isVisible: _isVisible,
+          onToggle: () => setState(() => _isVisible = !_isVisible),
+        ),
+        if (_isVisible)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Consumer<MyProvider>(
+              builder: (context, provider, child) {
+                return Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    ..._buildImageList(provider), 
+                    _buildAddBox(onTap: _pickImage), 
                   ],
                 );
               },
@@ -185,10 +327,19 @@ class _OverlaySectionState extends State<OverlaySection> {
     ),
   );
 
-  Widget _buildImageBox({XFile? file, MyProvider? provider}) {
-    bool isSelected = provider?.selectedOverlayImage == file;
-    
-    Widget container = Container(
+Widget _buildImageBox({XFile? file, MyProvider? provider}) {
+  bool isSelected = provider?.selectedBackgroundImage == file;
+
+  return GestureDetector(
+    onTap: () {
+      if (file != null) {
+        provider?.setBackgroundImage(file);
+        print("Background image selected: ${file.path}");
+
+        provider?.toggleBackgroundVisibility(); 
+      }
+    },
+    child: Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
@@ -200,115 +351,17 @@ class _OverlaySectionState extends State<OverlaySection> {
                 fit: BoxFit.cover,
               )
             : null,
-        border: isSelected
+        border: file != null
             ? Border.all(
-                color: Colors.transparent, 
+                color: isSelected ? Colors.blue : Colors.transparent,
                 width: 3,
               )
             : Border.all(
                 color: Colors.transparent, 
               ),
       ),
-    );
-
-    return GestureDetector(
-      onTap: () {
-        if (file != null) {
-          provider?.showOverlayImage(file);
-        }
-      },
-      child: container,
-    );
-  }
-}
-
-
-///— Background Section ————————————————————————————————————————————
-class BackgroundSection extends StatefulWidget {
-  const BackgroundSection({super.key});
-
-  @override
-  State<BackgroundSection> createState() => _BackgroundSectionState();
-}
-
-class _BackgroundSectionState extends State<BackgroundSection> {
-  bool _isVisible = true;
-  final List<XFile> _images = [];
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) setState(() => _images.add(picked));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SectionHeader(
-          title: 'background'.tr(),
-          isVisible: _isVisible,
-          onToggle: () => setState(() => _isVisible = !_isVisible),
-        ),
-        if (_isVisible)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                ..._images
-                    .map((f) => _buildImageBox(file: f))
-                    .toList(growable: false),
-                ...List.generate(
-                  7 - _images.length.clamp(0, 7),
-                  (_) => _buildImageBox(),
-                ),
-                _buildAddBox(onTap: _pickImage),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: Colors.grey[300],
-      ),
-      child: const Icon(Icons.add),
     ),
   );
+}
 
-  Widget _buildImageBox({XFile? file}) {
-    Widget container = Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: Colors.grey[300],
-        image:
-            file != null
-                ? DecorationImage(
-                    image: FileImage(File(file.path)),
-                    fit: BoxFit.cover,
-                  )
-                : null,
-      ),
-    );
-
-    return GestureDetector(
-      onTap: () {
-        if (file != null) {
-          print('Background image tapped: ${file.path}');
-        }
-      },
-      child: container,
-    );
-  }
 }
