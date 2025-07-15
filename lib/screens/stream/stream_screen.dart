@@ -258,8 +258,7 @@ class _StreamScreenState extends State<StreamScreen>
           // *********************************** Background ****************************************//
           Consumer<MyProvider>(
             builder: (context, provider, child) {
-              if (!provider.isBackgroundVisible ||
-                  provider.selectedBackgroundImage == null) {
+              if (provider.selectedBackgroundImage == null) {
                 return SizedBox();
               }
 
@@ -277,10 +276,6 @@ class _StreamScreenState extends State<StreamScreen>
                 child: GestureDetector(
                   onTap: () {
                     print("Tapped on background!");
-                    provider.toggleBackgroundVisibility();
-                    print(
-                      "isBackgroundVisible: ${provider.isBackgroundVisible}",
-                    );
                     print(
                       "selectedBackgroundImage: ${provider.selectedBackgroundImage?.path}",
                     );
