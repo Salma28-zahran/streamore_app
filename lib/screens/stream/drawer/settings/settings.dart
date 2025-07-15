@@ -7,11 +7,16 @@ import 'package:streamore_app/screens/stream/drawer/settings/account_tab.dart';
 import 'package:streamore_app/screens/stream/drawer/settings/billing_tab.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   static const String routeName = "/Settings";
 
   const Settings({super.key});
 
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     bool hasNotification = false;

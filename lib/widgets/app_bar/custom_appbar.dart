@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Icon(
                 FontAwesomeIcons.bell,
-                color: Theme.of(context).primaryColorDark,
+                color: Theme.of(context).colorScheme.primary,
                 size: 24,
               ),
               if (hasNotification)

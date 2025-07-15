@@ -261,6 +261,8 @@
 
  "you_have_no_recordings_at_the_moment": "You Have No Recordings At The Moment",
  "user_name": "User Name",
- "none": "None"
-
+ "none": "None",
+ "to_finish": "To finish deleting your account, please check your email (saif@gmail.com).",
+ "authentication_required": "Authentication required",
+ "this_will":"This will permanently delete your Streamore account, including any stream recordings and stored content. If you have another account and want to use this email, it will become available once the deletion request has been fully processed"
 }

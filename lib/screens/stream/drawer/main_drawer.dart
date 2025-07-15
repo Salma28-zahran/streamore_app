@@ -95,13 +95,8 @@ class _MainDrawerState extends State<MainDrawer> {
                   color: Theme.of(context).cardColor,
                   padding: const EdgeInsets.all(16),
                   alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Streamore",
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                  ),
+                  child:
+                  Image.asset("assets/images/app_name.png")
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 17),

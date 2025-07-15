@@ -123,23 +123,6 @@ class _StreamScreenState extends State<StreamScreen> {
                   }).toList(),
                 ),
               ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             ],
           ),
         ],
@@ -192,7 +175,8 @@ class _StreamScreenState extends State<StreamScreen> {
                                 showDialog(
                                   context: context,
                                   builder:
-                                      (context) => AlertDialog(
+                                      (context) =>
+                                          AlertDialog(
                                         backgroundColor:
                                             Theme.of(context).cardColor,
                                         shape: RoundedRectangleBorder(
@@ -247,7 +231,7 @@ class _StreamScreenState extends State<StreamScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 16),
-                                            // لينك الاجتماع
+
                                             Container(
                                               width: double.infinity,
                                               height: 26,
