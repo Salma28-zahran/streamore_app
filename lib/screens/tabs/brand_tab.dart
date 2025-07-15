@@ -49,7 +49,6 @@ class _BrandTabState extends State<BrandTab> {
         isDark ? const Color(0xff0D142A) : const Color(0xffEFEFEF);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Branding")),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
