@@ -59,12 +59,23 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedFont = 'inter';
-  String get selectedFont => _selectedFont;
+
+  
+  String? _selectedFont;
+
+  MyProvider() {
+    _selectedFont = _defaultFont; 
+  }
+
+  String get selectedFont => _selectedFont ?? _defaultFont;
 
   void setSelectedFont(String font) {
     _selectedFont = font;
     notifyListeners();
+  }
+   String get _defaultFont {
+    final isArabic = WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'ar';
+    return isArabic ? 'amiri' : 'poppins';
   }
 
   // ==== Background and Overlay Images ====
@@ -92,6 +103,12 @@ class MyProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+ 
+
+
+
+  String _orientation = "portrait";
+  String get orientation => _orientation;
 
   void showBackgroundImage(XFile image) {
     _selectedBackgroundImage = image;

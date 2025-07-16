@@ -115,6 +115,10 @@ class _StreamScreenState extends State<StreamScreen>
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: _buildThemeOverlay(context, myProvider),
               Padding(
                 padding: EdgeInsets.only(
                   left: size.width * 0.08,
@@ -172,6 +176,7 @@ class _StreamScreenState extends State<StreamScreen>
                     ),
                   ],
                 ),
+
               ),
               const SizedBox(height: 8),
               Expanded(
@@ -216,6 +221,7 @@ class _StreamScreenState extends State<StreamScreen>
                             child: TabBarView(
                               controller: _tabController,
                               children: [
+
                                 const BrandTab(),
                                 myprovider.tFolderClicked
                                     ? const TickersContant()
@@ -224,6 +230,23 @@ class _StreamScreenState extends State<StreamScreen>
                                     : const BannersTab(),
                                 const CommentsTab(),
                                 ChatTab(),
+                                Text(
+                                  "UserName",
+                                  style: TextStyle(
+                                    color: Colors.white60,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 6,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  comment,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),
@@ -403,6 +426,49 @@ class _StreamScreenState extends State<StreamScreen>
                 child: Image.asset(
                   "assets/images/profile4.png",
                   fit: BoxFit.cover,
+                width: profileImageWidth,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.9),
+                      blurRadius: 3,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: DefaultTabController(
+                  length: 4,
+                  child: Column(
+                    children: [
+                      TabBar(
+                        labelColor: Colors.blue,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.blue,
+                        labelStyle: GoogleFonts.inter(
+                          fontSize: isSmall ? 10 : 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        unselectedLabelStyle: GoogleFonts.inter(
+                          fontSize: isSmall ? 10 : 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        tabs: [
+                          Tab(text: "brand".tr()),
+                          Tab(text: "banners".tr()),
+                          Tab(text: "comments".tr()),
+                          Tab(text: "chat".tr()),
+                        ],
+                      ),
+                      const Expanded(
+                        child: TabBarView(
+                          children: [BrandTab(), BannersTab(), CommentsTab(),ChatTab()],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -502,6 +568,68 @@ Widget _buildIconButton({
         ),
         child: Icon(icon, color: Colors.white, size: isSmall ? 20 : 24),
       ),
-    ),
-  );
+    
+Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
+  final theme = provider.selectedTheme;
+  final color = provider.primaryColor;
+  final font = provider.selectedFont;
+
+  switch (theme) {
+    case 'bubble':
+      return Padding(
+        padding: EdgeInsets.all(11),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: Text(
+            "user_name".tr(),
+            style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
+          ),
+        ),
+      );
+
+    case 'minimal':
+      return Padding(
+        padding: EdgeInsets.only(bottom: 11),
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: 12, height: 24, color: color),
+              Container(
+                width: 76,
+                height: 23,
+                color: Colors.white,
+                child: Center(
+                  child: Text(
+                    "user_name".tr(),
+                    style: getFontStyle(context, font, fontSize: 12, color: Colors.black87),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+    case 'news':
+    default:
+      return Padding(
+        padding: EdgeInsets.all(11),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(0),
+          ),
+          child: Text(
+            "user_name".tr(),
+            style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
+          ),
+        ),
+      );
+  }
 }
