@@ -1,84 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
-
-TextStyle getFonatStyle(String font, {
-  double fontSize = 14,
-  FontWeight fontWeight = FontWeight.w400,
-  Color? color,
-}) {
-  switch (font.toLowerCase()) {
-    case 'playfair display':
-      return GoogleFonts.playfairDisplay(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'pacifico':
-      return GoogleFonts.pacifico(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'bebas neue':
-      return GoogleFonts.bebasNeue(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'courier prime':
-      return GoogleFonts.courierPrime(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'abril fatface':
-      return GoogleFonts.abrilFatface(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'caveat':
-      return GoogleFonts.caveat(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'rubik mono one':
-      return GoogleFonts.rubikMonoOne(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'amatic sc':
-      return GoogleFonts.amaticSc(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'dm serif display':
-      return GoogleFonts.dmSerifDisplay(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'poppins':
-      return GoogleFonts.poppins(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    case 'inter':
-    default:
-      return GoogleFonts.inter(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-  }
-}
-
 
 Widget buildThemeButton({
   required BuildContext context,
@@ -95,17 +17,25 @@ Widget buildThemeButton({
 
   switch (theme) {
     case 'minimal':
-      return _buildMinimalButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
+      return _buildMinimalButton(context, theme, isSelected, primaryColor, bgColor, onSelect, font);
     case 'bubble':
-      return _buildBubbleButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
+      return _buildBubbleButton(context, theme, isSelected, primaryColor, bgColor, onSelect, font);
     case 'news':
-      return _buildNewsButton(theme, isSelected, primaryColor, bgColor, onSelect, font);
+      return _buildNewsButton(context, theme, isSelected, primaryColor, bgColor, onSelect, font);
     default:
       return const SizedBox();
   }
 }
 
-Widget _buildMinimalButton(String theme, bool isSelected, Color primaryColor, Color bgColor, Function(String) onSelect, String font) {
+Widget _buildMinimalButton(
+    BuildContext context,
+    String theme,
+    bool isSelected,
+    Color primaryColor,
+    Color bgColor,
+    Function(String) onSelect,
+    String font,
+    ) {
   return GestureDetector(
     onTap: () => onSelect(theme),
     child: Container(
@@ -128,7 +58,7 @@ Widget _buildMinimalButton(String theme, bool isSelected, Color primaryColor, Co
               child: Center(
                 child: Text(
                   'minimal'.tr(),
-                  style: getFontStyle(font, fontSize: 12, color: Colors.black87),
+                  style: getFontStyle(context, font, fontSize: 12, color: Colors.black87),
                 ),
               ),
             ),
@@ -139,7 +69,15 @@ Widget _buildMinimalButton(String theme, bool isSelected, Color primaryColor, Co
   );
 }
 
-Widget _buildBubbleButton(String theme, bool isSelected, Color primaryColor, Color bgColor, Function(String) onSelect, String font) {
+Widget _buildBubbleButton(
+    BuildContext context,
+    String theme,
+    bool isSelected,
+    Color primaryColor,
+    Color bgColor,
+    Function(String) onSelect,
+    String font,
+    ) {
   return GestureDetector(
     onTap: () => onSelect(theme),
     child: Container(
@@ -160,7 +98,7 @@ Widget _buildBubbleButton(String theme, bool isSelected, Color primaryColor, Col
           child: Center(
             child: Text(
               'bubble'.tr(),
-              style: getFontStyle(font, fontSize: 12, color: Colors.white),
+              style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
             ),
           ),
         ),
@@ -169,7 +107,15 @@ Widget _buildBubbleButton(String theme, bool isSelected, Color primaryColor, Col
   );
 }
 
-Widget _buildNewsButton(String theme, bool isSelected, Color primaryColor, Color bgColor, Function(String) onSelect, String font) {
+Widget _buildNewsButton(
+    BuildContext context,
+    String theme,
+    bool isSelected,
+    Color primaryColor,
+    Color bgColor,
+    Function(String) onSelect,
+    String font,
+    ) {
   return GestureDetector(
     onTap: () => onSelect(theme),
     child: Container(
@@ -190,7 +136,7 @@ Widget _buildNewsButton(String theme, bool isSelected, Color primaryColor, Color
           child: Center(
             child: Text(
               'news'.tr(),
-              style: getFontStyle(font, fontSize: 12, color: Colors.white),
+              style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
             ),
           ),
         ),
