@@ -40,8 +40,19 @@ class _BrandTabState extends State<BrandTab> {
   }
 
   late TextEditingController _colorController;
-  List<String> fontList = ['inter'.tr(), 'poppins'.tr()];
-  String selectedSize = 's'.tr();
+  List<String> fontList = [
+    'inter',
+    'poppins',
+    'playfair display',
+    'pacifico',
+    'bebas neue',
+    'courier prime',
+    'abril fatface',
+    'caveat',
+    'rubik mono one',
+    'amatic sc',
+    'dm serif display',
+  ];
 
   @override
   void initState() {
@@ -228,7 +239,7 @@ class _BrandTabState extends State<BrandTab> {
                     dropdownStyleData: DropdownStyleData(
                       maxHeight: 200,
                       width: 270,
-                      offset: const Offset(0, 0),
+                      offset: const Offset(0, 10),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(4),
@@ -256,8 +267,6 @@ class _BrandTabState extends State<BrandTab> {
                       }),
                     ),
                   ),
-                  const SizedBox(width: 15),
-                  Text("S", style: getFontStyle(myProvider.selectedFont, fontSize: 33, color: const Color(0xff5E5E66)))
                 ],
               ),
             ),

@@ -9,6 +9,60 @@ TextStyle getFonatStyle(String font, {
   Color? color,
 }) {
   switch (font.toLowerCase()) {
+    case 'playfair display':
+      return GoogleFonts.playfairDisplay(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'pacifico':
+      return GoogleFonts.pacifico(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'bebas neue':
+      return GoogleFonts.bebasNeue(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'courier prime':
+      return GoogleFonts.courierPrime(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'abril fatface':
+      return GoogleFonts.abrilFatface(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'caveat':
+      return GoogleFonts.caveat(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'rubik mono one':
+      return GoogleFonts.rubikMonoOne(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'amatic sc':
+      return GoogleFonts.amaticSc(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    case 'dm serif display':
+      return GoogleFonts.dmSerifDisplay(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
     case 'poppins':
       return GoogleFonts.poppins(
         fontSize: fontSize,
@@ -24,6 +78,7 @@ TextStyle getFonatStyle(String font, {
       );
   }
 }
+
 
 Widget buildThemeButton({
   required BuildContext context,
