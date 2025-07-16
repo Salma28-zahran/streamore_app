@@ -40,18 +40,30 @@ class _BrandTabState extends State<BrandTab> {
   }
 
   late TextEditingController _colorController;
-  List<String> fontList = [
-    'inter',
-    'poppins',
-    'playfair display',
-    'pacifico',
-    'bebas neue',
-    'courier prime',
-    'abril fatface',
-    'caveat',
-    'rubik mono one',
-    'amatic sc',
-    'dm serif display',
+  List<String> arabicFonts = [
+    'Cairo',
+    'Amiri',
+    'Lalezar',
+    'Tajawal',
+    'Changa',
+    'Reem Kufi',
+    'Almarai',
+    'El Messiri',
+    'Noto Kufi Arabic',
+    'Harmattan',
+  ];
+  List<String> englishFonts = [
+    'Inter',
+    'Poppins',
+    'Playfair Display',
+    'Pacifico',
+    'Bebas Neue',
+    'Courier Prime',
+    'Abril Fatface',
+    'Caveat',
+    'Rubik Mono One',
+    'Amatic SC',
+    'DM Serif Display',
   ];
 
   @override
@@ -59,7 +71,11 @@ class _BrandTabState extends State<BrandTab> {
     super.initState();
     final myProvider = Provider.of<MyProvider>(context, listen: false);
     _colorController = TextEditingController(
-      text: myProvider.primaryColor.value.toRadixString(16).substring(2).toUpperCase(),
+      text:
+          myProvider.primaryColor.value
+              .toRadixString(16)
+              .substring(2)
+              .toUpperCase(),
     );
   }
 
@@ -73,7 +89,14 @@ class _BrandTabState extends State<BrandTab> {
   Widget build(BuildContext context) {
     final myProvider = Provider.of<MyProvider>(context);
     final bool isDark = myProvider.themeMode == ThemeMode.dark;
-    final Color bgColor = isDark ? const Color(0xff0D142A) : const Color(0xffEFEFEF);
+    final Color bgColor =
+        isDark ? const Color(0xff0D142A) : const Color(0xffEFEFEF);
+
+    final isArabic = context.locale.languageCode == 'ar';
+
+
+    List<String> fontList = isArabic ? arabicFonts : englishFonts;
+
 
     return SingleChildScrollView(
       child: Column(
@@ -82,35 +105,44 @@ class _BrandTabState extends State<BrandTab> {
           SectionHeader(
             title: "theme".tr(),
             isVisible: isThemeOptionsVisible,
-            onToggle: () => setState(() => isThemeOptionsVisible = !isThemeOptionsVisible),
+            onToggle:
+                () => setState(
+                  () => isThemeOptionsVisible = !isThemeOptionsVisible,
+                ),
           ),
           if (isThemeOptionsVisible)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Row(
-                children: ["minimal", "bubble", "news"].map((theme) {
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: buildThemeButton(
-                        context: context,
-                        theme: theme,
-                        selectedTheme: myProvider.selectedTheme,
-                        onSelect: (selected) => myProvider.setSelectedTheme(selected),
-                        primaryColor: myProvider.primaryColor,
-                        themeMode: myProvider.themeMode,
-                        font: myProvider.selectedFont,
-                      ),
-                    ),
-                  );
-                }).toList(),
+                children:
+                    ["minimal", "bubble", "news"].map((theme) {
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: buildThemeButton(
+                            context: context,
+                            theme: theme,
+                            selectedTheme: myProvider.selectedTheme,
+                            onSelect:
+                                (selected) =>
+                                    myProvider.setSelectedTheme(selected),
+                            primaryColor: myProvider.primaryColor,
+                            themeMode: myProvider.themeMode,
+                            font: myProvider.selectedFont,
+                          ),
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
 
           SectionHeader(
             title: "primary_color".tr(),
             isVisible: isColorOptionsVisible,
-            onToggle: () => setState(() => isColorOptionsVisible = !isColorOptionsVisible),
+            onToggle:
+                () => setState(
+                  () => isColorOptionsVisible = !isColorOptionsVisible,
+                ),
           ),
           if (isColorOptionsVisible)
             Padding(
@@ -127,6 +159,7 @@ class _BrandTabState extends State<BrandTab> {
                             title: Text(
                               "select_a_color".tr(),
                               style: getFontStyle(
+                                context,
                                 myProvider.selectedFont,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -137,7 +170,11 @@ class _BrandTabState extends State<BrandTab> {
                                 pickerColor: myProvider.primaryColor,
                                 onColorChanged: (color) {
                                   myProvider.setPrimaryColor(color);
-                                  _colorController.text = color.value.toRadixString(16).substring(2).toUpperCase();
+                                  _colorController.text =
+                                      color.value
+                                          .toRadixString(16)
+                                          .substring(2)
+                                          .toUpperCase();
                                 },
                               ),
                             ),
@@ -145,7 +182,11 @@ class _BrandTabState extends State<BrandTab> {
                               TextButton(
                                 child: Text(
                                   "done".tr(),
-                                  style: getFontStyle(myProvider.selectedFont, color: Colors.white),
+                                  style: getFontStyle(
+                                    context,
+                                    myProvider.selectedFont,
+                                    color: Colors.white,
+                                  ),
                                 ),
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
@@ -174,7 +215,13 @@ class _BrandTabState extends State<BrandTab> {
                       border: Border.all(color: const Color(0xffC8C8C8)),
                     ),
                     child: const Center(
-                      child: Text("#", style: TextStyle(fontSize: 18, color: Color(0xffC8C8C8))),
+                      child: Text(
+                        "#",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xffC8C8C8),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 7),
@@ -189,7 +236,11 @@ class _BrandTabState extends State<BrandTab> {
                     ),
                     child: Text(
                       _colorController.text,
-                      style: getFontStyle(myProvider.selectedFont, fontSize: 13),
+                      style: getFontStyle(
+                        context,
+                        myProvider.selectedFont,
+                        fontSize: 13,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -209,22 +260,32 @@ class _BrandTabState extends State<BrandTab> {
                 children: [
                   DropdownButton2<String>(
                     isExpanded: true,
-                    value: myProvider.selectedFont,
-                    items: fontList.map((font) {
+                    value:   fontList.contains(myProvider.selectedFont)
+                        ? myProvider.selectedFont
+                        : fontList.first,
+
+                    items: fontList.toSet().map((font) {
                       return DropdownMenuItem<String>(
                         value: font,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 7),
                           child: Text(
                             font,
-                            style: getFontStyle(myProvider.selectedFont, fontSize: 12),
+                            style: getFontStyle(
+                              context,
+                              myProvider.selectedFont,
+                              fontSize: 12,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       );
                     }).toList(),
                     onChanged: (value) {
-                      Provider.of<MyProvider>(context, listen: false).setSelectedFont(value!);
+                      Provider.of<MyProvider>(
+                        context,
+                        listen: false,
+                      ).setSelectedFont(value!);
                     },
                     buttonStyleData: ButtonStyleData(
                       height: 38,
@@ -243,7 +304,10 @@ class _BrandTabState extends State<BrandTab> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: const Color(0xff5E5E66), width: 1),
+                        border: Border.all(
+                          color: const Color(0xff5E5E66),
+                          width: 1,
+                        ),
                       ),
                       scrollbarTheme: ScrollbarThemeData(
                         radius: const Radius.circular(40),
@@ -252,12 +316,18 @@ class _BrandTabState extends State<BrandTab> {
                       ),
                     ),
                     iconStyleData: const IconStyleData(
-                      icon: Icon(Icons.keyboard_arrow_down_outlined, color: Color(0xff5E5E66), size: 20),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_outlined,
+                        color: Color(0xff5E5E66),
+                        size: 20,
+                      ),
                     ),
                     menuItemStyleData: MenuItemStyleData(
                       height: 24,
                       padding: const EdgeInsets.only(left: 4, right: 21),
-                      overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
+                      overlayColor: MaterialStateProperty.resolveWith<Color?>((
+                          states,
+                          ) {
                         if (states.contains(MaterialState.hovered) ||
                             states.contains(MaterialState.focused) ||
                             states.contains(MaterialState.pressed)) {
@@ -270,6 +340,7 @@ class _BrandTabState extends State<BrandTab> {
                 ],
               ),
             ),
+
 
           const LogoSection(),
           const OverlaySection(),
