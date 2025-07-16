@@ -25,7 +25,7 @@ class MyProvider extends ChangeNotifier {
   void setBFolderClicked(bool value) {
     if (value) {
       _bFolderClicked = true;
-      _tFolderClicked = false;  // Set the other folder to false
+      _tFolderClicked = false;  
     } else {
       _bFolderClicked = false;
     }
@@ -35,7 +35,7 @@ class MyProvider extends ChangeNotifier {
   void setTFolderClicked(bool value) {
     if (value) {
       _tFolderClicked = true;
-      _bFolderClicked = false;  // Set the other folder to false
+      _bFolderClicked = false;  
     } else {
       _tFolderClicked = false;
     }
