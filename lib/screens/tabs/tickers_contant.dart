@@ -70,7 +70,7 @@ class _TickersContantState extends State<TickersContant> {
             Provider.of<MyProvider>(
               context,
               listen: false,
-            ).setBFolderClicked(false);
+            ).setTFolderClicked(false);
           },
         ),
         title: Text(

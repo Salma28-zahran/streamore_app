@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
-import 'package:streamore_app/screens/tabs/banners_contant.dart';
-import 'package:streamore_app/screens/tabs/tickers_contant.dart';
+
 
 class Folder {
   String? name;
@@ -248,7 +247,7 @@ class _BannersTabState extends State<BannersTab> {
                               Provider.of<MyProvider>(
                                 context,
                                 listen: false,
-                              ).setBFolderClicked(true);
+                              ).setTFolderClicked(true);
                               DefaultTabController.of(context).animateTo(1);
                             },
                             child: _buildItemTile(
