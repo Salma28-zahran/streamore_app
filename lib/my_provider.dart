@@ -27,14 +27,25 @@ class MyProvider extends ChangeNotifier {
     themeMode = themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
-  String _selectedFont = 'inter';
+  String? _selectedFont;
 
-  String get selectedFont => _selectedFont;
+  MyProvider() {
+    _selectedFont = _defaultFont; // ✅ تحديد الخط الافتراضي من البداية
+  }
+
+  String get selectedFont => _selectedFont ?? _defaultFont;
 
   void setSelectedFont(String font) {
     _selectedFont = font;
     notifyListeners();
   }
+
+  String get _defaultFont {
+    final isArabic = WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'ar';
+    return isArabic ? 'amiri' : 'poppins';
+  }
+
+
 
   String _orientation = "portrait";
   String get orientation => _orientation;
