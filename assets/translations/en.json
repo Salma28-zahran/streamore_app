@@ -287,5 +287,9 @@
   "example_tickers": "Example Tickers",
   "ticker_content": "Ticker Content",
   "cancel": "Cancel",
-  "add": "Add"
+  "add": "Add",
+
+  "permission_denied": "Permission Denied",
+  "grant_microphone_access": "You need to grant microphone access to use this feature.",
+  "ok": "OK"
 }
