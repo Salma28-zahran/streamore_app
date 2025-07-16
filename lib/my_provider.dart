@@ -91,5 +91,10 @@ class MyProvider extends ChangeNotifier {
     _comments.clear();
     notifyListeners();
   }
+  List<String> chatMessages = [];
+  void addChatMessage(String message) {
+    chatMessages.add(message);
+    notifyListeners();
+  }
 
 }

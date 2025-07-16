@@ -317,7 +317,7 @@ class _AccountTabState extends State<AccountTab> {
                     fontWeight: FontWeight.w400,
                     color: isDark ? Colors.white : Colors.grey),
               ),
-              SizedBox(height: h * 0.039),
+              SizedBox(height: h * 0.0),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);

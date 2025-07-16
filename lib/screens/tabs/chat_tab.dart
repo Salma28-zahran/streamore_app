@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:streamore_app/my_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/my_provider.dart';
+import '../../my_provider.dart';
+import 'package:streamore_app/my_provider.dart';
 
 
 class ChatTab extends StatefulWidget {
@@ -15,29 +17,25 @@ class ChatTab extends StatefulWidget {
 class _ChatTabState extends State<ChatTab> {
   final TextEditingController _controller = TextEditingController();
 
-  void _sendComment() {
-    final comment = _controller.text.trim();
-    if (comment.isNotEmpty) {
-      Provider.of<MyProvider>(context, listen: false).addComment(comment);
+  void _sendMessage() {
+    final message = _controller.text.trim();
+    if (message.isNotEmpty) {
+      Provider.of<MyProvider>(context, listen: false).addChatMessage(message);
       _controller.clear();
     }
   }
+
   @override
   Widget build(BuildContext context) {
-     final myProvider = Provider.of<MyProvider>(context);
+    final myProvider = Provider.of<MyProvider>(context);
+    final bool isDark = myProvider.themeMode == ThemeMode.dark;
+
 
     return Scaffold(
       body: Column(
         children: [
-
-
-
-
-
-
-
           Expanded(
-            child: myProvider.comments.isEmpty
+            child: myProvider.chatMessages.isEmpty
                 ? Center(
               child: Text(
                 "no Messages",
@@ -47,15 +45,16 @@ class _ChatTabState extends State<ChatTab> {
                 ),
               ),
             )
-                : ListView.builder(
+                :
+            ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: myProvider.comments.length,
+              itemCount: myProvider.chatMessages.length,
               itemBuilder: (context, index) {
                 return Container(
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -68,8 +67,11 @@ class _ChatTabState extends State<ChatTab> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          myProvider.comments[index],
-                          style: GoogleFonts.inter(fontSize: 14),
+                          myProvider.chatMessages[index],
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
                         ),
                       ),
                     ],
@@ -77,9 +79,8 @@ class _ChatTabState extends State<ChatTab> {
                 );
               },
             ),
+
           ),
-
-
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -88,24 +89,31 @@ class _ChatTabState extends State<ChatTab> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).cardColor,
+
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1.0,
+                        ),
+
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: TextField(
                         controller: _controller,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Message...",
                           border: InputBorder.none,
+
                         ),
-                        onSubmitted: (_) => _sendComment(),
+                        onSubmitted: (_) => _sendMessage(),
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.send, color: Color(0xff5E5E66)),
-                    onPressed: _sendComment,
+                    onPressed: _sendMessage,
                   ),
                 ],
               ),
@@ -113,6 +121,6 @@ class _ChatTabState extends State<ChatTab> {
           ),
         ],
       ),
-    );;
+    );
   }
 }
