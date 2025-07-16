@@ -2,15 +2,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/screens/tabs/banners_contant.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
 import 'package:streamore_app/screens/tabs/chat_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
+import 'package:streamore_app/screens/tabs/tickers_contant.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
-import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
 
@@ -23,9 +23,19 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
-class _StreamScreenState extends State<StreamScreen> {
+class _StreamScreenState extends State<StreamScreen> with TickerProviderStateMixin{
   bool _micOn = true;
   bool _camOn = true;
+  bool _showZoomIcon = false;
+  bool _isFullScreen = false;
+  late TabController _tabController;
+
+
+   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +47,6 @@ class _StreamScreenState extends State<StreamScreen> {
     final font = myprovider.selectedFont;
     final primaryColor = myprovider.primaryColor;
     final myProvider = Provider.of<MyProvider>(context);
-
 
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
@@ -53,82 +62,84 @@ class _StreamScreenState extends State<StreamScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: Image.asset(
-                  "assets/images/profile4.png",
-                  width: profileImageWidth,
-                  height: profileImageHeight,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: _buildThemeOverlay(context, myProvider),
-              ),
-              Positioned(
-                bottom: 100,
-                left: 16,
-                right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: myProvider.comments.map((comment) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(7),
+                      child: Image.asset(
+                        "assets/images/profile4.png",
+                        width: profileImageWidth,
+                        height: profileImageHeight,
+                        fit: BoxFit.cover,
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.person,
-                            size: 24,
-                            color: Colors.white54,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "UserName",
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 6,
-                                  ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: _buildThemeOverlay(context, myProvider),
+                    ),
+                    Positioned(
+                      bottom: 100,
+                      left: 16,
+                      right: 16,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children:
+                            myProvider.comments.map((comment) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 6),
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  comment,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.person,
+                                      size: 24,
+                                      color: Colors.white54,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "UserName",
+                                            style: TextStyle(
+                                              color: Colors.white60,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 6,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            comment,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
+                              );
+                            }).toList(),
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ],
-      ),
-      ),
 
           Padding(
             padding: EdgeInsets.only(
@@ -176,8 +187,7 @@ class _StreamScreenState extends State<StreamScreen> {
                                 showDialog(
                                   context: context,
                                   builder:
-                                      (context) =>
-                                          AlertDialog(
+                                      (context) => AlertDialog(
                                         backgroundColor:
                                             Theme.of(context).cardColor,
                                         shape: RoundedRectangleBorder(
@@ -374,6 +384,7 @@ class _StreamScreenState extends State<StreamScreen> {
                   child: Column(
                     children: [
                       TabBar(
+                         controller: _tabController,
                         labelColor: Colors.blue,
                         unselectedLabelColor: Colors.grey,
                         indicatorColor: Colors.blue,
@@ -392,9 +403,19 @@ class _StreamScreenState extends State<StreamScreen> {
                           Tab(text: "chat".tr()),
                         ],
                       ),
-                      const Expanded(
+                       Expanded(
                         child: TabBarView(
-                          children: [BrandTab(), BannersTab(), CommentsTab(),ChatTab()],
+                              controller: _tabController,
+                              children: [
+                                 BrandTab(),
+                                myprovider.tFolderClicked
+                                    ? const TickersContant()
+                                    : myprovider.bFolderClicked
+                                    ? const BannersContant()
+                                    : const BannersTab(),
+                                const CommentsTab(),
+                                ChatTab(),
+                          ],
                         ),
                       ),
                     ],
@@ -485,7 +506,12 @@ Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
           ),
           child: Text(
             "user_name".tr(),
-            style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
+            style: getFontStyle(
+              context,
+              font,
+              fontSize: 12,
+              color: Colors.white,
+            ),
           ),
         ),
       );
@@ -505,7 +531,12 @@ Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
                 child: Center(
                   child: Text(
                     "user_name".tr(),
-                    style: getFontStyle(context, font, fontSize: 12, color: Colors.black87),
+                    style: getFontStyle(
+                      context,
+                      font,
+                      fontSize: 12,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ),
@@ -526,7 +557,12 @@ Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
           ),
           child: Text(
             "user_name".tr(),
-            style: getFontStyle(context, font, fontSize: 12, color: Colors.white),
+            style: getFontStyle(
+              context,
+              font,
+              fontSize: 12,
+              color: Colors.white,
+            ),
           ),
         ),
       );

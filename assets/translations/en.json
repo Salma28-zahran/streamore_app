@@ -265,5 +265,27 @@
  "chat": "Chat",
  "to_finish": "To finish deleting your account, please check your email (saif@gmail.com).",
  "authentication_required": "Authentication required",
- "this_will":"This will permanently delete your Streamore account, including any stream recordings and stored content. If you have another account and want to use this email, it will become available once the deletion request has been fully processed"
+ "this_will":"This will permanently delete your Streamore account, including any stream recordings and stored content. If you have another account and want to use this email, it will become available once the deletion request has been fully processed",
+
+ 
+  "Folders": "Folders",
+  "Folder Name": "Folder Name",
+  "Ticker Name": "Ticker Name",
+  "Cancel": "Cancel",
+  "Add": "Add",
+   "items": {
+    "one": "item",
+    "other": "items"
+  },
+
+  "example_banners": "Example Banners",
+  "banner_content": "Banner Content",
+  "hide": "Hide",
+  "show": "Show",
+
+
+  "example_tickers": "Example Tickers",
+  "ticker_content": "Ticker Content",
+  "cancel": "Cancel",
+  "add": "Add"
 }
