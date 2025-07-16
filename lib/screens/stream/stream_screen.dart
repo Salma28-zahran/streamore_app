@@ -1,13 +1,21 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/screens/tabs/banners_contant.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
+import 'package:streamore_app/screens/tabs/chat_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
+import 'package:streamore_app/screens/tabs/tickers_contant.dart';
+import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/overlay_style.dart';
 import '../../my_provider.dart';
@@ -22,9 +30,19 @@ class StreamScreen extends StatefulWidget {
   State<StreamScreen> createState() => _StreamScreenState();
 }
 
-class _StreamScreenState extends State<StreamScreen> {
+class _StreamScreenState extends State<StreamScreen>
+    with TickerProviderStateMixin {
   bool _micOn = true;
   bool _camOn = true;
+  bool _showZoomIcon = false;
+  bool _isFullScreen = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,505 +53,455 @@ class _StreamScreenState extends State<StreamScreen> {
     final selectedTheme = myprovider.selectedTheme;
     final font = myprovider.selectedFont;
     final primaryColor = myprovider.primaryColor;
-    final myProvider = Provider.of<MyProvider>(context);
-
-
-    final double profileImageWidth = size.width * 0.9425;
-    final double profileImageHeight = size.height * 0.28;
+    final XFile? logoImageFile = myprovider.logoImageFile;
     final bool isDark = myprovider.themeMode == ThemeMode.dark;
-
-    final bool hasNotification = false;
 
     return Scaffold(
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
 
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
+          Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: Image.asset(
-                  "assets/images/profile4.png",
-                  width: profileImageWidth,
-                  height: profileImageHeight,
-                  fit: BoxFit.cover,
+              Padding(
+                padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showZoomIcon = true;
+                      });
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: size.width * 0.9425,
+                          height: size.height * 0.28,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: const DecorationImage(
+                              image: AssetImage("assets/images/profile4.png"),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        if (_showZoomIcon)
+                          Container(
+                            width: size.width * 0.9425,
+                            height: size.height * 0.28,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        if (_showZoomIcon)
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isFullScreen = true;
+                                _showZoomIcon = false;
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/zoom.png',
+                              width: 60,
+                              height: 60,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: _buildThemeOverlay(myProvider),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: size.width * 0.08,
+                  top: 8,
+                  right: size.width * 0.04,
+                ),
+                child: Row(
+                  children: [
+                    _buildControlButton(
+                      iconOn: Icons.mic,
+                      iconOff: Icons.mic_off,
+                      isOn: _micOn,
+                      onTap: _requestMicPermission,
+                      size: iconSize,
+                      isSmall: isSmall,
+                      themeMode: myprovider.themeMode,
+                    ),
+                    _buildControlButton(
+                      iconOn: Icons.camera_alt_rounded,
+                      iconOff: Icons.videocam_off,
+                      isOn: _camOn,
+                      onTap: () => setState(() => _camOn = !_camOn),
+                      size: iconSize,
+                      isSmall: isSmall,
+                      themeMode: myprovider.themeMode,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.cast_sharp,
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => const BottomSheetWidget(),
+                        );
+                      },
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.person_add,
+                      onTap: () {},
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                    _buildIconButton(
+                      icon: Icons.settings,
+                      onTap:
+                          () => Navigator.pushNamed(context, "/settings_icon"),
+                      size: iconSize,
+                      themeMode: myprovider.themeMode,
+                      isSmall: isSmall,
+                    ),
+                  ],
+                ),
               ),
-              Positioned(
-                bottom: 100,
-                left: 16,
-                right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: myProvider.comments.map((comment) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 8),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: size.height * 0.015),
+                  child: Container(
+                    width: size.width * 0.9425,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.9),
+                          blurRadius: 3,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: DefaultTabController(
+                      length: 3,
+                      child: Column(
                         children: [
-                          const Icon(
-                            Icons.person,
-                            size: 24,
-                            color: Colors.white54,
+                          TabBar(
+                            controller: _tabController,
+                            labelColor: Colors.blue,
+                            unselectedLabelColor: Colors.grey,
+                            indicatorColor: Colors.blue,
+                            labelStyle: GoogleFonts.inter(
+                              fontSize: isSmall ? 10 : 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            tabs: [
+                              Tab(text: "brand".tr()),
+                              Tab(text: "banners".tr()),
+                              Tab(text: "comments".tr()),
+                              Tab(text: "chat".tr()),
+                            ],
                           ),
-                          const SizedBox(width: 8),
+
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: TabBarView(
+                              controller: _tabController,
                               children: [
-                                Text(
-                                  "UserName",
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  comment,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
+                                const BrandTab(),
+                                myprovider.tFolderClicked
+                                    ? const TickersContant()
+                                    : myprovider.bFolderClicked
+                                    ? const BannersContant()
+                                    : const BannersTab(),
+                                const CommentsTab(),
+                                ChatTab(),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-        ],
-      ),
-      ),
 
-          Padding(
-            padding: EdgeInsets.only(
-              left: size.width * 0.08,
-              top: 8,
-              right: size.width * 0.04,
-            ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.04),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _micOn = !_micOn),
-                    child: _circleIcon(
-                      isOn: _micOn,
-                      onIcon: Icons.mic,
-                      offIcon: Icons.mic_off,
-                      size: iconSize,
-                      isSmall: isSmall,
-                      currentMode: myprovider.themeMode,
+          // Background
+          Consumer<MyProvider>(
+            builder: (context, provider, child) {
+              if (provider.selectedBackgroundImage == null) return SizedBox();
+
+              double profileImageWidth =
+                  MediaQuery.of(context).size.width * 0.9425;
+              double profileImageHeight =
+                  MediaQuery.of(context).size.height * 0.28;
+
+              return Positioned(
+                top: 0,
+                left:
+                    (MediaQuery.of(context).size.width - profileImageWidth) / 2,
+                right:
+                    (MediaQuery.of(context).size.width - profileImageWidth) / 2,
+                child: GestureDetector(
+                  onTap: () {
+                    print("Tapped on background!");
+                    print(
+                      "selectedBackgroundImage: ${provider.selectedBackgroundImage?.path}",
+                    );
+                  },
+                  child: Container(
+                    width: profileImageWidth,
+                    height: profileImageHeight,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      image: DecorationImage(
+                        image:
+                            provider.selectedBackgroundImage != null
+                                ? FileImage(
+                                  File(provider.selectedBackgroundImage!.path),
+                                )
+                                : AssetImage(
+                                      'assets/images/background_placeholder.png',
+                                    )
+                                    as ImageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.06),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _camOn = !_camOn),
-                    child: _circleIcon(
-                      isOn: _camOn,
-                      onIcon: Icons.camera_alt_rounded,
-                      offIcon: Icons.videocam_off,
-                      size: iconSize,
-                      isSmall: isSmall,
-                      currentMode: myprovider.themeMode,
-                    ),
-                  ),
-                ),
-                for (var icon in [Icons.cast_sharp, Icons.person_add])
-                  Padding(
-                    padding: EdgeInsets.only(right: size.width * 0.06),
-                    child:
-                        icon == Icons.person_add
-                            ? GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) =>
-                                          AlertDialog(
-                                        backgroundColor:
-                                            Theme.of(context).cardColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        title: Text(
-                                          "add_members".tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                            color:
-                                                isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                          ),
-                                        ),
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            RichText(
-                                              text: TextSpan(
-                                                text:
-                                                    'you_can_add_up_to_guests'
-                                                        .tr(),
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 13,
-                                                  color: Colors.grey[700],
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                    text:
-                                                        'upgrade_for_more'.tr(),
-                                                    style: GoogleFonts.poppins(
-                                                      color: Colors.blue,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                    recognizer:
-                                                        TapGestureRecognizer()
-                                                          ..onTap = () {
-                                                            // action here
-                                                          },
-                                                  ),
-                                                ],
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            const SizedBox(height: 16),
-
-                                            Container(
-                                              width: double.infinity,
-                                              height: 26,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                  ),
-                                              alignment: Alignment.centerLeft,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: Colors.grey,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                                color:
-                                                    Theme.of(context).cardColor,
-                                              ),
-                                              child: Text(
-                                                "https://www.examplecode.com/xyz-pwd-srt",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  color:
-                                                      isDark
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            // زر Copy
-                                            SizedBox(
-                                              width: 110,
-                                              height: 28,
-                                              child: ElevatedButton.icon(
-                                                onPressed: () {
-                                                  // copy link logic
-                                                },
-                                                icon: const Icon(
-                                                  Icons.copy,
-                                                  size: 18,
-                                                ),
-                                                label: Text(
-                                                  "copy_link".tr(),
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: const Color(
-                                                    0xff1865E8,
-                                                  ),
-                                                  foregroundColor: Colors.white,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                      ),
-                                                  minimumSize: const Size(
-                                                    0,
-                                                    36,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.fromLTRB(
-                                              24,
-                                              20,
-                                              24,
-                                              10,
-                                            ),
-                                        actionsPadding: const EdgeInsets.only(
-                                          bottom: 10,
-                                          right: 0,
-                                        ),
-                                      ),
-                                );
-                              },
-                              child: _buildIcon(
-                                icon,
-                                iconSize,
-                                context,
-                                myprovider,
-                                isSmall,
-                              ),
-                            )
-                            : _buildIcon(
-                              icon,
-                              iconSize,
-                              context,
-                              myprovider,
-                              isSmall,
-                            ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 13),
-                  child: _buildIcon(
-                    Icons.settings,
-                    iconSize,
-                    context,
-                    myprovider,
-                    isSmall,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
 
-          const SizedBox(height: 8),
+          // Overlay
+          Consumer<MyProvider>(
+            builder: (context, provider, child) {
+              if (!provider.isOverlayVisible) return SizedBox();
 
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: size.height * 0.015),
-              child: Container(
-                width: profileImageWidth,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.9),
-                      blurRadius: 3,
-                      offset: const Offset(0, 3),
+              double screenWidth = MediaQuery.of(context).size.width;
+              double screenHeight = MediaQuery.of(context).size.height;
+
+              double frameWidth = screenWidth * 0.7;
+              double frameHeight = screenHeight * 0.25;
+              double frameTop = screenHeight * 0.03;
+
+              double horizontalPadding = (screenWidth - frameWidth) / 2;
+
+              return Positioned(
+                top: frameTop,
+                left: horizontalPadding,
+                right: horizontalPadding,
+                child: GestureDetector(
+                  onTap: () {
+                    provider.toggleOverlayVisibility();
+                  },
+                  child: Container(
+                    width: frameWidth,
+                    height: frameHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: DefaultTabController(
-                  length: 3,
-                  child: Column(
-                    children: [
-                      TabBar(
-                        labelColor: Colors.blue,
-                        unselectedLabelColor: Colors.grey,
-                        indicatorColor: Colors.blue,
-                        labelStyle: GoogleFonts.inter(
-                          fontSize: isSmall ? 10 : 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        unselectedLabelStyle: GoogleFonts.inter(
-                          fontSize: isSmall ? 10 : 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        tabs: [
-                          Tab(text: "brand".tr()),
-                          Tab(text: "banners".tr()),
-                          Tab(text: "comments".tr()),
-                        ],
-                      ),
-                      const Expanded(
-                        child: TabBarView(
-                          children: [BrandTab(), BannersTab(), CommentsTab()],
+                    child: Container(
+                      width: frameWidth,
+                      height: frameHeight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image:
+                              provider.selectedOverlayImage != null
+                                  ? FileImage(
+                                    File(provider.selectedOverlayImage!.path),
+                                  )
+                                  : AssetImage(
+                                    'assets/images/overlay_placeholder.png',
+                                  ),
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ],
+                    ),
                   ),
+                ),
+              );
+            },
+          ),
+
+          // Logo
+          Consumer<MyProvider>(
+            builder: (context, provider, child) {
+              if (!provider.isLogoVisible) return SizedBox();
+
+              return Positioned(
+                top: 20,
+                right: 40,
+                child: GestureDetector(
+                  onTap: () {
+                    provider.toggleLogoVisibility();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child:
+                          provider.logoImageFile != null
+                              ? Image.file(
+                                File(provider.logoImageFile!.path),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              )
+                              : Image.asset(
+                                'assets/images/logo.png',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // Fullscreen Image
+          if (_isFullScreen)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isFullScreen = false;
+                });
+              },
+              child: Container(
+                color: Colors.black,
+                width: double.infinity,
+                height: double.infinity,
+                child: Image.asset(
+                  "assets/images/profile4.png",
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _circleIcon({
+  Widget _buildControlButton({
+    required IconData iconOn,
+    required IconData iconOff,
     required bool isOn,
-    required IconData onIcon,
-    required IconData offIcon,
+    required VoidCallback onTap,
     required double size,
     required bool isSmall,
-    required ThemeMode currentMode,
+    required ThemeMode themeMode,
   }) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size),
-        color:
-            isOn
-                ? (currentMode == ThemeMode.dark
-                    ? const Color(0xff212b49)
-                    : const Color(0xff5E5E66))
-                : const Color(0xff350808),
-      ),
-      child: Icon(
-        isOn ? onIcon : offIcon,
-        color: isOn ? Theme.of(context).iconTheme.color : Colors.red[400],
-        size: isSmall ? 20 : 24,
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size),
+            color:
+                isOn
+                    ? (themeMode == ThemeMode.dark
+                        ? const Color(0xff212b49)
+                        : const Color(0xff5E5E66))
+                    : const Color(0xff350808),
+          ),
+          child: Icon(
+            isOn ? iconOn : iconOff,
+            color: isOn ? Colors.white : Colors.red[400],
+            size: isSmall ? 20 : 24,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildIcon(
-    IconData icon,
-    double size,
-    BuildContext context,
-    MyProvider myprovider,
-    bool isSmall,
-  ) {
-    return GestureDetector(
-      onTap:
-          icon == Icons.settings
-              ? () => Navigator.pushNamed(context, "/settings_icon")
-              : null,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(190),
-          color:
-              myprovider.themeMode == ThemeMode.dark
-                  ? const Color(0xff212b49)
-                  : const Color(0xff5E5E66),
-        ),
-        child: Icon(
-          icon,
-          color: Theme.of(context).iconTheme.color,
-          size: isSmall ? 20 : 24,
-        ),
-      ),
+  Future<void> _requestMicPermission() async {
+    final status = await Permission.microphone.request();
+    if (status.isGranted) {
+      setState(() {
+        _micOn = !_micOn;
+      });
+    } else if (status.isDenied) {
+      _showPermissionDeniedDialog();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Permission Denied"),
+            content: const Text(
+              "You need to grant microphone access to use this feature.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
     );
   }
 }
 
-Widget _buildThemeOverlay(MyProvider provider) {
-  final theme = provider.selectedTheme;
-  final color = provider.primaryColor;
-  final font = provider.selectedFont;
-
-  switch (theme) {
-    case 'bubble':
-      return Padding(
-        padding:  EdgeInsets.all(11),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Text(
-            "user_name".tr(),
-            style: getFontStyle(font, fontSize: 12, color: Colors.white),
-          ),
+Widget _buildIconButton({
+  required IconData icon,
+  required VoidCallback onTap,
+  required double size,
+  required ThemeMode themeMode,
+  required bool isSmall,
+}) {
+  return Padding(
+    padding: EdgeInsets.only(right: isSmall ? 8 : 12),
+    child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(size),
+          color:
+              themeMode == ThemeMode.dark
+                  ? const Color(0xff212b49)
+                  : const Color(0xff5E5E66),
         ),
-      );
-
-    case 'minimal':
-      return
-       Padding(
-         padding:  EdgeInsets.only(bottom: 11),
-         child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(width: 12, height: 24, color: color),
-                Container(
-                  width: 76,
-                  height: 23,
-                  color: Colors.white,
-                  child: Center(
-                    child: Text(
-                      "user_name".tr(),
-                      style: getFontStyle(
-                        font,
-                        fontSize: 12,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-               ),
-       );
-
-    case 'news':
-    default:
-      return Padding(
-        padding:  EdgeInsets.all(11),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: color,
-
-            borderRadius: BorderRadius.circular(0),
-          ),
-          child: Text(
-            "user_name".tr(),
-            style: getFontStyle(font, fontSize: 12, color: Colors.white),
-          ),
-        ),
-      );
-  }
+        child: Icon(icon, color: Colors.white, size: isSmall ? 20 : 24),
+      ),
+    ),
+  );
 }
