@@ -32,9 +32,8 @@ class _StreamScreenState extends State<StreamScreen>
     with TickerProviderStateMixin {
   bool _micOn = true;
   bool _camOn = true;
-  bool _showZoomIcon = false;
-  bool _isFullScreen = false;
   late TabController _tabController;
+  bool isZoomVisible = false;
 
   @override
   void initState() {
@@ -74,15 +73,39 @@ class _StreamScreenState extends State<StreamScreen>
                   children: [
                     Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(7),
-                          child: Image.asset(
-                            "assets/images/profile4.png",
-                            width: profileImageWidth,
-                            height: profileImageHeight,
-                            fit: BoxFit.cover,
+                        GestureDetector(
+                          onTap: _onProfileImageClick,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(7),
+                            child: Image.asset(
+                              "assets/images/profile4.png",
+                              width: profileImageWidth,
+                              height: profileImageHeight,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
+                        if (isZoomVisible)
+                          Positioned(
+                            top: profileImageHeight / 2 - 27,
+                            left: profileImageWidth / 2 - 27,
+                            child: GestureDetector(
+                              onTap: _onZoomIconClick,
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.6),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.asset(
+                                  'assets/images/zoom.png',
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+
                         Positioned(
                           bottom: 0,
                           left: 0,
@@ -160,11 +183,7 @@ class _StreamScreenState extends State<StreamScreen>
                     Padding(
                       padding: EdgeInsets.only(right: size.width * 0.04),
                       child: GestureDetector(
-                        onTap:
-                            () => requestMicPermission(
-                              context,
-                              _toggleMic,
-                            ),
+                        onTap: () => requestMicPermission(context, _toggleMic),
                         child: _circleIcon(
                           isOn: _micOn,
                           onIcon: Icons.mic,
@@ -469,6 +488,16 @@ class _StreamScreenState extends State<StreamScreen>
         ],
       ),
     );
+  }
+
+  void _onProfileImageClick() {
+    setState(() {
+      isZoomVisible = !isZoomVisible;
+    });
+  }
+
+  void _onZoomIconClick() {
+    Navigator.pushNamed(context, '/full_image');
   }
 
   void _toggleMic() {

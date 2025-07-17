@@ -86,7 +86,7 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Overlay image manipulation
+
   void addOverlayImage(XFile image) {
     if (!_overlayImages.contains(image)) {
       _overlayImages.add(image);
