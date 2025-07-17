@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
 
-
 class OverlayWidget extends StatefulWidget {
   @override
   _OverlayWidgetState createState() => _OverlayWidgetState();
@@ -30,10 +29,10 @@ class _OverlayWidgetState extends State<OverlayWidget> {
           left: horizontalPadding,
           right: horizontalPadding,
           child: GestureDetector(
-            onTap: () {
-              provider.toggleOverlayVisibility(); // Toggle visibility
-              setState(() {});  // Force rebuild
-            },
+            // onTap: () {
+            //   // Toggle the visibility of the overlay on tap
+            //   provider.toggleOverlayVisibility();
+            // },
             child: Container(
               width: frameWidth,
               height: frameHeight,

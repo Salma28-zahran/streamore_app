@@ -156,7 +156,7 @@ class _OverlaySectionState extends State<OverlaySection> {
     return Column(
       children: [
         SectionHeader(
-          title: 'overlay'.tr(), // Localization key
+          title: 'overlay'.tr(), 
           isVisible: _isVisible,
           onToggle: () => setState(() => _isVisible = !_isVisible),
         ),
