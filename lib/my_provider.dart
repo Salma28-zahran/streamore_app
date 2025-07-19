@@ -4,8 +4,6 @@ import 'package:image_picker/image_picker.dart';
 class MyProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
-  
-
   // ==== Theme Overlay State ====
   String _selectedTheme = 'minimal';
   Color _primaryColor = Color(0xff1865E8);
@@ -14,9 +12,8 @@ class MyProvider extends ChangeNotifier {
   String get selectedTheme => _selectedTheme;
   Color get primaryColor => _primaryColor;
 
+  // ==== Folder Clicked State ====
 
-    // ==== Folder Clicked State ====
-  
   bool _bFolderClicked = false;
   bool _tFolderClicked = false;
 
@@ -27,7 +24,7 @@ class MyProvider extends ChangeNotifier {
   void setBFolderClicked(bool value) {
     if (value) {
       _bFolderClicked = true;
-      _tFolderClicked = false;  
+      _tFolderClicked = false;
     } else {
       _bFolderClicked = false;
     }
@@ -37,7 +34,7 @@ class MyProvider extends ChangeNotifier {
   void setTFolderClicked(bool value) {
     if (value) {
       _tFolderClicked = true;
-      _bFolderClicked = false;  
+      _bFolderClicked = false;
     } else {
       _tFolderClicked = false;
     }
@@ -71,8 +68,12 @@ class MyProvider extends ChangeNotifier {
   }
 
   void showBackgroundImage(XFile image) {
-    _selectedBackgroundImage = image;
-    _isBackgroundVisible = true;
+    if (_selectedBackgroundImage == image) {
+      _isBackgroundVisible = !_isBackgroundVisible;
+    } else {
+      _selectedBackgroundImage = image;
+      _isBackgroundVisible = true;
+    }
     notifyListeners();
   }
 
@@ -86,7 +87,6 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void addOverlayImage(XFile image) {
     if (!_overlayImages.contains(image)) {
       _overlayImages.add(image);
@@ -95,8 +95,12 @@ class MyProvider extends ChangeNotifier {
   }
 
   void showOverlayImage(XFile image) {
-    _selectedOverlayImage = image;
-    _isOverlayVisible = true;
+    if (_selectedOverlayImage == image) {
+      _isOverlayVisible = !_isOverlayVisible;
+    } else {
+      _selectedOverlayImage = image;
+      _isOverlayVisible = true;
+    }
     notifyListeners();
   }
 
@@ -127,13 +131,12 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void showDefaultLogo() {
+  void showDefaultLogo() {
     _logoImageFile = null;
     _useDefaultLogo = true;
     _isLogoVisible = true;
     notifyListeners();
   }
-
 
   // ==== Setters ====
   void setSelectedTheme(String theme) {
@@ -151,6 +154,7 @@ class MyProvider extends ChangeNotifier {
     themeMode = themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
+
   String? _selectedFont;
 
   MyProvider() {
@@ -165,20 +169,19 @@ class MyProvider extends ChangeNotifier {
   }
 
   String get _defaultFont {
-    final isArabic = WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'ar';
+    final isArabic =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'ar';
     return isArabic ? 'amiri' : 'poppins';
   }
 
-
-
   String _orientation = "portrait";
   String get orientation => _orientation;
-
 
   set orientation(String newValue) {
     _orientation = newValue;
     notifyListeners();
   }
+
   bool _shouldGoToFullImage = false;
   bool get shouldGoToFullImage => _shouldGoToFullImage;
 
@@ -187,13 +190,10 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
   void setShouldGoToFullImage(bool value) {
     _shouldGoToFullImage = value;
     notifyListeners();
   }
-
 
   bool _isOverlayEnabled = false;
   final List<String> _comments = [];
@@ -215,12 +215,10 @@ class MyProvider extends ChangeNotifier {
     _comments.clear();
     notifyListeners();
   }
+
   List<String> chatMessages = [];
   void addChatMessage(String message) {
     chatMessages.add(message);
     notifyListeners();
   }
-
-  
-
 }

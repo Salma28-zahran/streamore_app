@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/my_provider.dart';
 
-
 class BackgroundWidget extends StatefulWidget {
   @override
   _BackgroundWidgetState createState() => _BackgroundWidgetState();
@@ -14,7 +13,10 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
   Widget build(BuildContext context) {
     return Consumer<MyProvider>(
       builder: (context, provider, child) {
-        if (provider.selectedBackgroundImage == null) return SizedBox();
+        if (provider.selectedBackgroundImage == null ||
+            !provider.isBackgroundVisible) {
+          return SizedBox();
+        }
 
         double profileImageWidth = MediaQuery.of(context).size.width * 0.9425;
         double profileImageHeight = MediaQuery.of(context).size.height * 0.28;
@@ -29,7 +31,8 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
               print(
                 "selectedBackgroundImage: ${provider.selectedBackgroundImage?.path}",
               );
-              setState(() {});  // Force rebuild
+              provider
+                  .toggleBackgroundVisibility(); // Toggle visibility when tapped
             },
             child: Container(
               width: profileImageWidth,
@@ -37,10 +40,15 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
                 image: DecorationImage(
-                  image: provider.selectedBackgroundImage != null
-                      ? FileImage(File(provider.selectedBackgroundImage!.path))
-                      : AssetImage('assets/images/background_placeholder.png')
-                          as ImageProvider,
+                  image:
+                      provider.selectedBackgroundImage != null
+                          ? FileImage(
+                            File(provider.selectedBackgroundImage!.path),
+                          )
+                          : AssetImage(
+                                'assets/images/background_placeholder.png',
+                              )
+                              as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),

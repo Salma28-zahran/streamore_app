@@ -2,9 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_sections.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_theme_buttons.dart';
 import '../../my_provider.dart';
@@ -19,7 +17,6 @@ class BrandTab extends StatefulWidget {
 }
 
 class _BrandTabState extends State<BrandTab> {
-  XFile? _logoImageFile;
 
   bool isThemeOptionsVisible = true;
   bool isColorOptionsVisible = true;
@@ -27,17 +24,7 @@ class _BrandTabState extends State<BrandTab> {
   bool isLogoVisible = true;
   bool isOverlayVisible = true;
   bool isBackgroundVisible = true;
-  final List<XFile> _logoImages = [];
-  final List<XFile> _overlayImages = [];
-  final List<XFile> _backgroundImages = [];
 
-  Future<void> _pickImageForSection(List<XFile> targetList) async {
-    final picker = ImagePicker();
-    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() => targetList.add(picked));
-    }
-  }
 
   late TextEditingController _colorController;
   List<String> arabicFonts = [
