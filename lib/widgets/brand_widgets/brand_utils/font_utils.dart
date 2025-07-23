@@ -73,7 +73,7 @@ TextStyle getFontStyle(
           color: color,
         );
       default:
-        return GoogleFonts.tajawal( // fallback عربي
+        return GoogleFonts.tajawal(
           fontSize: fontSize,
           fontWeight: fontWeight,
           color: color,
@@ -81,7 +81,6 @@ TextStyle getFontStyle(
     }
   }
 
-  // الإنجليزية
   switch (font.toLowerCase()) {
     case 'playfair display':
       return GoogleFonts.playfairDisplay(

@@ -2,6 +2,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/my_provider.dart';
 
 void showEditBillingInfoDialog(BuildContext context) {
   final theme = Theme.of(context);
@@ -10,6 +12,7 @@ void showEditBillingInfoDialog(BuildContext context) {
   final baseTextColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
   final borderColor = theme.dividerColor;
   final fillColor = theme.cardColor;
+
 
   final inputDecoration = InputDecoration(
     filled: true,
@@ -101,8 +104,9 @@ void showEditBillingInfoDialog(BuildContext context) {
                       'select_your_country'.tr(),
                       style: GoogleFonts.poppins(
                         fontSize: 13,
-                        color: theme.brightness == Brightness.dark  
-                            ? primaryColor: baseTextColor, 
+                      color:   Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                     items:  [
@@ -113,18 +117,21 @@ void showEditBillingInfoDialog(BuildContext context) {
                     buttonStyleData: ButtonStyleData(
                       height: 44,
                       width: double.infinity,
-                      padding: const EdgeInsets.only(left: 12, right: 36),
+                      padding: const EdgeInsets.only(left: 12, right: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: borderColor),
                         color: fillColor,
                       ),
+
                       elevation: 0,
                     ),
                     iconStyleData: IconStyleData(
                       icon: Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        color: primaryColor, //  primary Color
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black, //  primary Color
                       ),
                       iconSize: 24,
                     ),
@@ -155,7 +162,7 @@ void showEditBillingInfoDialog(BuildContext context) {
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor, 
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
@@ -166,7 +173,7 @@ void showEditBillingInfoDialog(BuildContext context) {
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: theme.colorScheme.onPrimary,
+                    color: Colors.white
                   ),
                 ),
               ),

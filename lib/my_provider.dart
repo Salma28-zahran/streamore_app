@@ -158,7 +158,7 @@ class MyProvider extends ChangeNotifier {
   String? _selectedFont;
 
   MyProvider() {
-    _selectedFont = _defaultFont; // ✅ تحديد الخط الافتراضي من البداية
+    _selectedFont = _defaultFont;
   }
 
   String get selectedFont => _selectedFont ?? _defaultFont;
