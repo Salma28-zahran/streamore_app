@@ -281,7 +281,7 @@ class _BrandTabState extends State<BrandTab> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: Colors.grey.shade400),
-                        color: Colors.white,
+                        color: Theme.of(context).cardColor,
                       ),
                     ),
                     dropdownStyleData: DropdownStyleData(

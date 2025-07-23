@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/invite_member_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/my_provider.dart';
 
 class Members extends StatefulWidget {
   static const String routeName = "/members";
@@ -46,6 +48,9 @@ class _MembersState extends State<Members> {
     final mq = MediaQuery.of(context).size;
 
     bool hasNotification = false;
+    var myprovider = Provider.of<MyProvider>(context);
+    bool isDark = myprovider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
@@ -139,7 +144,8 @@ class _MembersState extends State<Members> {
                             style: GoogleFonts.poppins(
                               fontSize: mq.width * 0.03,
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color:
+                              isDark ? Colors.white : Theme.of(context).primaryColor,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -228,7 +234,8 @@ class _MembersState extends State<Members> {
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(mq.width * 0.35, mq.height * 0.05),
                 side: BorderSide(
-                  color: Color(0xff1865E8),
+                    color:
+                    isDark ? Colors.white : Theme.of(context).primaryColor,
                   width: 1.5,
                 ),
                 shape: RoundedRectangleBorder(
@@ -240,14 +247,17 @@ class _MembersState extends State<Members> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add, color: Theme.of(context).primaryColor),
+                  Icon(Icons.add,
+                      color:
+                      isDark ? Colors.white : Theme.of(context).primaryColor),
                   SizedBox(width: mq.width * 0.01),
                   Text(
                     "invite_a_member".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: mq.width * 0.035,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xff1865E8),
+                        color:
+                        isDark ? Colors.white : Theme.of(context).primaryColor,
                     ),
                   ),
                 ],
@@ -287,8 +297,14 @@ class _MembersState extends State<Members> {
                       height: mq.height * 0.055,
                       padding: EdgeInsets.symmetric(horizontal: mq.width * 0.03),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.grey,
+                        ),
+
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

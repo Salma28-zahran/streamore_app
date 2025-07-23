@@ -48,7 +48,7 @@ class Library extends StatelessWidget {
                    Navigator.pushNamed(context, '/stream');
                  },
                    style: ElevatedButton.styleFrom(
-                     backgroundColor: Theme.of(context).primaryColor
+                     backgroundColor: Theme.of(context).colorScheme.primary
                    ),
                      child: Text("record_now".tr(),
                      style: GoogleFonts.poppins(

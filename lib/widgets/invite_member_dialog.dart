@@ -2,6 +2,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/my_provider.dart';
 
 class InviteMemberDialog extends StatefulWidget {
   final List<String> roles;
@@ -34,6 +36,9 @@ class _InviteMemberDialogState extends State<InviteMemberDialog> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
+    var myprovider = Provider.of<MyProvider>(context);
+    bool isDark = myprovider.themeMode == ThemeMode.dark;
+
 
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor,
@@ -147,7 +152,7 @@ class _InviteMemberDialogState extends State<InviteMemberDialog> {
                 ),
                 SizedBox(height: mq.height * 0.015),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: mq.width * 0.04),
+                  padding: EdgeInsets.symmetric(horizontal: mq.width * 0.03),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -181,8 +186,8 @@ class _InviteMemberDialogState extends State<InviteMemberDialog> {
                               style: GoogleFonts.poppins(
                                 fontSize: mq.width * 0.03,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
+                                  color:
+                                  isDark ? Colors.white : Theme.of(context).primaryColor,                              ),
                             ),
                           ))
                               .toList(),
@@ -191,7 +196,7 @@ class _InviteMemberDialogState extends State<InviteMemberDialog> {
                             setState(() {
                               localSelectedRole = val;
                             });
-                            widget.onRoleChanged(val);
+
                           },
                           buttonStyleData: ButtonStyleData(
                             height: mq.height * 0.06,
@@ -266,10 +271,12 @@ class _InviteMemberDialogState extends State<InviteMemberDialog> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
+
                       ),
+
                       elevation: 0,
                     ),
                     child: Text(

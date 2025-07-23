@@ -264,6 +264,11 @@ class _GeneralState extends State<General> {
                       value: "portrait",
                       groupValue: selectedOrientation,
                       activeColor: Theme.of(context).primaryColor,
+                      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+                        return myprovider.themeMode == ThemeMode.dark
+                            ? Colors.white
+                            : Colors.black;
+                      }),
                       onChanged: (value) {
                         setState(() {
                           selectedOrientation = value!;
@@ -290,6 +295,11 @@ class _GeneralState extends State<General> {
                       value: "landscape",
                       groupValue: selectedOrientation,
                       activeColor: Theme.of(context).primaryColor,
+                      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+                        return myprovider.themeMode == ThemeMode.dark
+                            ? Colors.white
+                            : Colors.black;
+                      }),
                       onChanged: (value) {
                         setState(() {
                           selectedOrientation = value!;
@@ -297,7 +307,6 @@ class _GeneralState extends State<General> {
                           myprovider.setShouldGoToFullImage(value == "landscape");
                         });
                       },
-
                     ),
                     Container(
                       width: 30,
@@ -316,6 +325,7 @@ class _GeneralState extends State<General> {
                   ],
                 ),
               ),
+
             ],
           ),
         ),
