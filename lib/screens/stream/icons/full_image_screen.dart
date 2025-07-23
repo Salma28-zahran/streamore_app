@@ -19,14 +19,18 @@ class _FullImageScreenState extends State<FullImageScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
   @override
   void dispose() {
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     super.dispose();
   }
 
@@ -43,10 +47,10 @@ class _FullImageScreenState extends State<FullImageScreen> {
             ),
           ),
           Positioned(
-            top: 30,
-            left: 10,
+            top: 16,
+            left: 16,
             child: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
               onPressed: () {
                 Navigator.pushReplacementNamed(context, "/stream");
               },
