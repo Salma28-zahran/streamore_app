@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/screens/tabs/banners_contant.dart';
+import 'package:streamore_app/screens/tabs/banners_tab.dart';
+import 'package:streamore_app/screens/tabs/brand_tab.dart';
+import 'package:streamore_app/screens/tabs/chat_tab.dart';
+import 'package:streamore_app/screens/tabs/comments_tab.dart';
+import 'package:streamore_app/screens/tabs/tickers_contant.dart';
+
+import '../../../my_provider.dart';
+
+class CustomTabSection extends StatelessWidget {
+  final TabController tabController;
+  final double profileImageWidth;
+  final bool isSmall;
+
+  const CustomTabSection({
+    super.key,
+    required this.tabController,
+    required this.profileImageWidth,
+    required this.isSmall,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final myprovider = Provider.of<MyProvider>(context);
+
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: size.height * 0.015),
+        child: Container(
+          width: profileImageWidth,
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            border: Border.all(color: Theme.of(context).dividerColor),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.9),
+                blurRadius: 3,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: DefaultTabController(
+            length: 4,
+            child: Column(
+              children: [
+                TabBar(
+                  controller: tabController,
+                  labelColor: Colors.blue,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.blue,
+                  labelStyle: GoogleFonts.inter(
+                    fontSize: isSmall ? 10 : 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  unselectedLabelStyle: GoogleFonts.inter(
+                    fontSize: isSmall ? 10 : 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  tabs: [
+                    Tab(text: "brand".tr()),
+                    Tab(text: "banners".tr()),
+                    Tab(text: "comments".tr()),
+                    Tab(text: "chat".tr()),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: tabController,
+                    children: [
+                      const BrandTab(),
+                      myprovider.tFolderClicked
+                          ? const TickersContant()
+                          : myprovider.bFolderClicked
+                          ? const BannersContant()
+                          : const BannersTab(),
+                      const CommentsTab(),
+                      const ChatTab(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
