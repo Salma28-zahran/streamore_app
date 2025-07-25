@@ -221,4 +221,55 @@ class MyProvider extends ChangeNotifier {
     chatMessages.add(message);
     notifyListeners();
   }
+
+// // Banner content and state management ****************************************************
+ List<String> _banners = [];
+  Set<int> _shownBanners = {};
+  Set<int> _tappedBanners = {};
+
+  List<String> get banners => _banners;
+  Set<int> get shownBanners => _shownBanners;
+  Set<int> get tappedBanners => _tappedBanners;
+
+  void addBanner(String bannerContent) {
+    _banners.add(bannerContent);
+    notifyListeners();
+  }
+
+  void toggleBannerVisibility(int index) {
+    if (_shownBanners.contains(index)) {
+      _shownBanners.remove(index);
+    } else {
+      _shownBanners.add(index);
+    }
+    notifyListeners();
+  }
+
+  void toggleBannerTapped(int index) {
+    if (_tappedBanners.contains(index)) {
+      _tappedBanners.remove(index);
+    } else {
+      _tappedBanners.add(index);
+    }
+    notifyListeners();
+  }
+
+  void removeBannerAt(int index) {
+    _banners.removeAt(index);
+
+    _shownBanners.remove(index);
+    _shownBanners = _shownBanners.map((i) => i > index ? i - 1 : i).toSet();
+
+    _tappedBanners.remove(index);
+    _tappedBanners = _tappedBanners.map((i) => i > index ? i - 1 : i).toSet();
+
+    notifyListeners();
+  }
+
+  void clearBanners() {
+    _banners.clear();
+    _shownBanners.clear();
+    _tappedBanners.clear();
+    notifyListeners();
+  }
 }
