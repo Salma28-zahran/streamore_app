@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:streamore_app/my_provider.dart';
@@ -14,22 +15,21 @@ class BannersContant extends StatefulWidget {
 class _BannersContantState extends State<BannersContant> {
   bool showAddBannerCard = false;
   TextEditingController bannerController = TextEditingController();
-  List<String> banners = [];
-  Set<int> shownBanners = {};
-  Set<int> tappedBanners = {};
 
   void _toggleAddBannerCard() {
     setState(() {
       showAddBannerCard = !showAddBannerCard;
-      bannerController.clear(); 
+      bannerController.clear();
     });
   }
 
   void _addBanner() {
     final text = bannerController.text.trim();
     if (text.isNotEmpty) {
+      final myProvider = Provider.of<MyProvider>(context, listen: false);
+      myProvider.addBanner(text);  // Add banner content to provider
+
       setState(() {
-        banners.add(text);
         bannerController.clear();
         showAddBannerCard = false;
       });
@@ -37,25 +37,26 @@ class _BannersContantState extends State<BannersContant> {
   }
 
   void _toggleShowHide(int index) {
-    setState(() {
-      if (shownBanners.contains(index)) {
-        shownBanners.remove(index);
-      } else {
-        shownBanners.add(index);
-      }
-    });
+    final myProvider = Provider.of<MyProvider>(context, listen: false);
+    myProvider.toggleBannerVisibility(index);  // Toggle visibility
   }
 
+
   void _deleteBanner(int index) {
-    setState(() {
-      banners.removeAt(index);
-      shownBanners.remove(index);
-      tappedBanners.remove(index);
-    });
-  }
+  final myProvider = Provider.of<MyProvider>(context, listen: false);
+  myProvider.removeBannerAt(index);
+}
+
 
   @override
   Widget build(BuildContext context) {
+    final myProvider = Provider.of<MyProvider>(context);
+
+    // Ensure that actions are triggered after layout
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Trigger any necessary actions after layout, if required
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -63,8 +64,7 @@ class _BannersContantState extends State<BannersContant> {
         leading: IconButton(
           icon: Icon(Icons.navigate_before, size: 32, color: Theme.of(context).textTheme.bodyLarge?.color),
           onPressed: () {
-            Provider.of<MyProvider>(context, listen: false).setBFolderClicked(false);
-
+            myProvider.setBFolderClicked(false);
             print('Navigator pop executed');
           },
         ),
@@ -92,14 +92,19 @@ class _BannersContantState extends State<BannersContant> {
 
             const SizedBox(height: 16),
 
-            ...banners.asMap().entries.map((entry) {
+            // Display banners from the provider
+            ...myProvider.banners.asMap().entries.map((entry) {
               final index = entry.key;
               final text = entry.value;
-              final isTapped = tappedBanners.contains(index);
-              final isShown = shownBanners.contains(index);
+              final isTapped = myProvider.tappedBanners.contains(index);
+              final isShown = myProvider.shownBanners.contains(index);
 
               return GestureDetector(
-                onTap: () => setState(() => tappedBanners.add(index)),
+                onTap: () {
+                  setState(() {
+                    myProvider.toggleBannerTapped(index);  // Toggle tapped state
+                  });
+                },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -162,7 +167,7 @@ class _BannersContantState extends State<BannersContant> {
                           ],
                         ),
                       ),
-                      if (isTapped) ...[
+                      if (isTapped) ...[  // Show delete icon if tapped
                         const SizedBox(width: 12),
                         GestureDetector(
                           onTap: () => _deleteBanner(index),
@@ -224,8 +229,7 @@ class _BannersContantState extends State<BannersContant> {
                 onPressed: () {
                   setState(() {
                     showAddBannerCard = false;
-                    bannerController.clear(); 
-                    print('Example Banners Translation: ${'example_banners'.tr()}');// Clear the text field
+                    bannerController.clear();  // Clear text input
                   });
                 },
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
