@@ -291,5 +291,8 @@
 
   "permission_denied": "Permission Denied",
   "grant_microphone_access": "You need to grant microphone access to use this feature.",
-  "ok": "OK"
+  "ok": "OK",
+ "messages": "Message...",
+ "no_message": "No message"
+
 }
