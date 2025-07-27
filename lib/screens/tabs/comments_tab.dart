@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../my_provider.dart';
+import 'package:streamore_app/my_provider.dart';
 
 class CommentsTab extends StatefulWidget {
   static const String routeName = "/comments";
@@ -27,11 +28,11 @@ class _CommentsTabState extends State<CommentsTab> {
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<MyProvider>(context);
+    final bool isDark = myProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
       body: Column(
         children: [
-
           if (myProvider.comments.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 14),
@@ -52,8 +53,6 @@ class _CommentsTabState extends State<CommentsTab> {
                 ],
               ),
             ),
-
-
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
             child: Row(
@@ -76,8 +75,6 @@ class _CommentsTabState extends State<CommentsTab> {
               ],
             ),
           ),
-
-
           Expanded(
             child: myProvider.comments.isEmpty
                 ? Center(
@@ -93,35 +90,118 @@ class _CommentsTabState extends State<CommentsTab> {
               padding: const EdgeInsets.all(12),
               itemCount: myProvider.comments.length,
               itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.person,
-                        color: Color(0xff5E5E66),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          myProvider.comments[index],
-                          style: GoogleFonts.inter(fontSize: 14),
+                final isTapped = myProvider.tappedComments.contains(index);
+                final isShown = myProvider.shownComments.contains(index);
+                final isStarred = myProvider.starredComments.contains(index);
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      myProvider.toggleCommentTapped(index);
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.person, color: Color(0xff5E5E66)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Opacity(
+                                  opacity: isTapped ? 0.4 : 1.0,
+                                  child: Text(
+                                    myProvider.comments[index],
+                                    style: GoogleFonts.inter(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                              if (isTapped)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () =>
+                                          myProvider.toggleCommentShown(index),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 24,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color:
+                                                  const Color(0xFF666666),
+                                                  width: 1.5),
+                                            ),
+                                            child: Icon(
+                                              isShown
+                                                  ? Icons.remove
+                                                  : Icons.add,
+                                              size: 16,
+                                              color: const Color(0xFF666666),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            isShown
+                                                ? "hide".tr()
+                                                : "show".tr(),
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF4F4F4F),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    GestureDetector(
+                                      onTap: () =>
+                                          myProvider.toggleCommentStarred(
+                                              index),
+                                      child: Icon(
+                                        isStarred
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        size: 22,
+                                        color: const Color(0xFF666666),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    GestureDetector(
+                                      onTap: () =>
+                                          myProvider.deleteComment(index),
+                                      child: const Icon(
+                                        Icons.delete_outline,
+                                        size: 22,
+                                        color: Color(0xFFBDBDBD),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
             ),
           ),
-
-
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -132,6 +212,10 @@ class _CommentsTabState extends State<CommentsTab> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color:
+                          isDark ? Colors.white : const Color(0xff5E5E66),
+                        ),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: TextField(
@@ -146,7 +230,9 @@ class _CommentsTabState extends State<CommentsTab> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.send, color: Color(0xff5E5E66)),
+                    icon: Icon(Icons.send,
+                        color:
+                        isDark ? Colors.white : const Color(0xff5E5E66)),
                     onPressed: _sendComment,
                   ),
                 ],

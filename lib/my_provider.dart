@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -272,4 +273,61 @@ class MyProvider extends ChangeNotifier {
     _tappedBanners.clear();
     notifyListeners();
   }
+  Set<int> tappedComments = {};
+  Set<int> shownComments = {};
+  Set<int> starredComments = {};
+
+  void toggleCommentTapped(int index) {
+    if (tappedComments.contains(index)) {
+      tappedComments.remove(index);
+    } else {
+      tappedComments.add(index);
+    }
+    notifyListeners();
+  }
+
+  void toggleCommentShown(int index) {
+    if (shownComments.contains(index)) {
+      shownComments.remove(index);
+    } else {
+      shownComments.add(index);
+    }
+    notifyListeners();
+  }
+
+  void toggleCommentStarred(int index) {
+    if (starredComments.contains(index)) {
+      starredComments.remove(index);
+    } else {
+      starredComments.add(index);
+    }
+    notifyListeners();
+  }
+
+  void deleteComment(int index) {
+    comments.removeAt(index);
+    tappedComments.remove(index);
+    shownComments.remove(index);
+    starredComments.remove(index);
+    notifyListeners();
+  }
+
+  String _lastComment = '';
+  String get lastComment => _lastComment;
+
+  void setLastComment(String comment) {
+    _lastComment = comment;
+    notifyListeners();
+  }
+
+  String lastCommentIfExists(BuildContext context) {
+    return _lastComment.isNotEmpty ? _lastComment : "user_name".tr();
+  }
+
+
+
+
+
+
+
 }
