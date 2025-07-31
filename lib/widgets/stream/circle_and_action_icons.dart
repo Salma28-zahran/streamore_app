@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 
 Widget circleIcon({
   required BuildContext context,

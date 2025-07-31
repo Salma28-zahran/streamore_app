@@ -7,7 +7,7 @@ import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/invite_member_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 
 class Members extends StatefulWidget {
   static const String routeName = "/members";

@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/comment_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
 
 class ProfileImageWithBanners extends StatelessWidget {
@@ -166,7 +167,7 @@ class ProfileImageWithBanners extends StatelessWidget {
                 right: 16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: myProvider.comments.map((comment) {
+                  children: CommentProvider().comments.map((comment) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 6),
                       padding: const EdgeInsets.all(10),
@@ -216,82 +217,94 @@ class ProfileImageWithBanners extends StatelessWidget {
   }
 
   Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
-  final theme = provider.selectedTheme;
-  final color = provider.primaryColor;
-  final font = provider.selectedFont;
+    final theme = provider.selectedTheme;
+    final color = provider.primaryColor;
+    final font = provider.selectedFont;
 
-  switch (theme) {
-    case 'bubble':
-      return Padding(
-        padding: EdgeInsets.all(11),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Text(
-            "user_name".tr(),
-            style: getFontStyle(
-              context,
-              font,
-              fontSize: 12,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      );
+    return Consumer<CommentProvider>(
+      builder: (context, commentProvider, _) {
+        final shownIndex = commentProvider.shownCommentIndex;
+        final textToShow = shownIndex != null
+            ? commentProvider.comments[shownIndex]
+            : "user_name".tr();
 
-    case 'minimal':
-      return Padding(
-        padding: EdgeInsets.only(bottom: 11),
-        child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(width: 12, height: 24, color: color),
-              Container(
-                width: 76,
-                height: 23,
-                color: Colors.white,
-                child: Center(
-                  child: Text(
-                    "user_name".tr(),
-                    style: getFontStyle(
-                      context,
-                      font,
-                      fontSize: 12,
-                      color: Colors.black87,
-                    ),
+        switch (theme) {
+          case 'bubble':
+            return Padding(
+              padding: const EdgeInsets.all(11),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Text(
+                  textToShow,
+                  style: getFontStyle(
+                    context,
+                    font,
+                    fontSize: 12,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      );
+            );
 
-    case 'news':
-    default:
-      return Padding(
-        padding: EdgeInsets.all(11),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(0),
-          ),
-          child: Text(
-            "user_name".tr(),
-            style: getFontStyle(
-              context,
-              font,
-              fontSize: 12,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      );
+          case 'minimal':
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 11),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(width: 12, height: 24, color: color),
+                    Container(
+                      constraints: const BoxConstraints(
+                        minWidth: 50,
+                      ),
+                      height: 23,
+                      color: Colors.white,
+                      child: Center(
+                        child: Text(
+                          textToShow,
+                          style: getFontStyle(
+                            context,
+                            font,
+                            fontSize: 12,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            );
+
+          case 'news':
+          default:
+            return Padding(
+              padding: const EdgeInsets.all(11),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                child: Text(
+                  textToShow,
+                  style: getFontStyle(
+                    context,
+                    font,
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+        }
+      },
+    );
   }
-}
 }

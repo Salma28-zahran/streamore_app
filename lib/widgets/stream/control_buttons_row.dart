@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:streamore_app/widgets/stream/circle_and_action_icons.dart';
 
-import '../../../my_provider.dart';
+import '../../provider/my_provider.dart';
 
 class ControlButtonsRow extends StatelessWidget {
   final bool micOn;

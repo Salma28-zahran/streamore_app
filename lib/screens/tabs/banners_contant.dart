@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 import 'package:provider/provider.dart';
 
 class BannersContant extends StatefulWidget {
@@ -99,7 +99,8 @@ class _BannersContantState extends State<BannersContant> {
               final isTapped = myProvider.tappedBanners.contains(index);
               final isShown = myProvider.shownBanners.contains(index);
 
-              return GestureDetector(
+              return
+                GestureDetector(
                 onTap: () {
                   setState(() {
                     myProvider.toggleBannerTapped(index);  // Toggle tapped state
