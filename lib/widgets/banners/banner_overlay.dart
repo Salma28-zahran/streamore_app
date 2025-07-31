@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 
 class BannerOverlay extends StatelessWidget {
   const BannerOverlay({super.key});

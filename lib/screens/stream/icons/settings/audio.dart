@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:streamore_app/my_provider.dart' show MyProvider;
+import 'package:streamore_app/provider/my_provider.dart' show MyProvider;
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';

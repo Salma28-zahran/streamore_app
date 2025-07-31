@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../my_provider.dart';
+import '../../provider/my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/section_header.dart';
 
 ///— Logo Section ————————————————————————————————————————————

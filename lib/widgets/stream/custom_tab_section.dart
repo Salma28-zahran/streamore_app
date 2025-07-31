@@ -9,7 +9,7 @@ import 'package:streamore_app/screens/tabs/chat_tab.dart';
 import 'package:streamore_app/screens/tabs/comments_tab.dart';
 import 'package:streamore_app/screens/tabs/tickers_contant.dart';
 
-import '../../../my_provider.dart';
+import '../../provider/my_provider.dart';
 
 class CustomTabSection extends StatelessWidget {
   final TabController tabController;

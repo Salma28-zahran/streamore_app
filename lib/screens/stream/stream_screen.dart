@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/comment_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
@@ -11,7 +12,7 @@ import 'package:streamore_app/widgets/overlay.dart';
 import 'package:streamore_app/widgets/banners/show_banners.dart';
 import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
 import 'package:streamore_app/widgets/stream/custom_tab_section.dart';
-import '../../my_provider.dart';
+import '../../provider/my_provider.dart';
 
 class StreamScreen extends StatefulWidget {
   static const String routeName = "/stream";
@@ -52,6 +53,9 @@ class _StreamScreenState extends State<StreamScreen>
 
     final bool hasNotification = false;
 
+    final commentProvider = Provider.of<CommentProvider>(context);
+
+
     return Scaffold(
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
@@ -66,12 +70,13 @@ class _StreamScreenState extends State<StreamScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ProfileImageWithBanners(
-  isZoomVisible: isZoomVisible,
-  profileImageWidth: profileImageWidth,
-  profileImageHeight: profileImageHeight,
-  onZoomIconClick: _onZoomIconClick,
-  onProfileImageClick: _onProfileImageClick,
-),
+                      isZoomVisible: isZoomVisible,
+                      profileImageWidth: profileImageWidth,
+                      profileImageHeight: profileImageHeight,
+                      onZoomIconClick: _onZoomIconClick,
+                      onProfileImageClick: _onProfileImageClick,
+                    ),
+
 
                   ],
                 ),

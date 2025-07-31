@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/widgets/custombox2.dart';
 
 class AccountTab extends StatefulWidget {
