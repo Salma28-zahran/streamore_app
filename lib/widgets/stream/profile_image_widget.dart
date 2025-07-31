@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
+
 
 class ProfileImageWidget extends StatelessWidget {
   final bool isZoomVisible;
@@ -7,7 +10,7 @@ class ProfileImageWidget extends StatelessWidget {
   final VoidCallback onZoomClick;
   final VoidCallback onProfileClick;
   final Widget themeOverlay;
-  final List<Widget> comments;
+
 
   const ProfileImageWidget({
     super.key,
@@ -17,7 +20,7 @@ class ProfileImageWidget extends StatelessWidget {
     required this.onZoomClick,
     required this.onProfileClick,
     required this.themeOverlay,
-    required this.comments,
+
   });
 
   @override
@@ -56,20 +59,14 @@ class ProfileImageWidget extends StatelessWidget {
               ),
             ),
           ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: themeOverlay,
-        ),
-        Positioned(
-          bottom: 100,
-          left: 16,
-          right: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: comments,
+        if (Provider.of<MyProvider>(context).isOverlayEnabled)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: themeOverlay,
           ),
-        ),
+
+
       ],
     );
   }

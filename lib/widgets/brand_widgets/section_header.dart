@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
-import '../../../my_provider.dart';
+import '../../provider/my_provider.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;

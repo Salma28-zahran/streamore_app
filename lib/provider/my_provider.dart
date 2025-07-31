@@ -197,25 +197,15 @@ class MyProvider extends ChangeNotifier {
   }
 
   bool _isOverlayEnabled = false;
-  final List<String> _comments = [];
 
   bool get isOverlayEnabled => _isOverlayEnabled;
-  List<String> get comments => List.unmodifiable(_comments);
 
   void toggleOverlay(bool value) {
     _isOverlayEnabled = value;
     notifyListeners();
   }
 
-  void addComment(String comment) {
-    _comments.add(comment);
-    notifyListeners();
-  }
 
-  void clearComments() {
-    _comments.clear();
-    notifyListeners();
-  }
 
   List<String> chatMessages = [];
   void addChatMessage(String message) {
@@ -223,8 +213,7 @@ class MyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // // Banner content and state management ****************************************************
- List<String> _banners = [];
+  List<String> _banners = [];
   Set<int> _shownBanners = {};
   Set<int> _tappedBanners = {};
 
@@ -273,58 +262,6 @@ class MyProvider extends ChangeNotifier {
     _tappedBanners.clear();
     notifyListeners();
   }
-  Set<int> tappedComments = {};
-  Set<int> shownComments = {};
-  Set<int> starredComments = {};
-
-  void toggleCommentTapped(int index) {
-    if (tappedComments.contains(index)) {
-      tappedComments.remove(index);
-    } else {
-      tappedComments.add(index);
-    }
-    notifyListeners();
-  }
-
-  void toggleCommentShown(int index) {
-    if (shownComments.contains(index)) {
-      shownComments.remove(index);
-    } else {
-      shownComments.add(index);
-    }
-    notifyListeners();
-  }
-
-  void toggleCommentStarred(int index) {
-    if (starredComments.contains(index)) {
-      starredComments.remove(index);
-    } else {
-      starredComments.add(index);
-    }
-    notifyListeners();
-  }
-
-  void deleteComment(int index) {
-    comments.removeAt(index);
-    tappedComments.remove(index);
-    shownComments.remove(index);
-    starredComments.remove(index);
-    notifyListeners();
-  }
-
-  String _lastComment = '';
-  String get lastComment => _lastComment;
-
-  void setLastComment(String comment) {
-    _lastComment = comment;
-    notifyListeners();
-  }
-
-  String lastCommentIfExists(BuildContext context) {
-    return _lastComment.isNotEmpty ? _lastComment : "user_name".tr();
-  }
-
-
 
 
 

@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:streamore_app/my_provider.dart';
+import 'package:streamore_app/provider/comment_provider.dart';
+import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
+import 'package:provider/provider.dart';
 
 class ThemeOverlayWidget extends StatelessWidget {
   final MyProvider provider;
@@ -13,6 +15,12 @@ class ThemeOverlayWidget extends StatelessWidget {
     final theme = provider.selectedTheme;
     final color = provider.primaryColor;
     final font = provider.selectedFont;
+    final commentProvider = Provider.of<CommentProvider>(context);
+    final displayedText = commentProvider.shownCommentText != null
+        ? commentProvider.shownCommentText!
+        : "user_name".tr();
+
+
 
     switch (theme) {
       case 'bubble':
@@ -25,7 +33,7 @@ class ThemeOverlayWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
             ),
             child: Text(
-              "user_name".tr(),
+              displayedText,
               style: getFontStyle(
                 context,
                 font,
@@ -49,7 +57,7 @@ class ThemeOverlayWidget extends StatelessWidget {
                   color: Colors.white,
                   child: Center(
                     child: Text(
-                      "user_name".tr(),
+                      displayedText,
                       style: getFontStyle(
                         context,
                         font,
@@ -74,7 +82,7 @@ class ThemeOverlayWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(0),
             ),
             child: Text(
-              "user_name".tr(),
+              displayedText,
               style: getFontStyle(
                 context,
                 font,
