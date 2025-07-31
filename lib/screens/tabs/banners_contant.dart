@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,8 @@ class _BannersContantState extends State<BannersContant> {
   void _addBanner() {
     final text = bannerController.text.trim();
     if (text.isNotEmpty) {
-      final myProvider = Provider.of<MyProvider>(context, listen: false);
-      myProvider.addBanner(text);  // Add banner content to provider
+      final myProvider = Provider.of<BannersProvider>(context, listen: false);
+      myProvider.addBanner(text); 
 
       setState(() {
         bannerController.clear();
@@ -37,24 +38,22 @@ class _BannersContantState extends State<BannersContant> {
   }
 
   void _toggleShowHide(int index) {
-    final myProvider = Provider.of<MyProvider>(context, listen: false);
-    myProvider.toggleBannerVisibility(index);  // Toggle visibility
+    final myProvider = Provider.of<BannersProvider>(context, listen: false);
+    myProvider.toggleBannerVisibility(index);  
   }
 
 
   void _deleteBanner(int index) {
-  final myProvider = Provider.of<MyProvider>(context, listen: false);
+  final myProvider = Provider.of<BannersProvider>(context, listen: false);
   myProvider.removeBannerAt(index);
 }
 
 
   @override
   Widget build(BuildContext context) {
-    final myProvider = Provider.of<MyProvider>(context);
+    final myProvider = Provider.of<BannersProvider>(context);
 
-    // Ensure that actions are triggered after layout
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Trigger any necessary actions after layout, if required
     });
 
     return Scaffold(
@@ -92,7 +91,6 @@ class _BannersContantState extends State<BannersContant> {
 
             const SizedBox(height: 16),
 
-            // Display banners from the provider
             ...myProvider.banners.asMap().entries.map((entry) {
               final index = entry.key;
               final text = entry.value;
@@ -103,7 +101,7 @@ class _BannersContantState extends State<BannersContant> {
                 GestureDetector(
                 onTap: () {
                   setState(() {
-                    myProvider.toggleBannerTapped(index);  // Toggle tapped state
+                    myProvider.toggleBannerTapped(index);  
                   });
                 },
                 child: Container(
@@ -168,7 +166,7 @@ class _BannersContantState extends State<BannersContant> {
                           ],
                         ),
                       ),
-                      if (isTapped) ...[  // Show delete icon if tapped
+                      if (isTapped) ...[ 
                         const SizedBox(width: 12),
                         GestureDetector(
                           onTap: () => _deleteBanner(index),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/comment_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
@@ -24,7 +25,7 @@ class ProfileImageWithBanners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myProvider = Provider.of<MyProvider>(context);
+    final bannersProvider = Provider.of<BannersProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 15),
@@ -34,7 +35,6 @@ class ProfileImageWithBanners extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              // Profile Image
               GestureDetector(
                 onTap: _onProfileImageClick,
                 child: ClipRRect(
@@ -48,7 +48,6 @@ class ProfileImageWithBanners extends StatelessWidget {
                 ),
               ),
 
-              // Zoom Icon
               if (isZoomVisible)
                 Positioned(
                   top: profileImageHeight / 2 - 27,
@@ -70,17 +69,16 @@ class ProfileImageWithBanners extends StatelessWidget {
                   ),
                 ),
 
-              // Banner or UserName
               Consumer<MyProvider>(
                 builder: (context, myProvider, child) {
-                  if (myProvider.shownBanners.isNotEmpty) {
+                  if (bannersProvider.shownBanners.isNotEmpty) {
                     return Positioned(
                       top: profileImageHeight - 35,
                       left: 0,
                       right: 0,
                       child: Column(
-                        children: myProvider.shownBanners.map((index) {
-                          final bannerText = myProvider.banners[index];
+                        children: bannersProvider.shownBanners.map((index) {
+                          final bannerText = bannersProvider.banners[index];
                           switch (myProvider.selectedTheme) {
                             case 'bubble':
                               return Center(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 
 class BannerOverlay extends StatelessWidget {
@@ -7,7 +8,7 @@ class BannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyProvider>(
+    return Consumer<BannersProvider>(
       builder: (context, myProvider, child) {
         if (myProvider.shownBanners.isEmpty) {
           return const SizedBox.shrink();

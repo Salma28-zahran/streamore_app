@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -67,7 +68,7 @@ class _TickersContantState extends State<TickersContant> {
             color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
           onPressed: () {
-            Provider.of<MyProvider>(
+            Provider.of<BannersProvider>(
               context,
               listen: false,
             ).setTFolderClicked(false);
