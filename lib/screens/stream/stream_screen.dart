@@ -4,10 +4,11 @@ import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/background.dart';
+import 'package:streamore_app/widgets/camera_permission.dart';
 import 'package:streamore_app/widgets/logo.dart';
 import 'package:streamore_app/widgets/mic-permission.dart';
 import 'package:streamore_app/widgets/overlay.dart';
-import 'package:streamore_app/widgets/show_banners.dart';
+import 'package:streamore_app/widgets/banners/show_banners.dart';
 import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
 import 'package:streamore_app/widgets/stream/custom_tab_section.dart';
 import '../../my_provider.dart';
@@ -82,7 +83,8 @@ class _StreamScreenState extends State<StreamScreen>
                 iconSize: iconSize,
                 isSmall: isSmall,
                 toggleMic: () => requestMicPermission(context, _toggleMic),
-                toggleCam: () => setState(() => _camOn = !_camOn),
+                toggleCam: () => requestCameraPermission(context, _toggleCam),
+
               ),
 
               const SizedBox(height: 8),
@@ -117,4 +119,11 @@ class _StreamScreenState extends State<StreamScreen>
       _micOn = !_micOn;
     });
   }
+
+  void _toggleCam() {
+  setState(() {
+    _camOn = !_camOn;
+  });
+}
+
 }
