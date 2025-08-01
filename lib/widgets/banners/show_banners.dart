@@ -158,55 +158,7 @@ class ProfileImageWithBanners extends StatelessWidget {
                 },
               ),
 
-              // Comments
-              Positioned(
-                bottom: 100,
-                left: 16,
-                right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: CommentProvider().comments.map((comment) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.person, size: 24, color: Colors.white54),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "UserName",
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 6,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  comment,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
+              // Done***************** C
             ],
           ),
         ],
