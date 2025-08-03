@@ -54,5 +54,8 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		
+		<key>NSCameraUsageDescription</key>
+        <string>We need access to your camera for capturing photos/videos</string>
 	</dict>
 </plist>

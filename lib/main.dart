@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/on_boarding_screen.dart';
 import 'package:streamore_app/screens/auth/sign_in.dart';
@@ -47,6 +48,7 @@ void main()async {
         providers: [
           ChangeNotifierProvider(create: (context) => MyProvider()),
           ChangeNotifierProvider(create: (context) => CommentProvider()),
+          ChangeNotifierProvider(create: (context) => BannersProvider()),
         ],
         child: const MyApp(),
       ),

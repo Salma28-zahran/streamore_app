@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/screens/tabs/banners_contant.dart';
 import 'package:streamore_app/screens/tabs/banners_tab.dart';
 import 'package:streamore_app/screens/tabs/brand_tab.dart';
@@ -26,7 +27,7 @@ class CustomTabSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final myprovider = Provider.of<MyProvider>(context);
+    final myprovider = Provider.of<BannersProvider>(context);
 
     return Expanded(
       child: Padding(
