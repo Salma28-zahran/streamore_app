@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
-import 'package:streamore_app/on_boarding_screen.dart';
+import 'package:streamore_app/on_boarding/on_boarding_screen.dart';
 import 'package:streamore_app/screens/auth/sign_in.dart';
 import 'package:streamore_app/screens/auth/sign_up.dart';
 import 'package:streamore_app/screens/auth/verify_email1.dart';

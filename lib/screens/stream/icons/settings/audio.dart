@@ -6,7 +6,7 @@ import 'package:streamore_app/provider/my_provider.dart' show MyProvider;
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
-import 'package:streamore_app/widgets/volume_test.dart';
+import 'package:streamore_app/widgets/permissions/mic/volume_test.dart';
 
 
 class Audio extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:streamore_app/widgets/custombox.dart' show CustomBox;
+import 'package:streamore_app/widgets/verify_widgets/custombox_verify.dart' show CustomBox, CustomboxVerify;
 
 class VerifyEmail2 extends StatefulWidget {
   static const String routeName = "/verify2";
@@ -100,7 +100,7 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
               alignment: WrapAlignment.center,
               children: List.generate(
                 6,
-                    (index) => CustomBox(
+                    (index) => CustomboxVerify(
                   controller: _controllers[index],
                   focusNode: _focusNodes[index],
                   nextFocus:

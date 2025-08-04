@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/screens/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
-import 'package:streamore_app/widgets/custombox.dart';
+import 'package:streamore_app/widgets/verify_widgets/custombox_verify.dart';
 
 class ForgetPass2 extends StatefulWidget {
   static const String routeName = "/forget_pass2";
@@ -125,7 +125,7 @@ class _ForgetPass2State extends State<ForgetPass2> {
                   alignment: WrapAlignment.center,
                   children: List.generate(
                     6,
-                        (index) => CustomBox(
+                        (index) => CustomboxVerify(
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
                       nextFocus:

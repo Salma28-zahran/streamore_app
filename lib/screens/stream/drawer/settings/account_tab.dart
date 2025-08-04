@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
-import 'package:streamore_app/widgets/custombox2.dart';
+import 'package:streamore_app/widgets/account_widgets/account_custombox.dart';
 
 class AccountTab extends StatefulWidget {
   const AccountTab({super.key});
@@ -379,7 +379,7 @@ class _AccountTabState extends State<AccountTab> {
                   alignment: WrapAlignment.center,
                   children: List.generate(
                     6,
-                        (i) => CustomBox2(
+                        (i) => AccountCustombox(
                       controller: _controllers[i],
                       focusNode: _focusNodes[i],
                       nextFocus: i < 5 ? _focusNodes[i + 1] : null,

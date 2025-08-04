@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CustomBox2 extends StatelessWidget {
+class AccountCustombox extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final FocusNode? nextFocus;
   final Function(String)? onChanged;
 
-  const CustomBox2({
+  const AccountCustombox({
     super.key,
     required this.controller,
     required this.focusNode,
