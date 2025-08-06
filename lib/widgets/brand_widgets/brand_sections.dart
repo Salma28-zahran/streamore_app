@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/background-overlay-logo_provider.dart';
 import '../../provider/my_provider.dart';
 import 'package:streamore_app/widgets/brand_widgets/section_header.dart';
 
@@ -21,7 +22,7 @@ class _LogoSectionState extends State<LogoSection> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
-      Provider.of<MyProvider>(context, listen: false).setLogoImage(picked);
+      Provider.of<BackgroundOverlayLogoProvider>(context, listen: false).setLogoImage(picked);
     }
   }
 
@@ -39,7 +40,7 @@ class _LogoSectionState extends State<LogoSection> {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               children: [
-                Consumer<MyProvider>(
+                Consumer<BackgroundOverlayLogoProvider>(
                   builder: (context, provider, child) {
                     return _buildImageBox(
                       image:
@@ -64,7 +65,7 @@ class _LogoSectionState extends State<LogoSection> {
   Widget _buildImageBox({
     Image? image,
     XFile? file,
-    MyProvider? provider,
+    BackgroundOverlayLogoProvider? provider,
     bool isDefault = false,
   }) {
     bool isSelected =
@@ -108,7 +109,7 @@ class _LogoSectionState extends State<LogoSection> {
 
     return GestureDetector(
       onTap: () {
-        final provider = Provider.of<MyProvider>(context, listen: false);
+        final provider = Provider.of<BackgroundOverlayLogoProvider>(context, listen: false);
         if (provider.logoImageFile == null && !isDefault) {
           provider.showDefaultLogo();
         } else {
@@ -151,7 +152,7 @@ class _OverlaySectionState extends State<OverlaySection> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      context.read<MyProvider>().addOverlayImage(pickedFile);
+      context.read<BackgroundOverlayLogoProvider>().addOverlayImage(pickedFile);
     } else {
       ScaffoldMessenger.of(
         context,
@@ -171,7 +172,7 @@ class _OverlaySectionState extends State<OverlaySection> {
         if (_isVisible)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Consumer<MyProvider>(
+            child: Consumer<BackgroundOverlayLogoProvider>(
               builder: (context, provider, child) {
                 return Wrap(
                   spacing: 10,
@@ -188,7 +189,7 @@ class _OverlaySectionState extends State<OverlaySection> {
     );
   }
 
-  List<Widget> _buildImageList(MyProvider provider) {
+  List<Widget> _buildImageList(BackgroundOverlayLogoProvider provider) {
     int remainingSlots = 7 - provider.overlayImages.length;
 
     List<Widget> imageBoxes =
@@ -205,7 +206,7 @@ class _OverlaySectionState extends State<OverlaySection> {
     return imageBoxes;
   }
 
-  Widget _buildImageBox({XFile? overlayImage, MyProvider? provider}) {
+  Widget _buildImageBox({XFile? overlayImage, BackgroundOverlayLogoProvider? provider}) {
     bool isSelected = provider?.selectedOverlayImage == overlayImage;
 
     return GestureDetector(
@@ -271,11 +272,11 @@ class _BackgroundSectionState extends State<BackgroundSection> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      context.read<MyProvider>().addBackgroundImage(pickedFile);
+      context.read<BackgroundOverlayLogoProvider>().addBackgroundImage(pickedFile);
     }
   }
 
-  List<Widget> _buildImageList(MyProvider provider) {
+  List<Widget> _buildImageList(BackgroundOverlayLogoProvider provider) {
     int remainingSlots = 7 - provider.backgroundImages.length;
 
     List<Widget> imageBoxes =
@@ -302,7 +303,7 @@ class _BackgroundSectionState extends State<BackgroundSection> {
         if (_isVisible)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Consumer<MyProvider>(
+            child: Consumer<BackgroundOverlayLogoProvider>(
               builder: (context, provider, child) {
                 return Wrap(
                   spacing: 10,
@@ -332,7 +333,7 @@ class _BackgroundSectionState extends State<BackgroundSection> {
     ),
   );
 
-  Widget _buildImageBox({XFile? file, MyProvider? provider}) {
+  Widget _buildImageBox({XFile? file, BackgroundOverlayLogoProvider? provider}) {
     bool isSelected = provider?.selectedBackgroundImage == file;
 
     return GestureDetector(

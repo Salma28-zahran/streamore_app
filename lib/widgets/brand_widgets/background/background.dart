@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 
 class BackgroundWidget extends StatefulWidget {
@@ -11,7 +12,7 @@ class BackgroundWidget extends StatefulWidget {
 class _BackgroundWidgetState extends State<BackgroundWidget> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyProvider>(
+    return Consumer<BackgroundOverlayLogoProvider>(
       builder: (context, provider, child) {
         if (provider.selectedBackgroundImage == null ||
             !provider.isBackgroundVisible) {
