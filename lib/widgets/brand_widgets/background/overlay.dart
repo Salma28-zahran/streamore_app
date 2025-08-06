@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 
 class OverlayWidget extends StatefulWidget {
@@ -11,7 +12,7 @@ class OverlayWidget extends StatefulWidget {
 class _OverlayWidgetState extends State<OverlayWidget> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyProvider>(
+    return Consumer<BackgroundOverlayLogoProvider>(
       builder: (context, provider, child) {
         if (!provider.isOverlayVisible) return SizedBox();
 
