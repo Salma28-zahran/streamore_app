@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:streamore_app/provider/banners_provider.dart';
 import 'package:streamore_app/provider/comment_provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
-import 'package:streamore_app/widgets/brand_widgets/brand_utils/font_utils.dart';
+import 'package:streamore_app/utils/brand_utils/font_utils.dart';
 
 class ProfileImageWithBanners extends StatelessWidget {
   final double profileImageWidth;
