@@ -9,7 +9,7 @@ import 'package:streamore_app/screens/auth/sign_up.dart';
 import 'package:streamore_app/screens/auth/verify_email1.dart';
 import 'package:streamore_app/screens/auth/verify_email2.dart';
 import 'package:streamore_app/screens/auth/verify_email3.dart';
-import 'package:streamore_app/screens/stream/choose_plan_screen.dart';
+import 'package:streamore_app/screens/stream/drawer/settings/choose_plan_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/destination.dart';
 import 'package:streamore_app/screens/stream/drawer/library.dart';

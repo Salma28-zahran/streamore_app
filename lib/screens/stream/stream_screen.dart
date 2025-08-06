@@ -9,7 +9,7 @@ import 'package:streamore_app/widgets/banners/show_banners.dart';
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
 import 'package:streamore_app/widgets/brand_widgets/logo/logo.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
-import 'package:streamore_app/widgets/overlay.dart';
+import 'package:streamore_app/widgets/brand_widgets/background/overlay.dart';
 import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
 import 'package:streamore_app/widgets/stream/custom_tab_section.dart';
 import '../../provider/my_provider.dart';
