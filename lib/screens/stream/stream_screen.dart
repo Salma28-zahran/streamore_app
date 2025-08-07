@@ -65,7 +65,7 @@ class _StreamScreenState extends State<StreamScreen>
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 15, left: 8, right: 8),
+                padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
