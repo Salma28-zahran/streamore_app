@@ -80,6 +80,7 @@ class _MainDrawerState extends State<MainDrawer> {
   Widget build(BuildContext context) {
     var myprovider = Provider.of<MyProvider>(context);
     bool isDark = myprovider.themeMode == ThemeMode.dark;
+    Size mq = MediaQuery.of(context).size; // ✅ MediaQuery for responsive use
 
     return Drawer(
       backgroundColor: Theme.of(context).cardColor,
@@ -92,12 +93,10 @@ class _MainDrawerState extends State<MainDrawer> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  color: Theme.of(context).cardColor,
-                  padding: const EdgeInsets.all(16),
-                  alignment: Alignment.bottomLeft,
-                  child:
-                  Image.asset("assets/images/app_name.png")
-                ),
+                    color: Theme.of(context).cardColor,
+                    padding: const EdgeInsets.all(16),
+                    alignment: Alignment.bottomLeft,
+                    child: Image.asset("assets/images/app_name.png")),
                 Padding(
                   padding: const EdgeInsets.only(right: 17),
                   child: Row(
@@ -109,13 +108,15 @@ class _MainDrawerState extends State<MainDrawer> {
                         child: Icon(
                           isDark ? Icons.wb_sunny : Icons.dark_mode,
                           size: 25,
-                          color: isDark ? Colors.amber : Theme.of(context).primaryColor,
+                          color:
+                          isDark ? Colors.amber : Theme.of(context).primaryColor,
                         ),
                       ),
                       IconButton(
                         icon: Text(
                           context.locale.languageCode == 'en' ? 'AR' : 'EN',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                         onPressed: () {
                           if (context.locale.languageCode == 'en') {
@@ -127,12 +128,9 @@ class _MainDrawerState extends State<MainDrawer> {
                           print("Switched to ${context.locale.languageCode}");
                         },
                       ),
-
-
                     ],
                   ),
                 ),
-
               ],
             ),
             const SizedBox(height: 5),
@@ -157,7 +155,7 @@ class _MainDrawerState extends State<MainDrawer> {
             const Spacer(),
 
             Padding(
-              padding: const EdgeInsets.only(left: 39,right: 39),
+              padding: const EdgeInsets.only(left: 39, right: 39),
               child: Row(
                 children: [
                   GestureDetector(
@@ -191,9 +189,8 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
             ),
             const SizedBox(height: 15),
-
             Padding(
-              padding: const EdgeInsets.only(left: 39,right: 39),
+              padding: const EdgeInsets.only(left: 39, right: 39),
               child: Row(
                 children: [
                   GestureDetector(
