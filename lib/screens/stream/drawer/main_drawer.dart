@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/provider/my_provider.dart';
 import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
+import 'package:streamore_app/screens/stream/drawer/privacy_policy.dart';
 
 class MainDrawer extends StatefulWidget {
   static const String routeName = "/drawer";
@@ -174,7 +175,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   const SizedBox(width: 45),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/verify1');
+                      Navigator.pushNamed(context, '/');
                     },
                     child: Text(
                       "help_center".tr(),
@@ -195,7 +196,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/verify1');
+                      Navigator.pushNamed(context, '/');
                     },
                     child: Text(
                       "news".tr(),
@@ -209,7 +210,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   const SizedBox(width: 80),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/verify1');
+                      Navigator.pushNamed(context, PrivacyPolicy.routeName);
                     },
                     child: Text(
                       "our_policies".tr(),
