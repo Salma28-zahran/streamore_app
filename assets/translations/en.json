@@ -293,6 +293,15 @@
   "grant_microphone_access": "You need to grant microphone access to use this feature.",
   "ok": "OK",
  "messages": "Message...",
- "no_message": "No message"
+ "no_message": "No message",
+
+ "privacy_policy": "Privacy Policy",
+ "section_i": "Section I,",
+ "using_the_site": "Using the site",
+"link": "                      \" and/or application Streamore means unconditional consent of the user with this Policy and the terms and conditions specified during the processing of their personal information; in case of disagreement with these conditions, the user should refrain from using this resource/application.\",\n",
+ "section_ii": "Section II",
+ "section_iii": "Section III"
+
+
 
 }

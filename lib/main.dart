@@ -9,6 +9,7 @@ import 'package:streamore_app/screens/auth/sign_up.dart';
 import 'package:streamore_app/screens/auth/verify_email1.dart';
 import 'package:streamore_app/screens/auth/verify_email2.dart';
 import 'package:streamore_app/screens/auth/verify_email3.dart';
+import 'package:streamore_app/screens/stream/drawer/privacy_policy.dart';
 import 'package:streamore_app/screens/stream/drawer/settings/choose_plan_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/screens/stream/drawer/destination.dart';
@@ -104,6 +105,7 @@ class MyApp extends StatelessWidget {
         ForgetPass2.routeName:(context)=>ForgetPass2(),
         ForgetPass3.routeName:(context)=>ForgetPass3(),
         FullImageScreen.routeName:(context)=>FullImageScreen(),
+        PrivacyPolicy.routeName:(context)=> PrivacyPolicy(),
 
 
 
