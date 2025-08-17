@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/utils/bottom_sheet_widget.dart';
 //import 'package:streamore_app/widgets/bottom_sheet_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:streamore_app/widgets/stream/circle_and_action_icons.dart';
 
-import '../../provider/my_provider.dart';
 
 class ControlButtonsRow extends StatelessWidget {
   final bool micOn;

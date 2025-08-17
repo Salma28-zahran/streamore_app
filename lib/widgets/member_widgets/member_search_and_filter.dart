@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:streamore_app/provider/my_provider.dart';
+import 'package:streamore_app/core/provider/my_provider.dart';
 
 class MemberSearchAndFilter extends StatelessWidget {
   final String? selectedValue;
