@@ -4,12 +4,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 
-import 'package:streamore_app/features/tabs/banners_contant.dart';
-import 'package:streamore_app/features/tabs/banners_tab.dart';
-import 'package:streamore_app/features/tabs/brand_tab.dart';
-import 'package:streamore_app/features/tabs/chat_tab.dart';
-import 'package:streamore_app/features/tabs/comments_tab.dart';
-import 'package:streamore_app/features/tabs/tickers_contant.dart';
+import 'package:streamore_app/features/tabs/banners/banners_contant.dart';
+import 'package:streamore_app/features/tabs/banners/banners_tab.dart';
+import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
+import 'package:streamore_app/features/tabs/chat/chat_tab.dart';
+import 'package:streamore_app/features/tabs/comment/comments_tab.dart';
+import 'package:streamore_app/features/tabs/banners/tickers_contant.dart';
 
 
 

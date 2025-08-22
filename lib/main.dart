@@ -4,11 +4,12 @@ import 'package:streamore_app/core/provider/background-overlay-logo_provider.dar
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:streamore_app/features/auth/sign_in.dart';
-import 'package:streamore_app/features/auth/sign_up.dart';
-import 'package:streamore_app/features/auth/verify_email1.dart';
-import 'package:streamore_app/features/auth/verify_email2.dart';
-import 'package:streamore_app/features/auth/verify_email3.dart';
+import 'package:streamore_app/features/auth/presentaion/views/sign_in.dart';
+import 'package:streamore_app/features/auth/presentaion/views/sign_up.dart';
+import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
+import 'package:streamore_app/features/auth/presentaion/views/verify_email2.dart';
+import 'package:streamore_app/features/auth/presentaion/views/verify_email3.dart';
+import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
 
 import 'package:streamore_app/features/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/features/stream/drawer/destination.dart';
@@ -32,7 +33,6 @@ import 'package:streamore_app/features/stream/icons/settings/lay.dart';
 import 'package:streamore_app/features/stream/icons/settings/settings_icon.dart';
 import 'package:streamore_app/features/stream/stream_screen.dart';
 
-import 'package:streamore_app/on_boarding/on_boarding_screen.dart';
 
 import 'package:streamore_app/theme/dark_theme.dart';
 import 'package:streamore_app/theme/light_theme.dart';
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
         SignIn.routeName:        (context) => const SignIn(),
-        SignUp.routeName:        (context) => const SignUp(),
+        SignUp.routeName:        (context) =>  SignUp(),
         VerifyEmail1.routeName:  (context) => const VerifyEmail1(),
         VerifyEmail2.routeName:  (context) => const VerifyEmail2(),
         VerifyEmail3.routeName:  (context) => const VerifyEmail3(),
