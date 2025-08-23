@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:streamore_app/utils/brand_utils/font_utils.dart';
 
 import 'package:provider/provider.dart';
+import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
 
 class ThemeOverlayWidget extends StatelessWidget {
   final MyProvider provider;

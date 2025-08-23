@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:streamore_app/utils/brand_utils/font_utils.dart';
+import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
 
 Widget buildThemeButton({
   required BuildContext context,
