@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 
 class AccountMainSection extends StatelessWidget {
   final bool isDark;
@@ -19,6 +20,8 @@ class AccountMainSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myprovider = context.read<MyProvider>();
+    final token = "b7371be46ffa4d55630dc762a2377c527e94f5d0";
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +192,10 @@ class AccountMainSection extends StatelessWidget {
           width: w * 0.216,
           height: h * 0.033,
           child: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/signin'),
+            onPressed: () {
+              // استدعاء Cubit للـ Logout
+              context.read<AuthCubit>().logout(token: token);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Theme.of(context).primaryColor,

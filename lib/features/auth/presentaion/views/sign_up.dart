@@ -18,14 +18,11 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
-
   final confirmPasswordController = TextEditingController();
-  final formKey=GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   bool _obscurePassword = true;
-
   bool _obscureConfirmPassword = true;
 
   @override
@@ -34,14 +31,22 @@ class _SignUpState extends State<SignUp> {
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
         listener: (context, state) {
-          if (state is RegisterSuccessState){
-            Navigator.pushReplacement((context), MaterialPageRoute(builder: (context)=> VerifyEmail1()));
-          }
-          else if(state is FailedToRegisterState){
-            showDialog(context: context, builder: (context)=>AlertDialog(
-              content: Text(state.message,style: const TextStyle(color: Colors.white),),
-              backgroundColor: Colors.red,
-            ));
+          if (state is RegisterSuccessState) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => VerifyEmail1()),
+            );
+          } else if (state is FailedToRegisterState) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -58,7 +63,9 @@ class _SignUpState extends State<SignUp> {
                       child: Text(
                         "create_an ".tr(),
                         style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold, fontSize: 36),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                        ),
                       ),
                     ),
                     Padding(
@@ -66,7 +73,9 @@ class _SignUpState extends State<SignUp> {
                       child: Text(
                         "account".tr(),
                         style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold, fontSize: 36),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -100,7 +109,6 @@ class _SignUpState extends State<SignUp> {
                         },
                       ),
                     ),
-
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -163,8 +171,10 @@ class _SignUpState extends State<SignUp> {
                       padding: const EdgeInsets.only(left: 32),
                       child: RichText(
                         text: TextSpan(
-                          style:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                           children: [
                             TextSpan(
                               text: 'by_clicking_the'.tr(),
@@ -192,45 +202,60 @@ class _SignUpState extends State<SignUp> {
                             if (formKey.currentState!.validate()) {
                               final email = emailController.text.trim();
                               final password = passwordController.text.trim();
-                              final confirmPassword = confirmPasswordController.text.trim();
+                              final confirmPassword =
+                              confirmPasswordController.text.trim();
 
-                              if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                              if (email.isEmpty ||
+                                  password.isEmpty ||
+                                  confirmPassword.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("All fields are required")),
+                                  const SnackBar(
+                                    content: Text("All fields are required"),
+                                  ),
                                 );
                                 return;
                               }
 
-                              final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                              final emailRegex = RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                               if (!emailRegex.hasMatch(email)) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Please enter a valid email (e.g. name@example.com)")),
+                                  const SnackBar(
+                                    content: Text(
+                                      "Please enter a valid email (e.g. name@example.com)",
+                                    ),
+                                  ),
                                 );
                                 return;
                               }
 
                               if (password.length < 8) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Password must be at least 8 characters")),
+                                  const SnackBar(
+                                    content: Text(
+                                        "Password must be at least 8 characters"),
+                                  ),
                                 );
                                 return;
                               }
 
                               if (password != confirmPassword) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Passwords do not match")),
+                                  const SnackBar(
+                                    content:
+                                    Text("Passwords do not match"),
+                                  ),
                                 );
                                 return;
                               }
 
-                              // هنا بس تستدعي register
+                              // استدعاء register
                               BlocProvider.of<AuthCubit>(context).register(
                                 email: email,
                                 password: password,
                               );
                             }
                           },
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff1865E8),
                             minimumSize: const Size(317, 55),
@@ -238,19 +263,18 @@ class _SignUpState extends State<SignUp> {
                               borderRadius: BorderRadius.zero,
                             ),
                           ),
-                          child: Text( state is RegisterLoadingState? "loading....":
-                            "create_account".tr(),
+                          child: Text(
+                            state is RegisterLoadingState
+                                ? "loading...."
+                                : "create_account".tr(),
                             style: GoogleFonts.poppins(
                               fontSize: 20,
                               color: Colors.white,
                             ),
                           ),
-                        )
-
+                        ),
                       ],
                     ),
-
-
                     const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -259,14 +283,17 @@ class _SignUpState extends State<SignUp> {
                           text: TextSpan(
                             text: 'i_already_have_an_account '.tr(),
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
                             children: [
                               TextSpan(
                                 text: 'login'.tr(),
                                 style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline),
+                                  color: Colors.blue,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.underline,
+                                ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Navigator.pushNamed(context, '/signin');
@@ -274,7 +301,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],
