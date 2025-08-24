@@ -87,7 +87,11 @@ class MyApp extends StatelessWidget {
         SignIn.routeName:        (context) => const SignIn(),
         SignUp.routeName:        (context) =>  SignUp(),
         VerifyEmail1.routeName:  (context) => const VerifyEmail1(),
-        VerifyEmail2.routeName:  (context) => const VerifyEmail2(),
+        VerifyEmail2.routeName: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as String;
+          return VerifyEmail2(email: args);
+        },
+
         VerifyEmail3.routeName:  (context) => const VerifyEmail3(),
         StreamScreen.routeName:  (context) => const StreamScreen(),
         Library.routeName:       (context) => const Library(),
