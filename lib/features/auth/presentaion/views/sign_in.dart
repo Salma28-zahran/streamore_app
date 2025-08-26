@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
-
+import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass1.dart';
 
 class SignIn extends StatefulWidget {
   static const String routeName = "/signin";
@@ -35,7 +35,6 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthCubit(),
-
       child: BlocConsumer<AuthCubit, AuthStates>(
         listener: (context, state) {
           if (state is LogInSuccessState) {
@@ -45,6 +44,22 @@ class _SignInState extends State<SignIn> {
           } else if (state is FailedToLogInState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("failed_to_login".tr())),
+            );
+          }
+          // ----- هنا ضفت حالات الفرجت باسورد -----
+          else if (state is ResetPasswordLoadingState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Sending reset email...")),
+            );
+          } else if (state is ResetPasswordSuccessState) {
+            Navigator.pushNamed(
+              context,
+              VerifyPass1.routeName,
+              arguments: emailController.text,
+            );
+          } else if (state is FailedToResetPasswordState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
             );
           }
         },
@@ -173,11 +188,20 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   Padding(
-                    padding:
-                    const EdgeInsets.only(left: 32, top: 12, right: 43),
+                    padding: const EdgeInsets.only(left: 32, top: 12, right: 43),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/verify1');
+                        if (emailController.text.isNotEmpty) {
+                          context.read<AuthCubit>().resetPassword(
+                            email: emailController.text,
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter your email first"),
+                            ),
+                          );
+                        }
                       },
                       child: Text(
                         "forgot_password".tr(),

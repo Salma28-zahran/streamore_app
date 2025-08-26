@@ -1,31 +1,31 @@
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
-import 'package:streamore_app/widgets/verify_widgets/custombox_verify.dart' show CustomBox, CustomboxVerify;
+import 'package:streamore_app/widgets/verify_widgets/custombox_verify.dart'
+    show CustomBox, CustomboxVerify;
 
-class VerifyEmail2 extends StatefulWidget {
+// import الكيوبت + الاستيتس
+
+class VerifyPass2 extends StatefulWidget {
   static const String routeName = "/verify2";
 
-  final String email;
+  final String email; // ناخد الإيميل من الصفحة اللي قبلها
 
-  const VerifyEmail2({super.key, required this.email});
+  const VerifyPass2({super.key, required this.email});
 
   @override
-  State<VerifyEmail2> createState() => _VerifyEmail2State();
+  State<VerifyPass2> createState() => _VerifyEmail2State();
 }
 
-class _VerifyEmail2State extends State<VerifyEmail2> {
+class _VerifyEmail2State extends State<VerifyPass2> {
   final List<TextEditingController> _controllers =
   List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-
-  bool isLoading = false;
 
   bool get isFormFilled =>
       _controllers.every((controller) => controller.text.trim().isNotEmpty);
@@ -53,70 +53,45 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
     super.dispose();
   }
 
-  Future<void> _verifyCode() async {
+  void _verifyCode(BuildContext context) {
     final code = _controllers.map((c) => c.text.trim()).join();
 
-    setState(() => isLoading = true);
-
-    try {
-      final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/activate/"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": widget.email,
-          "activation_code": code,
-        }),
-      );
-
-      final responseBody = jsonDecode(response.body);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Account activated successfully!")),
-        );
-        Future.delayed(const Duration(milliseconds: 500), () {
-          Navigator.pushReplacementNamed(context, "/signin");
-        });
-      } else {
-        final errorMessage =
-            responseBody['message'] ?? responseBody['error'] ?? "Unknown error";
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    } finally {
-      setState(() => isLoading = false);
-    }
+    context.read<AuthCubit>().verifyPassCode(
+      email: widget.email,
+      code: code,
+    );
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
-      child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {
-          if (state is SendActivateLoadingState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Sending activation code...")),
-            );
-          } else if (state is SendActivateSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          } else if (state is FailedToSendActivateState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            body: SafeArea(
+    return Scaffold(
+      body: BlocProvider(
+        create: (context) => AuthCubit(),
+
+        child: BlocConsumer<AuthCubit, AuthStates>(
+          listener: (context, state) {
+            if (state is VerifyPassCodeSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+
+              Future.delayed(const Duration(milliseconds: 500), () {
+                Navigator.pushNamed(
+                  context,
+                  "/verify3",
+                  arguments: widget.email,
+                );
+              });
+            } else if (state is FailedToVerifyPassCodeState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.error)),
+              );
+            }
+          },
+          builder: (context, state) {
+            final isLoading = state is VerifyPassCodeLoadingState;
+
+            return SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -147,22 +122,19 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
                               '${'enter_the_confirmation_code_we_sent_to'.tr()}\n',
                             ),
                             TextSpan(
-                              text: widget.email,
+                              text: widget.email, // نعرض الإيميل الحقيقي
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
                             ),
                             TextSpan(
-                              text: ' ${'resent_code'.tr()}',
+                              text: '  ${'resent_code'.tr()}',
                               style: GoogleFonts.poppins(
                                 color: Colors.blue,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 decoration: TextDecoration.underline,
                               ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  context
-                                      .read<AuthCubit>()
-                                      .sendActivate(email: widget.email);
-                                },
                             ),
                           ],
                         ),
@@ -188,8 +160,9 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed:
-                        isFormFilled && !isLoading ? _verifyCode : null,
+                        onPressed: isFormFilled && !isLoading
+                            ? () => _verifyCode(context)
+                            : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: isFormFilled && !isLoading
                               ? const Color(0xff1865E8)
@@ -212,10 +185,10 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
-  }
+}
