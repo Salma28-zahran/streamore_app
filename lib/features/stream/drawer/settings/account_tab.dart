@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
+import 'package:streamore_app/features/stream/drawer/settings/profile/change_pass.dart';
 import 'package:streamore_app/widgets/account_widgets/account_custombox.dart';
 
 import '../../../../widgets/account_widgets/account_delete_section.dar.dart';
@@ -31,10 +33,14 @@ class _AccountTabState extends State<AccountTab> {
   @override
   void initState() {
     super.initState();
+
     isFormFilledNotifier = ValueNotifier(false);
     for (var c in _controllers) {
       c.addListener(_checkFormFilled);
+
+
     }
+
   }
 
   @override
@@ -58,7 +64,6 @@ class _AccountTabState extends State<AccountTab> {
 
     return BlocProvider(
       create: (_) => AuthCubit(),
-
       child: BlocListener<AuthCubit, AuthStates>(
         listener: (context, state) {
           if (state is LogOutSuccessState) {
@@ -74,8 +79,7 @@ class _AccountTabState extends State<AccountTab> {
             final isDark = myprovider.themeMode == ThemeMode.dark;
 
             return Padding(
-              padding:
-              EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.02),
+              padding: EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.02),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -83,6 +87,48 @@ class _AccountTabState extends State<AccountTab> {
                     isDark: isDark,
                     w: w,
                     h: h,
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: w * 0.285,
+                    height: h * 0.034,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final storedToken = await StorageHelper.getToken(); // هنا بنجيب التوكن
+
+                        if (storedToken == null || storedToken.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("No token found, please login again.")),
+                          );
+                          return;
+                        }
+                        print("🧩 Token from storage before navigating: $storedToken");
+
+                        Navigator.pushNamed(
+                          context,
+                          ChangePass.routeName,
+                          arguments: storedToken,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Theme.of(context).primaryColor,
+                        elevation: 0,
+                        side: const BorderSide(color: Colors.red),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Text(
+                        "change_pass".tr(),
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
                   ),
                   AccountDeleteSection(
                     isDark: isDark,

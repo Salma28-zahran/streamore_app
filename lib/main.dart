@@ -1,16 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
+import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass1.dart';
+import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass2.dart';
 import 'package:streamore_app/features/auth/presentaion/views/sign_in.dart';
 import 'package:streamore_app/features/auth/presentaion/views/sign_up.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email2.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email3.dart';
 import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
-
 import 'package:streamore_app/features/stream/drawer/contact_us_screen.dart';
 import 'package:streamore_app/features/stream/drawer/destination.dart';
 import 'package:streamore_app/features/stream/drawer/library.dart';
@@ -18,6 +21,7 @@ import 'package:streamore_app/features/stream/drawer/members.dart';
 import 'package:streamore_app/features/stream/drawer/privacy_policy.dart';
 import 'package:streamore_app/features/stream/drawer/referrals.dart';
 import 'package:streamore_app/features/stream/drawer/settings/choose_plan_screen.dart';
+import 'package:streamore_app/features/stream/drawer/settings/profile/change_pass.dart';
 import 'package:streamore_app/features/stream/drawer/settings/profile/change_password.dart';
 import 'package:streamore_app/features/stream/drawer/settings/profile/forget_pass1.dart';
 import 'package:streamore_app/features/stream/drawer/settings/profile/forget_pass2.dart';
@@ -55,6 +59,8 @@ void main()async {
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
           ChangeNotifierProvider(create: (context) => BackgroundOverlayLogoProvider()),
+          BlocProvider(create: (context) => AuthCubit()),
+
         ],
         child: const MyApp(),
       ),
@@ -92,7 +98,10 @@ class MyApp extends StatelessWidget {
           return VerifyEmail2(email: args);
         },
 
-        VerifyEmail3.routeName:  (context) => const VerifyEmail3(),
+        VerifyEmail3.routeName: (context) {
+          final email = ModalRoute.of(context)!.settings.arguments as String;
+          return VerifyEmail3(email: email);
+        },
         StreamScreen.routeName:  (context) => const StreamScreen(),
         Library.routeName:       (context) => const Library(),
         Members.routeName:       (context) => const Members(),
@@ -114,6 +123,13 @@ class MyApp extends StatelessWidget {
         ForgetPass3.routeName:(context)=>ForgetPass3(),
         FullImageScreen.routeName:(context)=>FullImageScreen(),
         PrivacyPolicy.routeName:(context)=> PrivacyPolicy(),
+        VerifyPass1.routeName:(context)=>VerifyPass1(),
+        VerifyPass2.routeName: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as String;
+          return VerifyPass2(email: args);
+        },
+        ChangePass.routeName: (context) => const ChangePass(),
+
 
 
 

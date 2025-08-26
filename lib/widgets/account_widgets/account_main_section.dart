@@ -194,7 +194,7 @@ class AccountMainSection extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               // استدعاء Cubit للـ Logout
-              context.read<AuthCubit>().logout(token: token);
+              context.read<AuthCubit>().logout();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
