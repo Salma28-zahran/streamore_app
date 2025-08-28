@@ -14,7 +14,10 @@ class FailedToRegisterState extends AuthStates{
 
 class ActivateLoadingState extends AuthStates {}
 
-class ActivateSuccessState extends AuthStates {}
+class ActivateSuccessState extends AuthStates {
+  final String message;
+  ActivateSuccessState({this.message = "Account activated successfully"});
+}
 
 class FailedToActivateState extends AuthStates {
   final String message;

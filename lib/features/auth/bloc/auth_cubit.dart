@@ -15,7 +15,7 @@ class AuthCubit extends Cubit<AuthStates> {
   void register({required String email, required String password}) async {
     emit(RegisterLoadingState());
     Response response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/register/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/register/"),
         headers: {
           'lang': "en"
         },
@@ -38,48 +38,64 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  void activateAccount({
+
+
+
+
+
+
+  Future<void> activateAccount({
     required String email,
-    required String activationCode,
+    required int activationCode,
   }) async {
-    emit(ActivateLoadingState());
+    emit(ActivateLoadingState()); // 🔄 أول ما يضغط يبين انه بيحمّل
 
     try {
+      print("📩 Sending activation request...");
+      print("➡️ email: $email");
+      print("➡️ activation_code: $activationCode");
+
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/activate/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/activate/"),
         headers: {
-          'accept': '*/*',
-          'Content-Type':
-          'application/json', // مهم عشان الـ backend يعرف إنك بتبعت JSON
+          "accept": "*/*",
+          "Content-Type": "application/json",
         },
         body: jsonEncode({
           "email": email,
-          "activation_code": activationCode,
+          "activation_code": activationCode.toString(),
         }),
       );
 
-      final responseBody = jsonDecode(response.body);
+      final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("Activation success: $responseBody");
-        emit(ActivateSuccessState());
+        debugPrint("✅ Activated successfully: $data");
+        emit(ActivateSuccessState()); // 🔥 هتدخلي بعد كده على اللوجين مثلاً
       } else {
-        print("Activation failed: $responseBody");
         final errorMessage =
-            responseBody['message'] ?? responseBody['error'] ?? "Unknown error";
+            data['message'] ?? data['error'] ?? "Failed to activate account";
+        debugPrint("❌ Activation failed: $errorMessage");
         emit(FailedToActivateState(message: errorMessage));
       }
     } catch (e) {
+      debugPrint("⚠️ Exception during activation: $e");
       emit(FailedToActivateState(message: e.toString()));
     }
   }
+
+
+
+
+
+
 
   void login({required String email, required String password}) async {
     emit(LogInLoadingState());
 
     try {
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/login/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/login/"),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -122,24 +138,22 @@ class AuthCubit extends Cubit<AuthStates> {
   void logout() async {
     emit(LogOutLoadingState());
     final token = await StorageHelper.getToken();
-    debugPrint("🚪 Trying logout with token: $token"); // ✅ نطبع التوكن اللي هنستخدمه
-
+    debugPrint("🚪 Trying logout with token: $token");
 
     try {
       final token = await StorageHelper.getToken();
 
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/logout/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/logout/"),
         headers: {
           "accept": "*/*",
           "Content-Type": "application/json",
-          "Authorization": "Token $token", // أو Bearer على حسب السيرفر
+          "Authorization": "Token $token",
         },
       );
 
       final responseBody = jsonDecode(response.body);
       debugPrint("📦 Logout Response: $responseBody");
-
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         emit(LogOutSuccessState(
@@ -155,12 +169,13 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
+
   void sendActivate({required String email}) async {
     emit(SendActivateLoadingState());
 
     try {
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/sendactivate/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/sendactivate/"),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -189,11 +204,15 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
 
+
+
+
+
   Future<void> resetPassword({required String email}) async {
     emit(ResetPasswordLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/resetpassword/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/resetpassword/"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email}),
       );
@@ -217,15 +236,14 @@ class AuthCubit extends Cubit<AuthStates> {
 
 
 
-
   Future<void> verifyPassCode({required String email, required String code}) async {
     emit(VerifyPassCodeLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/resetpassword-verify/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/resetpassword-verify/"),
         body: {
           "email": email,
-          "reset_code": code,   // هنا بردو reset_code
+          "reset_code": code,
         },
       );
 
@@ -241,11 +259,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-
-
   Future<void> resetPasswordDone({
     required String email,
     required String newPassword,
@@ -255,7 +268,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://138.68.187.187:8000/api/users/password-reset-done/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/password-reset-done/"),
         headers: {
           "Content-Type": "application/json",
         },
@@ -282,6 +295,8 @@ class AuthCubit extends Cubit<AuthStates> {
 
 
 
+
+
   Future<void> changePassword({
     required String token,
     required String oldPassword,
@@ -290,11 +305,10 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(ChangePasswordLoadingState());
     try {
       final response = await http.put(
-        Uri.parse("http://138.68.187.187:8000/api/users/change-password/"),
+        Uri.parse("http://34.39.27.45:8000/api/users/change-password/"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Token $token",
-
         },
         body: jsonEncode({
           "old_password": oldPassword,
@@ -318,10 +332,4 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(FailedToChangePasswordState(error: e.toString()));
     }
   }
-
-
-
-
-
-
 }
