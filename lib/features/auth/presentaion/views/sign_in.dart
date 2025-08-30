@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass1.dart';
+import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
 
 class SignIn extends StatefulWidget {
   static const String routeName = "/signin";
@@ -38,7 +39,6 @@ class _SignInState extends State<SignIn> {
       child: BlocConsumer<AuthCubit, AuthStates>(
         listener: (context, state) {
           if (state is LogInSuccessState) {
-            // لو login نجح → روح للـ stream
             Navigator.pushNamedAndRemoveUntil(
                 context, '/stream', (route) => false);
           } else if (state is FailedToLogInState) {
@@ -46,7 +46,6 @@ class _SignInState extends State<SignIn> {
               SnackBar(content: Text("failed_to_login".tr())),
             );
           }
-          // ----- هنا ضفت حالات الفرجت باسورد -----
           else if (state is ResetPasswordLoadingState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Sending reset email...")),
@@ -191,17 +190,10 @@ class _SignInState extends State<SignIn> {
                     padding: const EdgeInsets.only(left: 32, top: 12, right: 43),
                     child: GestureDetector(
                       onTap: () {
-                        if (emailController.text.isNotEmpty) {
-                          context.read<AuthCubit>().resetPassword(
-                            email: emailController.text,
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter your email first"),
-                            ),
-                          );
-                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const VerifyPass1()),
+                        );
                       },
                       child: Text(
                         "forgot_password".tr(),
@@ -213,6 +205,7 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 88),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
