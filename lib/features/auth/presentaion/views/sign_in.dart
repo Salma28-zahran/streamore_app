@@ -40,13 +40,15 @@ class _SignInState extends State<SignIn> {
         listener: (context, state) {
           if (state is LogInSuccessState) {
             Navigator.pushNamedAndRemoveUntil(
-                context, '/stream', (route) => false);
-          } else if (state is FailedToLogInState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("failed_to_login".tr())),
+              context,
+              '/stream',
+              (route) => false,
             );
-          }
-          else if (state is ResetPasswordLoadingState) {
+          } else if (state is FailedToLogInState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("failed_to_login".tr())));
+          } else if (state is ResetPasswordLoadingState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Sending reset email...")),
             );
@@ -57,9 +59,9 @@ class _SignInState extends State<SignIn> {
               arguments: emailController.text,
             );
           } else if (state is FailedToResetPasswordState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         builder: (context, state) {
@@ -70,8 +72,11 @@ class _SignInState extends State<SignIn> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding:
-                    const EdgeInsets.only(left: 32, top: 55, right: 32),
+                    padding: const EdgeInsets.only(
+                      left: 32,
+                      top: 55,
+                      right: 32,
+                    ),
                     child: Text(
                       "welcome".tr(),
                       style: GoogleFonts.poppins(
@@ -100,7 +105,7 @@ class _SignInState extends State<SignIn> {
                       child: TextField(
                         controller: emailController,
                         decoration: InputDecoration(
-                          labelText: "username_or_email".tr(),
+                          labelText: "email".tr(),
                           hintStyle: GoogleFonts.poppins(
                             color: const Color(0xff676767),
                             fontSize: 12,
@@ -187,12 +192,18 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32, top: 12, right: 43),
+                    padding: const EdgeInsets.only(
+                      left: 32,
+                      top: 12,
+                      right: 43,
+                    ),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const VerifyPass1()),
+                          MaterialPageRoute(
+                            builder: (_) => const VerifyPass1(),
+                          ),
                         );
                       },
                       child: Text(
@@ -211,14 +222,15 @@ class _SignInState extends State<SignIn> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: state is LogInLoadingState
-                            ? null
-                            : () {
-                          context.read<AuthCubit>().login(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                        },
+                        onPressed:
+                            state is LogInLoadingState
+                                ? null
+                                : () {
+                                  context.read<AuthCubit>().login(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                                },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff1865E8),
                           minimumSize: const Size(317, 55),
@@ -226,18 +238,19 @@ class _SignInState extends State<SignIn> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: state is LogInLoadingState
-                            ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                            : Text(
-                          "login".tr(),
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child:
+                            state is LogInLoadingState
+                                ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                                : Text(
+                                  "login".tr(),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                       ),
                     ],
                   ),
@@ -248,8 +261,10 @@ class _SignInState extends State<SignIn> {
                       RichText(
                         text: TextSpan(
                           text: 'create_an_account'.tr(),
-                          style:
-                          const TextStyle(color: Colors.grey, fontSize: 16),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
                           children: [
                             TextSpan(
                               text: 'sign_up'.tr(),
@@ -259,10 +274,11 @@ class _SignInState extends State<SignIn> {
                                 fontWeight: FontWeight.w600,
                                 decoration: TextDecoration.underline,
                               ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(context, '/signup');
-                                },
+                              recognizer:
+                                  TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(context, '/signup');
+                                    },
                             ),
                           ],
                         ),
