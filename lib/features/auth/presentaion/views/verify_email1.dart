@@ -113,10 +113,11 @@ class _VerifyEmail1State extends State<VerifyEmail1> {
                   onPressed: () {
                     final email = emailController.text.trim();
                     if (email.isNotEmpty) {
-                      Navigator.pushNamed(
+                      Navigator.push(
                         context,
-                        VerifyEmail2.routeName,
-                        arguments: email,
+                        MaterialPageRoute(
+                          builder: (_) => VerifyEmail2(email: email),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
