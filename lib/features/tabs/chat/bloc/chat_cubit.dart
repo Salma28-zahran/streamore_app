@@ -1,4 +1,3 @@
-// chat_cubit.dart
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,33 +12,35 @@ class ChatCubit extends Cubit<ChatState> {
 
   ChatCubit() : super(ChatInitial());
 
-  void connect(String baseUrl, String token) {
-    final url = baseUrl.startsWith('ws://') || baseUrl.startsWith('wss://')
-        ? "$baseUrl/ws/chat/?token=${Uri.encodeQueryComponent(token)}"
-        : "ws://$baseUrl/ws/chat/?token=${Uri.encodeQueryComponent(token)}";
+  /// 🔹 Connect to WebSocket
+  void connect({
+    required String baseUrl,
+    required String token,
+    required String chatId,
+  }) {
+    final url = (baseUrl.startsWith('ws://') || baseUrl.startsWith('wss://'))
+        ? "$baseUrl/ws/chat/$chatId/?token=${Uri.encodeQueryComponent(token)}"
+        : "ws://$baseUrl/ws/chat/$chatId/?token=${Uri.encodeQueryComponent(token)}";
 
     print("🔗 Trying to connect to WebSocket: $url");
 
     try {
       _channel = IOWebSocketChannel.connect(Uri.parse(url));
-      print("✅ WebSocket connected successfully.");
       emit(ChatConnected());
+      print("✅ WebSocket connected successfully.");
 
       _channel!.stream.listen((message) {
         print("📩 Message received from server: $message");
         try {
           final data = jsonDecode(message);
-          print("🔍 Decoded JSON: $data");
-
           final type = data['type'];
+
           if (type == 'message') {
             final map = Map<String, dynamic>.from(data);
-            // ➕ نحفظ الرسالة محلياً ثم نرسل الـ state كقائمة
             _messages.add(map);
-            print("🗂 Stored message locally. total=${_messages.length}");
             emit(ChatMessageReceived(List.from(_messages)));
+            print("🗂 Message stored. total=${_messages.length}");
 
-            // لو المرسل موجود في typing users نشيله
             final sender = map['sender']?.toString() ?? map['sender_id']?.toString();
             if (sender != null && _typingUsers.contains(sender)) {
               _typingUsers.remove(sender);
@@ -63,7 +64,7 @@ class ChatCubit extends Cubit<ChatState> {
             print("⚠️ Unknown event type: $type");
           }
         } catch (e) {
-          print("❌ Error decoding/handling message: $e");
+          print("❌ Error decoding message: $e");
         }
       }, onError: (error) {
         print("🚨 WebSocket error: $error");
@@ -78,7 +79,8 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 
-  void sendMessage(String senderId, String content) {
+  /// 🔹 Send message
+  void sendMessage({required String senderId, required String content}) {
     if (_channel == null) {
       print("🚫 Cannot send message. WebSocket not connected.");
       return;
@@ -88,7 +90,6 @@ class ChatCubit extends Cubit<ChatState> {
       "sender_id": senderId,
       "content": content,
     });
-
     print("📤 Sending message: $message");
     try {
       _channel!.sink.add(message);
@@ -96,6 +97,13 @@ class ChatCubit extends Cubit<ChatState> {
       print("❌ Failed to send message: $e");
       emit(ChatError("Failed to send message: $e"));
     }
+  }
+
+  /// 🔹 Add message locally before sending (optimistic update)
+  void addLocalMessage(Map<String, dynamic> msg) {
+    _messages.add(msg);
+    emit(ChatMessageReceived(List.from(_messages)));
+    print("📝 Added local message: ${msg['content']}");
   }
 
   @override

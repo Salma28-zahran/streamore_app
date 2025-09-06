@@ -99,18 +99,21 @@ class CustomTabSection extends StatelessWidget {
                             return const Center(child: Text("No token found"));
                           }
 
-                          // هنا بننشئ الـ Cubit أولاً وبعدين بنادي connect منفصلاً (أمان + تجنّب مشاكل الـ cascade)
                           return BlocProvider<ChatCubit>(
                             create: (_) {
                               final cubit = ChatCubit();
-                              // لا حاجة للـ await هنا — connect تتعامل مع الأخطاء وتعمل emit
-                              cubit.connect("34.39.27.45:8000", token.trim());
+                              cubit.connect(
+                                baseUrl: "34.39.27.45:8000",
+                                token: token.trim(),
+                                chatId: "1", // 🔹 عدّلي حسب الـ chat ID اللي محتاجاه
+                              );
                               return cubit;
                             },
                             child: const ChatTab(),
                           );
                         },
                       ),
+
 
 
 

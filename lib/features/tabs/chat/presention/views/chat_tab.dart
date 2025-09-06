@@ -21,11 +21,22 @@ class _ChatTabState extends State<ChatTab> {
       print("⚠️ محاولة إرسال رسالة فاضية");
       return;
     }
+
     print("📤 محاولة إرسال رسالة: $text");
     final chatCubit = context.read<ChatCubit>();
-    chatCubit.sendMessage("123", text.trim()); // 🔹 sender_id ثابت مؤقتاً
+
+    // ➕ إضافة الرسالة محلياً قبل الإرسال (اختياري)
+    chatCubit.addLocalMessage({
+      "type": "message",
+      "sender_id": "123",
+      "content": text.trim(),
+    });
+
     _controller.clear();
     print("✅ الرسالة اتمسحت من التكست فيلد");
+
+    // 🔹 إرسال الرسالة فعلياً عبر WebSocket
+    chatCubit.sendMessage(senderId: "123", content: text.trim());
   }
 
   @override
@@ -45,57 +56,47 @@ class _ChatTabState extends State<ChatTab> {
               builder: (context, state) {
                 print("🌀 BlocBuilder بيشتغل. الحالة الحالية: $state");
 
+                List<Map<String, dynamic>> messages = [];
                 if (state is ChatMessageReceived) {
-                  final messages = state.messages;
+                  messages = state.messages;
                   print("📩 عدد الرسائل المستلمة: ${messages.length}");
+                }
 
-                  if (messages.isEmpty) {
-                    print("ℹ️ مفيش رسائل في الليست");
-                    return Center(
-                      child: Text(
-                        "no_message".tr(),
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
+                if (messages.isEmpty) {
+                  print("ℹ️ مفيش رسائل في الليست");
+                  return Center(
+                    child: Text(
+                      "no_message".tr(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
                       ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final msg = messages[index];
-                      print("💬 رسالة [${index + 1}]: ${msg["content"]}");
-                      return Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            msg["content"].toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      );
-                    },
+                    ),
                   );
                 }
 
-                print("ℹ️ الحالة مش ChatMessageReceived → هعرض no_message");
-                return Center(
-                  child: Text(
-                    "no_message".tr(),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                    ),
-                  ),
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    print("💬 رسالة [${index + 1}]: ${msg["content"]}");
+                    return Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          msg["content"].toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
