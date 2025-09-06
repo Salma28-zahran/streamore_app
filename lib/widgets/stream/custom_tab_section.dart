@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 
 import 'package:streamore_app/features/tabs/banners/banners_contant.dart';
 import 'package:streamore_app/features/tabs/banners/banners_tab.dart';
 import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
-import 'package:streamore_app/features/tabs/chat/chat_tab.dart';
+import 'package:streamore_app/features/tabs/chat/bloc/chat_cubit.dart';
+import 'package:streamore_app/features/tabs/chat/presention/views/chat_tab.dart';
 import 'package:streamore_app/features/tabs/comment/comments_tab.dart';
 import 'package:streamore_app/features/tabs/banners/tickers_contant.dart';
 
@@ -82,7 +85,35 @@ class CustomTabSection extends StatelessWidget {
                           ? const BannersContant()
                           : const BannersTab(),
                       const CommentsTab(),
-                      const ChatTab(),
+                      FutureBuilder<String?>(
+                        future: StorageHelper.getToken(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasError) {
+                            return const Center(child: Text("Error loading token"));
+                          }
+                          final token = snapshot.data;
+                          if (token == null || token.trim().isEmpty) {
+                            return const Center(child: Text("No token found"));
+                          }
+
+                          // هنا بننشئ الـ Cubit أولاً وبعدين بنادي connect منفصلاً (أمان + تجنّب مشاكل الـ cascade)
+                          return BlocProvider<ChatCubit>(
+                            create: (_) {
+                              final cubit = ChatCubit();
+                              // لا حاجة للـ await هنا — connect تتعامل مع الأخطاء وتعمل emit
+                              cubit.connect("34.39.27.45:8000", token.trim());
+                              return cubit;
+                            },
+                            child: const ChatTab(),
+                          );
+                        },
+                      ),
+
+
+
                     ],
                   ),
                 ),
