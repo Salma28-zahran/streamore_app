@@ -38,12 +38,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-
-
-
   Future<void> activateAccount({
     required String email,
     required int activationCode,
@@ -84,11 +78,8 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-
-
+  String? loggedInEmail;
+  String? loggedInPassword;
 
   void login({required String email, required String password}) async {
     emit(LogInLoadingState());
@@ -115,7 +106,8 @@ class AuthCubit extends Cubit<AuthStates> {
         if (data['Message'] == "Login Success") {
           var token = data['token'] ?? "";
           await StorageHelper.saveToken(token);
-
+          await StorageHelper.saveEmail(email);
+          await StorageHelper.savePassword(password);
           var role = data['role'] ?? "";
 
           debugPrint("✅ Login success. Token: $token, Role: $role");
@@ -169,7 +161,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
   void sendActivate({required String email}) async {
     emit(SendActivateLoadingState());
 
@@ -203,11 +194,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-
-
   Future<void> resetPassword({required String email}) async {
     emit(ResetPasswordLoadingState());
     try {
@@ -233,10 +219,8 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-  Future<void> verifyPassCode({required String email, required String code}) async {
+  Future<void> verifyPassCode(
+      {required String email, required String code}) async {
     emit(VerifyPassCodeLoadingState());
     try {
       final response = await http.post(
@@ -249,9 +233,11 @@ class AuthCubit extends Cubit<AuthStates> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        emit(VerifyPassCodeSuccessState(message: data["message"] ?? "Code Verified"));
+        emit(VerifyPassCodeSuccessState(
+            message: data["message"] ?? "Code Verified"));
       } else {
-        final error = json.decode(response.body)["error"] ?? "Failed to verify code";
+        final error =
+            json.decode(response.body)["error"] ?? "Failed to verify code";
         emit(FailedToVerifyPassCodeState(error: error));
       }
     } catch (e) {
@@ -293,10 +279,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-
-
-
-
   Future<void> changePassword({
     required String token,
     required String oldPassword,
@@ -320,14 +302,17 @@ class AuthCubit extends Cubit<AuthStates> {
 
       if (response.statusCode == 200) {
         emit(ChangePasswordSuccessState(
-          message: responseBody["message"] ?? responseBody["detail"] ?? "Password changed successfully",
+          message: responseBody["message"] ??
+              responseBody["detail"] ??
+              "Password changed successfully",
         ));
       } else {
         emit(FailedToChangePasswordState(
-          error: responseBody["error"] ?? responseBody["detail"] ?? "Failed to change password",
+          error: responseBody["error"] ??
+              responseBody["detail"] ??
+              "Failed to change password",
         ));
       }
-
     } catch (e) {
       emit(FailedToChangePasswordState(error: e.toString()));
     }

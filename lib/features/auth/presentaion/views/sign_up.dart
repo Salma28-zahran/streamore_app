@@ -50,6 +50,9 @@ class _SignUpState extends State<SignUp> {
       builder: (context, state) {
         return Scaffold(
           body: SafeArea(
+            child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+        ),
             child: Form(
               key: formKey,
               child: Column(
@@ -306,7 +309,7 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-        );
+        ));
       },
     );
   }
