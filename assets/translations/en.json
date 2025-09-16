@@ -266,5 +266,6 @@
   "enter_your_email": " enter your email",
   "enter_your_password": " enter your password",
   " enter_correct_email": " enter correct email",
-  "enter_correct_password": "Enter the correct password"
+  "enter_correct_password": "enter correct password",
+  "next" : "next"
 }
