@@ -43,6 +43,8 @@ import 'package:streamore_app/theme/light_theme.dart';
 import 'package:streamore_app/theme/theme.dart';
 import 'package:provider/provider.dart';
 
+import 'core/helpers/storage_helper.dart';
+import 'features/auth/bloc/auth_states.dart';
 import 'features/auth/bloc/delete_account/delete_account_cubit.dart';
 
 void main() async {
@@ -63,11 +65,14 @@ void main() async {
           BlocProvider<AuthCubit>(
             create: (_) => AuthCubit(),
           ),
+          BlocProvider<AuthCubit>(
+            create: (_) => AuthCubit()..autoLogin(),
+          ),
           BlocProvider<DeleteAccountCubit>(
             create: (_) => DeleteAccountCubit(),
           ),
         ],
-        child: const MyApp(),
+        child: MyApp(),
       ),
     ),
   );
@@ -82,57 +87,71 @@ class MyApp extends StatelessWidget {
 
     final BaseTheme lightTheme = LightTheme();
     final BaseTheme darkTheme = DarkTheme();
+    return BlocBuilder<AuthCubit, AuthStates>(builder: (context, state) {
+      Widget startScreen;
 
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      theme: lightTheme.themeData,
-      darkTheme: darkTheme.themeData,
-      themeMode: provider.themeMode,
-      debugShowCheckedModeBanner: false,
-      initialRoute: OnBoardingScreen.routeName,
-      routes: {
-        OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
-        SignIn.routeName: (context) => const SignIn(),
-        SignUp.routeName: (context) => SignUp(),
-        VerifyEmail1.routeName: (context) => const VerifyEmail1(),
-        VerifyEmail2.routeName: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as String;
-          return VerifyEmail2(email: args);
+      if (state is LogInSuccessState) {
+        startScreen = const StreamScreen(); // ✅ لو فيه توكن → يروح Stream
+      } else if (state is AuthInitialState) {
+        startScreen =
+            const OnBoardingScreen(); // ✅ لو مفيش توكن → يروح OnBoarding
+      } else {
+        startScreen = const Scaffold(
+          body: Center(child: CircularProgressIndicator()), // ⏳ لحد ما يشيك
+        );
+      }
+
+      return MaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        theme: lightTheme.themeData,
+        darkTheme: darkTheme.themeData,
+        themeMode: provider.themeMode,
+        debugShowCheckedModeBanner: false,
+        home: startScreen,
+        routes: {
+          OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
+          SignIn.routeName: (context) => const SignIn(),
+          SignUp.routeName: (context) => SignUp(),
+          VerifyEmail1.routeName: (context) => const VerifyEmail1(),
+          VerifyEmail2.routeName: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyEmail2(email: args);
+          },
+          VerifyEmail3.routeName: (context) {
+            final email = ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyEmail3(email: email);
+          },
+          StreamScreen.routeName: (context) => const StreamScreen(),
+          Library.routeName: (context) => const Library(),
+          Members.routeName: (context) => const Members(),
+          Destination.routeName: (context) => const Destination(),
+          Referrals.routeName: (context) => const Referrals(),
+          Settings.routeName: (context) => const Settings(),
+          SettingsIcon.routeName: (context) => const SettingsIcon(),
+          General.routeName: (context) => const General(),
+          Camera.routeName: (context) => const Camera(),
+          Audio.routeName: (context) => const Audio(),
+          Back.routeName: (context) => const Back(),
+          LayoutScreen.routeName: (context) => const LayoutScreen(),
+          Profile.routeName: (context) => const Profile(),
+          ContactUsScreen.routeName: (context) => const ContactUsScreen(),
+          ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
+          ChangePassword.routeName: (context) => const ChangePassword(),
+          ForgetPass1.routeName: (context) => const ForgetPass1(),
+          ForgetPass2.routeName: (context) => ForgetPass2(),
+          ForgetPass3.routeName: (context) => ForgetPass3(),
+          FullImageScreen.routeName: (context) => FullImageScreen(),
+          PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
+          VerifyPass1.routeName: (context) => VerifyPass1(),
+          VerifyPass2.routeName: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyPass2(email: args);
+          },
+          ChangePass.routeName: (context) => const ChangePass(),
         },
-        VerifyEmail3.routeName: (context) {
-          final email = ModalRoute.of(context)!.settings.arguments as String;
-          return VerifyEmail3(email: email);
-        },
-        StreamScreen.routeName: (context) => const StreamScreen(),
-        Library.routeName: (context) => const Library(),
-        Members.routeName: (context) => const Members(),
-        Destination.routeName: (context) => const Destination(),
-        Referrals.routeName: (context) => const Referrals(),
-        Settings.routeName: (context) => const Settings(),
-        SettingsIcon.routeName: (context) => const SettingsIcon(),
-        General.routeName: (context) => const General(),
-        Camera.routeName: (context) => const Camera(),
-        Audio.routeName: (context) => const Audio(),
-        Back.routeName: (context) => const Back(),
-        LayoutScreen.routeName: (context) => const LayoutScreen(),
-        Profile.routeName: (context) => const Profile(),
-        ContactUsScreen.routeName: (context) => const ContactUsScreen(),
-        ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
-        ChangePassword.routeName: (context) => const ChangePassword(),
-        ForgetPass1.routeName: (context) => const ForgetPass1(),
-        ForgetPass2.routeName: (context) => ForgetPass2(),
-        ForgetPass3.routeName: (context) => ForgetPass3(),
-        FullImageScreen.routeName: (context) => FullImageScreen(),
-        PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
-        VerifyPass1.routeName: (context) => VerifyPass1(),
-        VerifyPass2.routeName: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as String;
-          return VerifyPass2(email: args);
-        },
-        ChangePass.routeName: (context) => const ChangePass(),
-      },
-    );
+      );
+    });
   }
 }

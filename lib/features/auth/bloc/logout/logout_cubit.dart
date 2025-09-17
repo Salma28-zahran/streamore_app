@@ -30,6 +30,7 @@ class LogoutCubit extends Cubit<LogoutStates> {
       debugPrint("📦 Logout Response: $responseBody");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        await StorageHelper.clearToken();
         emit(LogOutSuccessState(
             message: responseBody["Message"] ?? "Logged out successfully"));
       } else {

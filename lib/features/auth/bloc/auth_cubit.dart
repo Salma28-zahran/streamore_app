@@ -37,6 +37,16 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(FailedToRegisterState(message: errorMessage));
     }
   }
+  Future<void> autoLogin() async {
+    final token = await StorageHelper.getToken();
+    if (token != null && token.isNotEmpty) {
+      debugPrint("🔑 Token found → auto login success");
+      emit(LogInSuccessState());
+    } else {
+      debugPrint("🚪 No token → go to onboarding/login");
+      emit(AuthInitialState());
+    }
+  }
 
   Future<void> activateAccount({
     required String email,
@@ -148,6 +158,7 @@ class AuthCubit extends Cubit<AuthStates> {
       debugPrint("📦 Logout Response: $responseBody");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        await StorageHelper.clearToken();
         emit(LogOutSuccessState(
             message: responseBody["Message"] ?? "Logged out successfully"));
       } else {
@@ -317,4 +328,6 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(FailedToChangePasswordState(error: e.toString()));
     }
   }
+
 }
+
