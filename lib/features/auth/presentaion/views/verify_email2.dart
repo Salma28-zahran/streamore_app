@@ -105,100 +105,102 @@ class _VerifyEmail2State extends State<VerifyEmail2> {
       builder: (context, state) {
         return Scaffold(
           body: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 99),
-                  child: SizedBox(
-                    width: 310,
-                    height: 55,
-                    child: Image.asset(
-                      "assets/images/app_name.png",
-                      fit: BoxFit.contain,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 99),
+                    child: SizedBox(
+                      width: 310,
+                      height: 55,
+                      child: Image.asset(
+                        "assets/images/app_name.png",
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 48),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                        children: [
-                          TextSpan(
-                            text:
-                            '${'enter_the_confirmation_code_we_sent_to'.tr()}\n',
+                  const SizedBox(height: 48),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
+                            fontSize: 16,
                           ),
-                          TextSpan(
-                            text: widget.email,
-                          ),
-                          TextSpan(
-                            text: ' ${'resent_code'.tr()}',
-                            style: GoogleFonts.poppins(
-                              color: Colors.blue,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              decoration: TextDecoration.underline,
+                          children: [
+                            TextSpan(
+                              text:
+                              '${'enter_the_confirmation_code_we_sent_to'.tr()}\n',
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                context
-                                    .read<AuthCubit>()
-                                    .sendActivate(email: widget.email);
-                              },
-                          ),
-                        ],
+                            TextSpan(
+                              text: widget.email,
+                            ),
+                            TextSpan(
+                              text: ' ${'resent_code'.tr()}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.blue,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  context
+                                      .read<AuthCubit>()
+                                      .sendActivate(email: widget.email);
+                                },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 39),
-                Wrap(
-                  spacing: 16,
-                  alignment: WrapAlignment.center,
-                  children: List.generate(
-                    6,
-                        (index) => CustomboxVerify(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      nextFocus: index < 5 ? _focusNodes[index + 1] : null,
+                    ],
+                  ),
+                  const SizedBox(height: 39),
+                  Wrap(
+                    spacing: 16,
+                    alignment: WrapAlignment.center,
+                    children: List.generate(
+                      6,
+                          (index) => CustomboxVerify(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        nextFocus: index < 5 ? _focusNodes[index + 1] : null,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 37),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: isFormFilled && !isLoading
-                          ? () => _verifyCode(context)
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isFormFilled && !isLoading
-                            ? const Color(0xff1865E8)
-                            : Colors.grey.shade400,
-                        minimumSize: const Size(138, 34),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                  const SizedBox(height: 37),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: isFormFilled && !isLoading
+                            ? () => _verifyCode(context)
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isFormFilled && !isLoading
+                              ? const Color(0xff1865E8)
+                              : Colors.grey.shade400,
+                          minimumSize: const Size(138, 34),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        child: Text(
+                          isLoading ? "Loading..." : "next".tr(),
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        isLoading ? "Loading..." : "next".tr(),
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

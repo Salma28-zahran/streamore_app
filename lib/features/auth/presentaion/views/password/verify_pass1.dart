@@ -52,6 +52,9 @@ class _VerifyEmail1State extends State<VerifyPass1> {
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
+              child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+          ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -194,7 +197,7 @@ class _VerifyEmail1State extends State<VerifyPass1> {
                 ],
               ),
             ),
-          );
+          ));
         },
       ),
     );

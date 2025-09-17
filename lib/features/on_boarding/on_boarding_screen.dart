@@ -36,7 +36,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       );
     }
   }
-
+  void previousPage() {
+    if (_currentPage > 0) {
+      _controller.previousPage(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
+    }
+  }
   void _goToSignIn() {
     Navigator.pushNamed(context, '/signin');
   }
@@ -92,13 +99,16 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
+                      child : TextButton(
+                          onPressed: _currentPage == 0 ? null : previousPage,
+                          child:
+                     Text(
                         "Prev",
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                     ),
                   ),
-
+                  ),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

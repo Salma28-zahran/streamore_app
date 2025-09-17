@@ -37,15 +37,15 @@ import 'package:streamore_app/features/stream/icons/settings/lay.dart';
 import 'package:streamore_app/features/stream/icons/settings/settings_icon.dart';
 import 'package:streamore_app/features/stream/stream_screen.dart';
 
-
 import 'package:streamore_app/theme/dark_theme.dart';
 import 'package:streamore_app/theme/light_theme.dart';
 
 import 'package:streamore_app/theme/theme.dart';
 import 'package:provider/provider.dart';
 
+import 'features/auth/bloc/delete_account/delete_account_cubit.dart';
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   runApp(
@@ -58,9 +58,14 @@ void main()async {
           ChangeNotifierProvider(create: (context) => MyProvider()),
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
-          ChangeNotifierProvider(create: (context) => BackgroundOverlayLogoProvider()),
-          BlocProvider(create: (context) => AuthCubit()),
-
+          ChangeNotifierProvider(
+              create: (context) => BackgroundOverlayLogoProvider()),
+          BlocProvider<AuthCubit>(
+            create: (_) => AuthCubit(),
+          ),
+          BlocProvider<DeleteAccountCubit>(
+            create: (_) => DeleteAccountCubit(),
+          ),
         ],
         child: const MyApp(),
       ),
@@ -87,52 +92,46 @@ class MyApp extends StatelessWidget {
       themeMode: provider.themeMode,
       debugShowCheckedModeBanner: false,
       initialRoute: OnBoardingScreen.routeName,
-
       routes: {
         OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
-        SignIn.routeName:        (context) => const SignIn(),
-        SignUp.routeName:        (context) =>  SignUp(),
-        VerifyEmail1.routeName:  (context) => const VerifyEmail1(),
+        SignIn.routeName: (context) => const SignIn(),
+        SignUp.routeName: (context) => SignUp(),
+        VerifyEmail1.routeName: (context) => const VerifyEmail1(),
         VerifyEmail2.routeName: (context) {
           final args = ModalRoute.of(context)!.settings.arguments as String;
           return VerifyEmail2(email: args);
         },
-
         VerifyEmail3.routeName: (context) {
           final email = ModalRoute.of(context)!.settings.arguments as String;
           return VerifyEmail3(email: email);
         },
-        StreamScreen.routeName:  (context) => const StreamScreen(),
-        Library.routeName:       (context) => const Library(),
-        Members.routeName:       (context) => const Members(),
-        Destination.routeName:   (context) => const Destination(),
-        Referrals.routeName:     (context) => const Referrals(),
-        Settings.routeName:      (context) => const Settings(),
-        SettingsIcon.routeName:  (context) => const SettingsIcon(),
-        General.routeName:       (context) => const General(),
-        Camera.routeName:        (context) => const Camera(),
-        Audio.routeName:         (context) => const Audio(),
-        Back.routeName:          (context) => const Back(),
-        LayoutScreen.routeName:  (context) => const LayoutScreen(),
-        Profile.routeName:       (context) => const Profile(),
+        StreamScreen.routeName: (context) => const StreamScreen(),
+        Library.routeName: (context) => const Library(),
+        Members.routeName: (context) => const Members(),
+        Destination.routeName: (context) => const Destination(),
+        Referrals.routeName: (context) => const Referrals(),
+        Settings.routeName: (context) => const Settings(),
+        SettingsIcon.routeName: (context) => const SettingsIcon(),
+        General.routeName: (context) => const General(),
+        Camera.routeName: (context) => const Camera(),
+        Audio.routeName: (context) => const Audio(),
+        Back.routeName: (context) => const Back(),
+        LayoutScreen.routeName: (context) => const LayoutScreen(),
+        Profile.routeName: (context) => const Profile(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
         ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
-        ChangePassword.routeName:(context)=> const ChangePassword(),
-        ForgetPass1.routeName:(context)=>const ForgetPass1(),
-        ForgetPass2.routeName:(context)=>ForgetPass2(),
-        ForgetPass3.routeName:(context)=>ForgetPass3(),
-        FullImageScreen.routeName:(context)=>FullImageScreen(),
-        PrivacyPolicy.routeName:(context)=> PrivacyPolicy(),
-        VerifyPass1.routeName:(context)=>VerifyPass1(),
+        ChangePassword.routeName: (context) => const ChangePassword(),
+        ForgetPass1.routeName: (context) => const ForgetPass1(),
+        ForgetPass2.routeName: (context) => ForgetPass2(),
+        ForgetPass3.routeName: (context) => ForgetPass3(),
+        FullImageScreen.routeName: (context) => FullImageScreen(),
+        PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
+        VerifyPass1.routeName: (context) => VerifyPass1(),
         VerifyPass2.routeName: (context) {
           final args = ModalRoute.of(context)!.settings.arguments as String;
           return VerifyPass2(email: args);
         },
         ChangePass.routeName: (context) => const ChangePass(),
-
-
-
-
       },
     );
   }

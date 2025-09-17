@@ -8,6 +8,7 @@ import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
+import 'package:streamore_app/features/auth/bloc/delete_account/delete_account_cubit.dart';
 import 'package:streamore_app/features/stream/drawer/settings/profile/change_pass.dart';
 import 'package:streamore_app/widgets/account_widgets/account_custombox.dart';
 
@@ -27,8 +28,7 @@ class _AccountTabState extends State<AccountTab> {
   final _controllers = List.generate(6, (_) => TextEditingController());
   final _focusNodes = List.generate(6, (_) => FocusNode());
 
-  bool get isFormFilled =>
-      _controllers.every((c) => c.text.trim().isNotEmpty);
+  bool get isFormFilled => _controllers.every((c) => c.text.trim().isNotEmpty);
 
   @override
   void initState() {
@@ -37,10 +37,7 @@ class _AccountTabState extends State<AccountTab> {
     isFormFilledNotifier = ValueNotifier(false);
     for (var c in _controllers) {
       c.addListener(_checkFormFilled);
-
-
     }
-
   }
 
   @override
@@ -62,24 +59,24 @@ class _AccountTabState extends State<AccountTab> {
     final w = mq.size.width;
     final h = mq.size.height;
 
-    return BlocProvider(
-      create: (_) => AuthCubit(),
-      child: BlocListener<AuthCubit, AuthStates>(
-        listener: (context, state) {
-          if (state is LogOutSuccessState) {
-            Navigator.pushReplacementNamed(context, '/signin');
-          } else if (state is FailedToLogOutState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
-          }
-        },
-        child: Consumer<MyProvider>(
-          builder: (context, myprovider, _) {
-            final isDark = myprovider.themeMode == ThemeMode.dark;
+    return BlocListener<AuthCubit, AuthStates>(
+      listener: (context, state) {
+        if (state is LogOutSuccessState) {
+          Navigator.pushReplacementNamed(context, '/signin');
+        } else if (state is FailedToLogOutState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error)),
+          );
+        }
+      },
+      child: Consumer<MyProvider>(
+        builder: (context, myprovider, _) {
+          final isDark = myprovider.themeMode == ThemeMode.dark;
 
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.02),
+          return SingleChildScrollView(
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.02),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -94,16 +91,20 @@ class _AccountTabState extends State<AccountTab> {
                     height: h * 0.034,
                     child: ElevatedButton(
                       onPressed: () async {
-                        final storedToken = await StorageHelper.getToken(); // هنا بنجيب التوكن
-
+                        final storedToken =
+                            await StorageHelper.getToken(); // هنا بنجيب التوكن
+            
                         if (storedToken == null || storedToken.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("No token found, please login again.")),
+                            const SnackBar(
+                                content:
+                                    Text("No token found, please login again.")),
                           );
                           return;
                         }
-                        print("🧩 Token from storage before navigating: $storedToken");
-
+                        print(
+                            "🧩 Token from storage before navigating: $storedToken");
+            
                         Navigator.pushNamed(
                           context,
                           ChangePass.routeName,
@@ -130,20 +131,23 @@ class _AccountTabState extends State<AccountTab> {
                       ),
                     ),
                   ),
-                  AccountDeleteSection(
-                    isDark: isDark,
-                    w: w,
-                    h: h,
-                    controllers: _controllers,
-                    focusNodes: _focusNodes,
-                    isFormFilledNotifier: isFormFilledNotifier,
-                    checkFormFilled: _checkFormFilled,
+                  BlocProvider(
+                    create: (_) => DeleteAccountCubit(),
+                    child: AccountDeleteSection(
+                      isDark: isDark,
+                      w: w,
+                      h: h,
+                      controllers: _controllers,
+                      focusNodes: _focusNodes,
+                      isFormFilledNotifier: isFormFilledNotifier,
+                      checkFormFilled: _checkFormFilled,
+                    ),
                   ),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

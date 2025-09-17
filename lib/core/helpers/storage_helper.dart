@@ -15,4 +15,40 @@ class StorageHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("auth_token");
   }
+
+
+  static Future<void> saveEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_email', email);
+  }
+
+  static Future<String?> getEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_email');
+  }
+
+  static Future<void> clearEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_email');
+  }
+
+  static Future<void> savePassword(String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_password', password);
+  }
+
+  static Future<String?> getPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_password');
+  }
+
+  static Future<void> clearPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_password');
+  }
+
+  static Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
 }
