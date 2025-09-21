@@ -6,7 +6,9 @@ import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
 
-class ProfileImageWithBanners extends StatelessWidget {
+import '../../core/helpers/storage_helper.dart';
+
+class ProfileImageWithBanners extends StatefulWidget {
   final double profileImageWidth;
   final double profileImageHeight;
   final bool isZoomVisible;
@@ -24,6 +26,25 @@ class ProfileImageWithBanners extends StatelessWidget {
         _onZoomIconClick = onZoomIconClick;
 
   @override
+  State<ProfileImageWithBanners> createState() => _ProfileImageWithBannersState();
+}
+
+class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
+  String? userName;
+  @override
+  void initState() {
+    super.initState();
+    loadUserName(); // نحمل الاسم عند بدء الـ widget
+  }
+  Future<void> loadUserName() async {
+    final email = await StorageHelper.getEmail();
+    if (email != null && email.contains('@')) {
+      setState(() {
+        userName = email.split('@')[0]; // ناخد الجزء قبل @
+      });
+    }
+  }
+  @override
   Widget build(BuildContext context) {
     final bannersProvider = Provider.of<BannersProvider>(context);
 
@@ -36,24 +57,24 @@ class ProfileImageWithBanners extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               GestureDetector(
-                onTap: _onProfileImageClick,
+                onTap: widget._onProfileImageClick,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
                   child: Image.asset(
                     "assets/images/profile4.png",
-                    width: profileImageWidth,
-                    height: profileImageHeight,
+                    width: widget.profileImageWidth,
+                    height: widget.profileImageHeight,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
 
-              if (isZoomVisible)
+              if (widget.isZoomVisible)
                 Positioned(
-                  top: profileImageHeight / 2 - 27,
-                  left: profileImageWidth / 2 - 27,
+                  top: widget.profileImageHeight / 2 - 27,
+                  left: widget.profileImageWidth / 2 - 27,
                   child: GestureDetector(
-                    onTap: _onZoomIconClick,
+                    onTap: widget._onZoomIconClick,
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
@@ -73,7 +94,7 @@ class ProfileImageWithBanners extends StatelessWidget {
                 builder: (context, myProvider, child) {
                   if (bannersProvider.shownBanners.isNotEmpty) {
                     return Positioned(
-                      top: profileImageHeight - 35,
+                      top: widget.profileImageHeight - 35,
                       left: 0,
                       right: 0,
                       child: Column(
@@ -176,7 +197,7 @@ class ProfileImageWithBanners extends StatelessWidget {
         final shownIndex = commentProvider.shownCommentIndex;
         final textToShow = shownIndex != null
             ? commentProvider.comments[shownIndex]
-            : "user_name".tr();
+            :  (userName ?? "No User Found");
 
         switch (theme) {
           case 'bubble':

@@ -7,6 +7,7 @@ import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/stream/drawer/contact_us_screen.dart';
 
 
+import '../../../widgets/save_username_widgets/save_username.dart';
 import 'privacy_policy.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -137,8 +138,17 @@ class _MainDrawerState extends State<MainDrawer> {
               ],
             ),
             const SizedBox(height: 5),
-            Image.asset("assets/images/my_acc.png", width: 344, height: 44),
-            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              margin: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFBBDEFB),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.centerLeft,
+              child: const UserNameWidget(),
+            ),
             Divider(
               thickness: 1,
               color: Theme.of(context).dividerColor,
