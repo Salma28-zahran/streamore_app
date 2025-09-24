@@ -40,13 +40,16 @@ class AuthCubit extends Cubit<AuthStates> {
   Future<void> autoLogin() async {
     final token = await StorageHelper.getToken();
     if (token != null && token.isNotEmpty) {
+      final userId = await StorageHelper.getUserId(); // ⬅️ استرجاع الـ userId
       debugPrint("🔑 Token found → auto login success");
+      debugPrint("👤 Logged in User ID: $userId"); // ⬅️ طباعة الـ userId
       emit(LogInSuccessState());
     } else {
       debugPrint("🚪 No token → go to onboarding/login");
       emit(AuthInitialState());
     }
   }
+
 
   Future<void> activateAccount({
     required String email,
@@ -114,11 +117,21 @@ class AuthCubit extends Cubit<AuthStates> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (data['Message'] == "Login Success") {
-          var token = data['token'] ?? "";
+          final token = data['token'] ?? "";
+          final user = data['user'];
+          final userId = data['userId'];
+          final role = data['role'] ?? "";
+
           await StorageHelper.saveToken(token);
           await StorageHelper.saveEmail(email);
           await StorageHelper.savePassword(password);
-          var role = data['role'] ?? "";
+
+          if (userId != null) {
+            await StorageHelper.saveUserId(userId);
+            debugPrint("🆔 Saved UserId: $userId");
+          } else {
+            debugPrint("⚠️ UserId is null → check API response format");
+          }
 
           debugPrint("✅ Login success. Token: $token, Role: $role");
 
@@ -136,6 +149,7 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(FailedToLogInState());
     }
   }
+
 
   void logout() async {
     emit(LogOutLoadingState());

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/stream/drawer/main_drawer.dart';
@@ -30,12 +31,28 @@ class _StreamScreenState extends State<StreamScreen>
   bool _camOn = true;
   late TabController _tabController;
   bool isZoomVisible = false;
+  int? userId;
+
+
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _loadUserId();
+
   }
+
+  Future<void> _loadUserId() async {
+    final id = await StorageHelper.getUserId();
+    setState(() {
+      userId = id;
+    });
+    debugPrint("🆔 User ID in StreamScreen: $userId");
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {

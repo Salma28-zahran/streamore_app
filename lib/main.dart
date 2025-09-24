@@ -50,7 +50,11 @@ import 'features/auth/bloc/delete_account/delete_account_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  String? token = await StorageHelper.getToken();
+  print('🔑 Token عند فتح الابلكيشن: $token');
+
   runApp(
+
     EasyLocalization(
       supportedLocales: [Locale('en'), Locale("ar")],
       path: 'assets/translations',
@@ -71,7 +75,10 @@ void main() async {
           BlocProvider<DeleteAccountCubit>(
             create: (_) => DeleteAccountCubit(),
           ),
+
         ],
+
+
         child: MyApp(),
       ),
     ),
