@@ -37,12 +37,14 @@ class ChatWebsocketManager {
             (message) {
           try {
             final data = jsonDecode(message);
-            print("🔹 Incoming WS data: $data");
+            print("📥 Incoming WS data: $data");
             _handleMessage(data);
           } catch (e) {
             _controller.add({'type': 'error', 'error': 'Invalid JSON: $e'});
           }
-        },
+          print("🔌 Connected WS for chat $chatId: $_isConnected");
+
+            },
         onError: (err) {
           print("❌ WS Error: $err");
           _isConnected = false;
@@ -74,11 +76,13 @@ class ChatWebsocketManager {
 
   void _handleMessage(Map<String, dynamic> data) {
     switch (data['type']) {
+      case "chat_message":
+        _controller.add(data);
+        break;
+      case "typing_update":
       case "user_status":
       case "user_status_update":
       case "participants_status":
-      case "typing_update":
-      case "chat_message":
         _controller.add(data);
         break;
       default:
@@ -152,12 +156,13 @@ class ChatWebsocketManager {
     return null;
   }
 
-  Future<void> sendMessage({
+  Future<Map<String, dynamic>?> sendMessage({
     required String token,
     required int chatId,
     required String content,
   }) async {
-    final url = Uri.parse("$baseUrl/message/$chatId/send/");
+    final url = Uri.parse("$baseUrl/chat/$chatId/send/");
+
     try {
       final resp = await http.post(
         url,
@@ -169,13 +174,31 @@ class ChatWebsocketManager {
       );
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        print("📤 Message sent: $content");
+        final data = jsonDecode(resp.body);
+
+
+        if (data is Map<String, dynamic>) {
+          print("📤 Message sent (HTTP): $data");
+
+          _controller.add({
+            "type": "chat_message",
+            ...data,
+          });
+
+
+
+          return data;
+        } else {
+          print("❌ Unexpected response format: $data");
+        }
       } else {
         print("❌ Failed to send message: ${resp.body}");
       }
     } catch (e) {
       print("❌ Exception sending message: $e");
     }
+
+    return null;
   }
 
   Future<void> sendMedia({
@@ -242,7 +265,7 @@ class ChatWebsocketManager {
     }
   }
 
-  void sendMessage2(Map<String, dynamic> data) {
+  void sendWS(Map<String, dynamic> data) {
     if (_channel != null) {
       try {
         final encoded = jsonEncode(data);
@@ -255,4 +278,38 @@ class ChatWebsocketManager {
       print("⚠️ Cannot send WS message → not connected");
     }
   }
+
+ // http://34.39.27.45:8000/api/chat/4/send/
+  Future<List<Map<String, dynamic>>?> getMessages({
+    required String token,
+    required int chatId,
+  }) async {
+    final url = Uri.parse("$baseUrl/chat/$chatId/send/");
+    try {
+      final resp = await http.post(
+        url,
+        headers: {'Authorization': 'Token $token'},
+      );
+
+      if (resp.statusCode == 200) {
+        final data = jsonDecode(resp.body);
+
+        // لو data List خلاص رجعها، لو Map حوّلها لقائمة فيها عنصر واحد
+        if (data is List) {
+          return List<Map<String, dynamic>>.from(data);
+        } else if (data is Map<String, dynamic>) {
+          return [data];
+        } else {
+          print("❌ Unexpected data format: $data");
+        }
+      } else {
+        print("❌ Failed to load messages: ${resp.body}");
+      }
+    } catch (e) {
+      print("❌ Exception fetching messages: $e");
+    }
+    return null;
+  }
+
+
 }

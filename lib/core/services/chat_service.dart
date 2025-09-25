@@ -64,7 +64,34 @@ class ChatService {
       print("❌ Exception sending message: $e");
       return false;
     }
+
+
+
+
   }
+  /// 6. Get Chat Messages
+  static Future<List<Map<String, dynamic>>> getChatMessages({
+    required String token,
+    required int chatId,
+  }) async {
+    final url = Uri.parse("${baseUrl}$chatId/messages/");
+    final response = await http.get(
+      url,
+      headers: {
+        "Authorization": "Token $token",
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      print("❌ getChatMessages error: ${response.statusCode} → ${response.body}");
+      return [];
+    }
+  }
+
 
 
 

@@ -6,6 +6,8 @@ import 'package:streamore_app/features/tabs/chat/bloc/chat_websockets_manager.da
     show ChatWebsocketManager;
 
 class ChatMessage {
+  final int? id;
+  final int? chatId;
   final String sender;
   final String content;
   final String? timestamp;
@@ -13,12 +15,31 @@ class ChatMessage {
   final bool isMedia;
 
   ChatMessage({
+    this.id,
+    this.chatId,
     required this.sender,
     required this.content,
     this.timestamp,
     this.isMe = false,
     this.isMedia = false,
   });
+
+  factory ChatMessage.fromJson(Map<String, dynamic> json,
+      {String? currentUser}) {
+    final senderName = json['sender'] is Map
+        ? json['sender']['username']
+        : (json['sender']?.toString() ?? 'unknown');
+
+    return ChatMessage(
+      id: json['id'],
+      chatId: json['chat'],
+      sender: senderName,
+      content: json['content'] ?? '',
+      timestamp: json['timestamp']?.toString(),
+      isMe: currentUser != null && senderName == currentUser,
+      isMedia: json['media'] != null,
+    );
+  }
 }
 
 class ChatTab extends StatefulWidget {
@@ -31,10 +52,12 @@ class ChatTab extends StatefulWidget {
 class _ChatTabState extends State<ChatTab> {
   final List<ChatMessage> _messages = [];
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   String? _email;
   String? _token;
   int _chatId = 0;
+  late String currentUser;
 
   StreamSubscription? _sub;
   List<String> _typingUsers = [];
@@ -52,11 +75,9 @@ class _ChatTabState extends State<ChatTab> {
     _token = await StorageHelper.getToken();
     _email = await StorageHelper.getEmail();
     final myUserId = await StorageHelper.getUserId();
+    if (_token == null || _email == null || myUserId == null) return;
 
-    if (_token == null || _email == null || myUserId == null) {
-      print("❌ Missing token, email, or userId");
-      return;
-    }
+    currentUser = _email!.split('@')[0];
 
     final newChat = await ChatService.createChat(
       _token!,
@@ -65,68 +86,54 @@ class _ChatTabState extends State<ChatTab> {
       name: "Study Group",
     );
 
-    print("📦 newChat response: $newChat");
-
-
-    if (newChat != null && newChat['chat'] != null && newChat['chat']['id'] != null) {
+    if (newChat != null &&
+        newChat['chat'] != null &&
+        newChat['chat']['id'] != null) {
       _chatId = newChat['chat']['id'] as int;
-      print("✅ Chat ID extracted: $_chatId");
-    } else {
-      print("❌ Failed to create chat or missing ID");
-      return;
     }
-
-
-    print("✅ Chat created with ID: $_chatId");
 
     ChatWebsocketManager.instance.connect(
       token: _token!,
       chatId: _chatId,
     );
 
+    print("🔑 Token: $_token, ChatId: $_chatId, CurrentUser: $currentUser");
+
     _sub = ChatWebsocketManager.instance.stream.listen(_handleSocketEvent);
 
-    if (!mounted) return;
     setState(() {});
   }
 
   void _handleSocketEvent(Map<String, dynamic> data) {
-
+    print("📥 WS Event received: $data");
     final type = data['type'];
-
     switch (type) {
       case 'chat_message':
-        String sender = 'server';
-        if (data['sender'] != null) {
-          if (data['sender'] is Map<String, dynamic>) {
-            sender = data['sender']['username'] ?? 'server';
-          } else if (data['sender'] is String) {
-            sender = data['sender'];
-          }
-        }
-
-        final content = data['content'] ?? '';
-        final timestamp = data['timestamp']?.toString() ?? DateTime.now().toIso8601String();
+        final msg = ChatMessage.fromJson(data, currentUser: currentUser);
 
         setState(() {
-          _messages.add(ChatMessage(
-            sender: sender,
-            content: content,
-            timestamp: timestamp,
-            isMe: sender == _email!.split('@')[0],
-          ));
+          if (!_messages.any((m) => m.id == msg.id)) {
+            _messages.add(msg);
+            _typingUsers.remove(msg.sender);
+          }
+        });
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
+          }
         });
         break;
-
       case 'typing_update':
         final user = data['user'] as String? ?? "";
         final isTyping = data['is_typing'] == true;
-
         setState(() {
-          if (isTyping) {
-            if (!_typingUsers.contains(user) && user != _email!.split('@')[0]) {
-              _typingUsers.add(user);
-            }
+          if (isTyping && !_typingUsers.contains(user) && user != currentUser) {
+            _typingUsers.add(user);
           } else {
             _typingUsers.remove(user);
           }
@@ -136,9 +143,7 @@ class _ChatTabState extends State<ChatTab> {
       case 'user_status':
       case 'user_status_update':
         final users = List<String>.from(data['active_users'] ?? []);
-        setState(() {
-          _activeUsers = users;
-        });
+        setState(() => _activeUsers = users);
         break;
 
       default:
@@ -146,77 +151,46 @@ class _ChatTabState extends State<ChatTab> {
     }
   }
 
+  void _sendMessageWS(String text) async {
+    if (text.trim().isEmpty) return;
 
+    try {
+      await ChatWebsocketManager.instance.sendMessage(
+        token: _token!,
+        chatId: _chatId,
+        content: text.trim(),
+      );
+    } catch (e) {
+      print("❌ Error sending message: $e");
+    }
 
-  void _sendMessageWS(String text) {
-    if (text.trim().isEmpty || _email == null) return;
-
-    final timestamp = DateTime.now().toIso8601String();
-
-    final localMessage = ChatMessage(
-      sender: _email!.split('@')[0],
-      content: text.trim(),
-      timestamp: timestamp,
-      isMe: true,
-    );
-
-    setState(() {
-      _messages.add(localMessage);
-    });
-
-    final message = {
-      'type': 'chat_message',
-      'chat_id': _chatId,
-      'content': text.trim(),
-      'timestamp': timestamp,
-    };
-
-    ChatWebsocketManager.instance.sendMessage2(message);
     _controller.clear();
     _sendStopTyping();
   }
 
-
   void _sendStartTyping() {
-    if (_email == null) return;
-
-    final msg = {
+    if (_isTyping) return;
+    ChatWebsocketManager.instance.sendWS({
       'type': 'typing_update',
       'chat_id': _chatId,
       'is_typing': true,
-    };
-
-    ChatWebsocketManager.instance.sendMessage2(msg);
+    });
     _isTyping = true;
   }
 
   void _sendStopTyping() {
-    if (_email == null || !_isTyping) return;
-
-    final msg = {
+    if (!_isTyping) return;
+    ChatWebsocketManager.instance.sendWS({
       'type': 'typing_update',
       'chat_id': _chatId,
       'is_typing': false,
-    };
-
-    ChatWebsocketManager.instance.sendMessage2(msg);
+    });
     _isTyping = false;
-  }
-
-  void _sendExit() {
-    final msg = {
-      'type': 'exit_chat',
-      'chat_id': _chatId,
-    };
-
-    ChatWebsocketManager.instance.sendMessage2(msg);
   }
 
   void _resetTypingTimer() {
     _typingTimer?.cancel();
-    _typingTimer = Timer(const Duration(seconds: 3), () {
-      _sendStopTyping();
-    });
+    _typingTimer = Timer(const Duration(seconds: 3), _sendStopTyping);
   }
 
   @override
@@ -224,6 +198,7 @@ class _ChatTabState extends State<ChatTab> {
     _sub?.cancel();
     ChatWebsocketManager.instance.disconnect();
     _controller.dispose();
+    _scrollController.dispose();
     _typingTimer?.cancel();
     super.dispose();
   }
@@ -231,7 +206,8 @@ class _ChatTabState extends State<ChatTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body:
+      Column(
         children: [
           if (_activeUsers.isNotEmpty)
             Padding(
@@ -253,6 +229,8 @@ class _ChatTabState extends State<ChatTab> {
             child: _messages.isEmpty
                 ? const Center(child: Text("No messages yet"))
                 : ListView.builder(
+              controller: _scrollController,
+              reverse: false,
               itemCount: _messages.length,
               itemBuilder: (_, i) {
                 final msg = _messages[i];
@@ -265,8 +243,7 @@ class _ChatTabState extends State<ChatTab> {
                         vertical: 4, horizontal: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color:
-                      msg.isMe ? Colors.blue : Colors.grey.shade200,
+                      color: msg.isMe ? Colors.blue : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -286,9 +263,7 @@ class _ChatTabState extends State<ChatTab> {
                         Text(
                           msg.content,
                           style: TextStyle(
-                            color:
-                            msg.isMe ? Colors.white : Colors.black,
-                          ),
+                              color: msg.isMe ? Colors.white : Colors.black),
                         ),
                       ],
                     ),
@@ -305,7 +280,10 @@ class _ChatTabState extends State<ChatTab> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    onChanged: (_) => _sendStartTyping(),
+                    onChanged: (_) {
+                      _sendStartTyping();
+                      _resetTypingTimer();
+                    },
                     decoration: const InputDecoration(
                       hintText: "Message...",
                       border: OutlineInputBorder(),
@@ -318,13 +296,23 @@ class _ChatTabState extends State<ChatTab> {
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () => _sendMessageWS(_controller.text),
+                  onPressed: () {
+                    final text = _controller.text.trim();
+                    if (text.isEmpty) return;
+
+                    _sendMessageWS(text);
+
+                    _controller.clear();
+                    _sendStopTyping();
+                  },
                 ),
+
               ],
             ),
           ),
         ],
       ),
+
     );
   }
 }
