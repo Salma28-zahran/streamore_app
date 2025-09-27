@@ -1,4 +1,3 @@
-// core/services/chat_websocket_manager.dart
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -44,7 +43,7 @@ class ChatWebsocketManager {
           }
           print("🔌 Connected WS for chat $chatId: $_isConnected");
 
-            },
+        },
         onError: (err) {
           print("❌ WS Error: $err");
           _isConnected = false;
@@ -176,17 +175,8 @@ class ChatWebsocketManager {
       if (resp.statusCode == 200 || resp.statusCode == 201) {
         final data = jsonDecode(resp.body);
 
-
         if (data is Map<String, dynamic>) {
           print("📤 Message sent (HTTP): $data");
-
-          _controller.add({
-            "type": "chat_message",
-            ...data,
-          });
-
-
-
           return data;
         } else {
           print("❌ Unexpected response format: $data");
@@ -200,6 +190,7 @@ class ChatWebsocketManager {
 
     return null;
   }
+
 
   Future<void> sendMedia({
     required String token,
@@ -267,19 +258,29 @@ class ChatWebsocketManager {
 
   void sendWS(Map<String, dynamic> data) {
     if (_channel != null) {
+      final encoded = jsonEncode({
+      "type": "message",
+      "sender_id": 4,
+      "content": "t"});
+      _channel!.sink.add(encoded);
+      print("📤 WS Message sent: $encoded");
+      /*
       try {
         final encoded = jsonEncode(data);
         _channel!.sink.add(encoded);
-        print("📤 WS Message sent: $encoded");
+
       } catch (e) {
         print("❌ Failed to send WS message: $e");
       }
-    } else {
+
+       */
+       } else {
       print("⚠️ Cannot send WS message → not connected");
     }
   }
 
- // http://34.39.27.45:8000/api/chat/4/send/
+
+  // http://34.39.27.45:8000/api/chat/4/send/
   Future<List<Map<String, dynamic>>?> getMessages({
     required String token,
     required int chatId,
@@ -294,7 +295,6 @@ class ChatWebsocketManager {
       if (resp.statusCode == 200) {
         final data = jsonDecode(resp.body);
 
-        // لو data List خلاص رجعها، لو Map حوّلها لقائمة فيها عنصر واحد
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         } else if (data is Map<String, dynamic>) {

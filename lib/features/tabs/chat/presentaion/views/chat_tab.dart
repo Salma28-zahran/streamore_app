@@ -128,6 +128,7 @@ class _ChatTabState extends State<ChatTab> {
           }
         });
         break;
+
       case 'typing_update':
         final user = data['user'] as String? ?? "";
         final isTyping = data['is_typing'] == true;
@@ -151,15 +152,15 @@ class _ChatTabState extends State<ChatTab> {
     }
   }
 
-  void _sendMessageWS(String text) async {
-    if (text.trim().isEmpty) return;
+  void _sendMessageWS(String text) {
+    if (text.trim().isEmpty ) return;
 
     try {
-      await ChatWebsocketManager.instance.sendMessage(
-        token: _token!,
-        chatId: _chatId,
-        content: text.trim(),
-      );
+      ChatWebsocketManager.instance.sendWS({
+        "type": "message",
+        "sender_id": 4,
+        "content": "t",
+      });
     } catch (e) {
       print("❌ Error sending message: $e");
     }
@@ -206,8 +207,7 @@ class _ChatTabState extends State<ChatTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-      Column(
+      body: Column(
         children: [
           if (_activeUsers.isNotEmpty)
             Padding(
@@ -230,7 +230,6 @@ class _ChatTabState extends State<ChatTab> {
                 ? const Center(child: Text("No messages yet"))
                 : ListView.builder(
               controller: _scrollController,
-              reverse: false,
               itemCount: _messages.length,
               itemBuilder: (_, i) {
                 final msg = _messages[i];
@@ -243,7 +242,9 @@ class _ChatTabState extends State<ChatTab> {
                         vertical: 4, horizontal: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: msg.isMe ? Colors.blue : Colors.grey.shade200,
+                      color: msg.isMe
+                          ? Colors.blue
+                          : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -263,7 +264,10 @@ class _ChatTabState extends State<ChatTab> {
                         Text(
                           msg.content,
                           style: TextStyle(
-                              color: msg.isMe ? Colors.white : Colors.black),
+                            color: msg.isMe
+                                ? Colors.white
+                                : Colors.black,
+                          ),
                         ),
                       ],
                     ),
@@ -299,20 +303,14 @@ class _ChatTabState extends State<ChatTab> {
                   onPressed: () {
                     final text = _controller.text.trim();
                     if (text.isEmpty) return;
-
                     _sendMessageWS(text);
-
-                    _controller.clear();
-                    _sendStopTyping();
                   },
                 ),
-
               ],
             ),
           ),
         ],
       ),
-
     );
   }
 }

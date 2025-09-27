@@ -38,64 +38,28 @@ class ChatService {
   }
 
   /// 2. Send Message
-  static Future<bool> sendMessage({
-    required String token,
-    required int chatId,
-    required String content,
-  }) async {
-    final url = Uri.parse("${baseUrl}${chatId}/send/");
-    try {
-      final resp = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Token $token',
-        },
-        body: jsonEncode({'content': content}),
-      );
+  static Future<Map<String, dynamic>?> sendMessage(
+      String token, {
+        required int chatId,
+        required String content,
+      }) async {
+    final url = Uri.parse("${baseUrl}$chatId/send/");
 
-      if (resp.statusCode == 200 || resp.statusCode == 201) {
-        print("📤 Message sent: $content");
-        return true;
-      } else {
-        print("❌ Failed to send message: ${resp.body}");
-        return false;
-      }
-    } catch (e) {
-      print("❌ Exception sending message: $e");
-      return false;
-    }
-
-
-
-
-  }
-  /// 6. Get Chat Messages
-  static Future<List<Map<String, dynamic>>> getChatMessages({
-    required String token,
-    required int chatId,
-  }) async {
-    final url = Uri.parse("${baseUrl}$chatId/messages/");
-    final response = await http.get(
+    final response = await http.post(
       url,
       headers: {
         "Authorization": "Token $token",
         "Content-Type": "application/json",
       },
+      body: jsonEncode({"content": content}),
     );
 
-    if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
-      return List<Map<String, dynamic>>.from(data);
-    } else {
-      print("❌ getChatMessages error: ${response.statusCode} → ${response.body}");
-      return [];
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
     }
+    print("❌ sendMessage failed: ${response.statusCode} → ${response.body}");
+    return null;
   }
-
-
-
-
-
 
   /// 3. Upload Media Message
   static Future<Map<String, dynamic>?> uploadMedia({
@@ -103,11 +67,10 @@ class ChatService {
     required int chatId,
     required File file,
   }) async {
-    final url = Uri.parse("${baseUrl}media_message/$chatId/");
+    final url = Uri.parse("${baseUrl}$chatId/upload-media/");
     final request = http.MultipartRequest("POST", url);
 
     request.headers["Authorization"] = "Token $token";
-
     request.files.add(
       await http.MultipartFile.fromPath("media", file.path),
     );
@@ -128,7 +91,7 @@ class ChatService {
     required String token,
     required int chatId,
   }) async {
-    final url = Uri.parse("${baseUrl}chat/$chatId/");
+    final url = Uri.parse("${baseUrl}$chatId/exit-chat/");
     final response = await http.post(
       url,
       headers: {
@@ -140,7 +103,7 @@ class ChatService {
       print("✅ Exited chat: ${response.body}");
       return true;
     } else {
-      print("❌ exitChat error: ${response.body}");
+      print("❌ exitChat error: ${response.statusCode} → ${response.body}");
       return false;
     }
   }
@@ -150,7 +113,7 @@ class ChatService {
     required String token,
     required int chatId,
   }) async {
-    final url = Uri.parse("${baseUrl}chat/$chatId/");
+    final url = Uri.parse("${baseUrl}$chatId/participants-status/");
     final response = await http.get(
       url,
       headers: {
@@ -162,8 +125,30 @@ class ChatService {
       print("✅ Participants status: ${response.body}");
       return jsonDecode(response.body);
     } else {
-      print("❌ getParticipantsStatus error: ${response.body}");
+      print("❌ getParticipantsStatus error: ${response.statusCode} → ${response.body}");
       return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getChatMessages({
+    required String token,
+    required int chatId,
+  }) async {
+    final url = Uri.parse("${baseUrl}$chatId/messages/");
+    final response = await http.get(
+      url,
+      headers: {
+        "Authorization": "Token $token",
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      print("❌ getChatMessages error: ${response.statusCode} → ${response.body}");
+      return [];
     }
   }
 }
