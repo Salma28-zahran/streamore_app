@@ -266,5 +266,14 @@
   "enter_your_password": " أدخل كلمة المرور الخاصة بك",
   " enter_correct_email": " أدخل البريد الإلكتروني الصحيح ",
   "enter_correct_password": "من فضلك أدخل كلمة المرور الصحيحة",
-  "next" : "التالي"
+  "next" : "التالي",
+  "people" : "الاشخاص",
+  "Share_this_link" : "شارك هذا الرابط لدعوة الضيوف للانضمام إلى البث المباشر",
+  "Copy_invite_link" : "نسخ رابط الدعوة",
+  "person" : "شخص",
+  "edit_name" : "تعديل الاسم",
+  "edit_avatar" : "تغير الصورة",
+  "remove_person" : "ازالة الشخص "
+
+
 }

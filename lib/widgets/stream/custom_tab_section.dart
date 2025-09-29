@@ -10,6 +10,7 @@ import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
 import 'package:streamore_app/features/tabs/chat/chat_tab.dart';
 import 'package:streamore_app/features/tabs/comment/comments_tab.dart';
 import 'package:streamore_app/features/tabs/banners/tickers_contant.dart';
+import '../../features/tabs/people/people_tab.dart';
 
 
 
@@ -48,7 +49,7 @@ class CustomTabSection extends StatelessWidget {
             ],
           ),
           child: DefaultTabController(
-            length: 4,
+            length: 5,
             child: Column(
               children: [
                 TabBar(
@@ -69,6 +70,7 @@ class CustomTabSection extends StatelessWidget {
                     Tab(text: "banners".tr()),
                     Tab(text: "comments".tr()),
                     Tab(text: "chat".tr()),
+                    Tab(text: "people".tr()),
                   ],
                 ),
                 Expanded(
@@ -83,6 +85,7 @@ class CustomTabSection extends StatelessWidget {
                           : const BannersTab(),
                       const CommentsTab(),
                       const ChatTab(),
+                      const PeopleTab(),
                     ],
                   ),
                 ),

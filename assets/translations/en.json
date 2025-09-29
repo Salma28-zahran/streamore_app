@@ -267,5 +267,12 @@
   "enter_your_password": " enter your password",
   " enter_correct_email": " enter correct email",
   "enter_correct_password": "enter correct password",
-  "next" : "next"
+  "next" : "next",
+  "people" : "people",
+  "Share_this_link" : "Share this link to bring guests on live",
+  "Copy_invite_link" : "Copy invite link",
+  "person" : "Person",
+  "edit_name" : "Edit name",
+  "edit_avatar" : "Edit avatar",
+  "remove_person" : "Remove person"
 }
