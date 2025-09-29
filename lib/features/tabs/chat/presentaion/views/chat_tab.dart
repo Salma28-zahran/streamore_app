@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/services/chat_service.dart';
 import 'package:streamore_app/features/tabs/chat/bloc/chat_websockets_manager.dart'
     show ChatWebsocketManager;
+import 'package:streamore_app/features/tabs/chat/widgets/TypingIndicator.dart';
 
+/// Model for a chat message
 class ChatMessage {
   final int? id;
   final int? chatId;
+  final int? senderId;
   final String sender;
   final String content;
   final String? timestamp;
@@ -17,6 +21,7 @@ class ChatMessage {
   ChatMessage({
     this.id,
     this.chatId,
+    this.senderId,
     required this.sender,
     required this.content,
     this.timestamp,
@@ -24,19 +29,42 @@ class ChatMessage {
     this.isMedia = false,
   });
 
-  factory ChatMessage.fromJson(Map<String, dynamic> json,
-      {String? currentUser}) {
-    final senderName = json['sender'] is Map
-        ? json['sender']['username']
-        : (json['sender']?.toString() ?? 'unknown');
+  /// Accepts different shapes from server for `sender`:
+  /// - sender could be Map { id, username }
+  /// - or sender could be a plain string
+  factory ChatMessage.fromJson(
+      Map<String, dynamic> json, {
+        int? currentUserId,
+        String? currentUserName,
+      }) {
+    int? senderId;
+    String senderName = 'unknown';
+
+    final s = json['sender'];
+    if (s is Map) {
+      senderId = s['id'] is int ? s['id'] as int : (int.tryParse('${s['id']}'));
+      senderName = (s['username'] ?? s['name'] ?? senderId?.toString())?.toString() ?? 'unknown';
+    } else if (s != null) {
+      senderName = s.toString();
+    } else if (json['sender_username'] != null) {
+      senderName = json['sender_username'].toString();
+    }
+
+    bool isMe = false;
+    if (currentUserId != null && senderId != null) {
+      isMe = currentUserId == senderId;
+    } else if (currentUserName != null) {
+      isMe = senderName == currentUserName;
+    }
 
     return ChatMessage(
-      id: json['id'],
-      chatId: json['chat'],
+      id: json['id'] is int ? json['id'] as int : (int.tryParse('${json['id']}')),
+      chatId: json['chat'] is int ? json['chat'] as int : (int.tryParse('${json['chat']}')),
+      senderId: senderId,
       sender: senderName,
-      content: json['content'] ?? '',
+      content: json['content']?.toString() ?? '',
       timestamp: json['timestamp']?.toString(),
-      isMe: currentUser != null && senderName == currentUser,
+      isMe: isMe,
       isMedia: json['media'] != null,
     );
   }
@@ -56,14 +84,17 @@ class _ChatTabState extends State<ChatTab> {
 
   String? _email;
   String? _token;
+  int? _myUserId;
   int _chatId = 0;
   late String currentUser;
 
   StreamSubscription? _sub;
   List<String> _typingUsers = [];
+  Map<String, Timer> _typingTimers = {};
   List<String> _activeUsers = [];
-  Timer? _typingTimer;
-  bool _isTyping = false;
+
+  Timer? _localTypingTimer;
+  bool _isTypingLocally = false;
 
   @override
   void initState() {
@@ -74,124 +105,205 @@ class _ChatTabState extends State<ChatTab> {
   Future<void> _initSetup() async {
     _token = await StorageHelper.getToken();
     _email = await StorageHelper.getEmail();
-    final myUserId = await StorageHelper.getUserId();
-    if (_token == null || _email == null || myUserId == null) return;
+    final myUserId = await StorageHelper.getUserId(); // expecting int
+    if (_token == null || _email == null || myUserId == null) {
+      print("⚠️ Missing auth data — cannot start chat");
+      return;
+    }
 
+    _myUserId = myUserId;
     currentUser = _email!.split('@')[0];
 
+    // --- create or get chat (example) ---
     final newChat = await ChatService.createChat(
       _token!,
-      userIds: [myUserId, 21],
+      userIds: [21], // replace with real other participants (exclude self)
       isGroup: true,
       name: "Study Group",
     );
 
-    if (newChat != null &&
-        newChat['chat'] != null &&
-        newChat['chat']['id'] != null) {
-      _chatId = newChat['chat']['id'] as int;
+    print("DEBUG createChat response: $newChat");
+
+    if (newChat != null) {
+      if (newChat['id'] != null) {
+        _chatId = newChat['id'] as int;
+      } else if (newChat['chat'] != null && newChat['chat']['id'] != null) {
+        _chatId = newChat['chat']['id'] as int;
+      } else {
+        print("⚠️ createChat returned unexpected shape: $newChat");
+      }
+    } else {
+      print("⚠️ createChat returned null");
     }
 
-    ChatWebsocketManager.instance.connect(
-      token: _token!,
-      chatId: _chatId,
-    );
+    if (_chatId == 0) {
+      print("⚠️ No valid chatId — skipping websocket connect");
+      return;
+    }
 
-    print("🔑 Token: $_token, ChatId: $_chatId, CurrentUser: $currentUser");
+    // load history first (optional)
+    await _loadHistory();
+
+    // connect websocket (use the corrected ChatWebsocketManager)
+    ChatWebsocketManager.instance.connect(token: _token!, chatId: _chatId);
 
     _sub = ChatWebsocketManager.instance.stream.listen(_handleSocketEvent);
 
     setState(() {});
   }
 
+  Future<void> _loadHistory() async {
+    if (_token == null || _chatId == 0) return;
+    try {
+      final history = await ChatService.getChatMessages(token: _token!, chatId: _chatId);
+      setState(() {
+        _messages.clear();
+        _messages.addAll(history.map((j) => ChatMessage.fromJson(
+          j,
+          currentUserId: _myUserId,
+          currentUserName: currentUser,
+        )));
+      });
+      // scroll to bottom after loading
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
+      });
+    } catch (e) {
+      print("❌ loadHistory error: $e");
+    }
+  }
+
   void _handleSocketEvent(Map<String, dynamic> data) {
+    // Expect server events: "message", "typing", "seen", "user_status"
     print("📥 WS Event received: $data");
-    final type = data['type'];
+    final type = data['type']?.toString() ?? '';
+
     switch (type) {
-      case 'chat_message':
-        final msg = ChatMessage.fromJson(data, currentUser: currentUser);
+      case 'message':
+      // server should send full message object
+        try {
+          final msg = ChatMessage.fromJson(data, currentUserId: _myUserId, currentUserName: currentUser);
 
-        setState(() {
-          if (!_messages.any((m) => m.id == msg.id)) {
-            _messages.add(msg);
-            _typingUsers.remove(msg.sender);
-          }
-        });
+          setState(() {
+            // dedupe by id (if id present)
+            if (msg.id != null) {
+              if (!_messages.any((m) => m.id == msg.id)) {
+                _messages.add(msg);
+              } else {
+                // optionally update existing message (seen_by etc.)
+                final idx = _messages.indexWhere((m) => m.id == msg.id);
+                if (idx != -1) _messages[idx] = msg;
+              }
+            } else {
+              // message without id: add but try to avoid exact duplicates
+              if (!_messages.any((m) => m.content == msg.content && m.sender == msg.sender && m.timestamp == msg.timestamp)) {
+                _messages.add(msg);
+              }
+            }
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOut,
-            );
-          }
-        });
+            // remove sender from typing list (if present)
+            _removeTypingUser(msg.sender);
+          });
+
+          // scroll to bottom
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+              );
+            }
+          });
+        } catch (e) {
+          print("❌ Error parsing message event: $e");
+        }
         break;
 
-      case 'typing_update':
-        final user = data['user'] as String? ?? "";
-        final isTyping = data['is_typing'] == true;
-        setState(() {
-          if (isTyping && !_typingUsers.contains(user) && user != currentUser) {
-            _typingUsers.add(user);
-          } else {
-            _typingUsers.remove(user);
-          }
-        });
+      case 'typing':
+        final username = (data['username'] ?? data['user'] ?? '').toString();
+        if (username.isEmpty) return;
+        if (username == currentUser) return; // ignore own typing indicator
+        _addOrRefreshTypingUser(username);
+        break;
+
+      case 'seen':
+      // optional: handle seen updates (update local message's seen_by if you store it)
+      // server payload example: { type: "seen", message_ids: [...], by: { id, username } }
+        print("👀 seen event: $data");
         break;
 
       case 'user_status':
-      case 'user_status_update':
         final users = List<String>.from(data['active_users'] ?? []);
         setState(() => _activeUsers = users);
         break;
 
       default:
-        print("ℹ️ Other event: $data");
+        print("ℹ️ Other/unknown event: $data");
     }
   }
 
+  void _addOrRefreshTypingUser(String username) {
+    // cancel old timer if present
+    _typingTimers[username]?.cancel();
+
+    setState(() {
+      if (!_typingUsers.contains(username)) _typingUsers.add(username);
+    });
+
+    // remove after 3s of inactivity
+    _typingTimers[username] = Timer(const Duration(seconds: 3), () {
+      _removeTypingUser(username);
+    });
+  }
+
+  void _removeTypingUser(String username) {
+    _typingTimers[username]?.cancel();
+    _typingTimers.remove(username);
+    setState(() {
+      _typingUsers.remove(username);
+    });
+  }
+
   void _sendMessageWS(String text) {
-    if (text.trim().isEmpty ) return;
+    if (text.trim().isEmpty) return;
+    if (_myUserId == null) {
+      print("❌ myUserId is null; cannot send WS message");
+      return;
+    }
 
     try {
-      ChatWebsocketManager.instance.sendWS({
-        "type": "message",
-        "sender_id": 4,
-        "content": "t",
-      });
+      // Use manager's sendMessage to send well-formed WS event
+      ChatWebsocketManager.instance.sendMessage(
+        senderId: _myUserId!,
+        content: text,
+      );
+      print("📤 Sent WS message: $text");
     } catch (e) {
       print("❌ Error sending message: $e");
     }
 
+    // clear input and reset typing state
     _controller.clear();
-    _sendStopTyping();
+    _localTypingTimer?.cancel();
+    _isTypingLocally = false;
   }
 
-  void _sendStartTyping() {
-    if (_isTyping) return;
-    ChatWebsocketManager.instance.sendWS({
-      'type': 'typing_update',
-      'chat_id': _chatId,
-      'is_typing': true,
+  void _onTextChanged(String _) {
+    // debounce sending typing event — send one event then wait 3s of inactivity
+    _localTypingTimer?.cancel();
+    if (!_isTypingLocally) {
+      // send a single typing event (server clients will remove after timeout)
+      ChatWebsocketManager.instance.sendTyping(currentUser);
+      _isTypingLocally = true;
+    }
+    _localTypingTimer = Timer(const Duration(seconds: 3), () {
+      _isTypingLocally = false;
+      // we don't send a "stop typing" event because server's clients remove typing after timeout,
+      // if your server expects explicit stop event you can call a sendTypingStop method here.
     });
-    _isTyping = true;
-  }
-
-  void _sendStopTyping() {
-    if (!_isTyping) return;
-    ChatWebsocketManager.instance.sendWS({
-      'type': 'typing_update',
-      'chat_id': _chatId,
-      'is_typing': false,
-    });
-    _isTyping = false;
-  }
-
-  void _resetTypingTimer() {
-    _typingTimer?.cancel();
-    _typingTimer = Timer(const Duration(seconds: 3), _sendStopTyping);
   }
 
   @override
@@ -200,13 +312,18 @@ class _ChatTabState extends State<ChatTab> {
     ChatWebsocketManager.instance.disconnect();
     _controller.dispose();
     _scrollController.dispose();
-    _typingTimer?.cancel();
+    _localTypingTimer?.cancel();
+    for (final t in _typingTimers.values) {
+      t.cancel();
+    }
+    _typingTimers.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Column(
         children: [
           if (_activeUsers.isNotEmpty)
@@ -218,13 +335,11 @@ class _ChatTabState extends State<ChatTab> {
               ),
             ),
           if (_typingUsers.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "${_typingUsers.join(", ")} is typing...",
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-              ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TypingIndicator(),
             ),
+
           Expanded(
             child: _messages.isEmpty
                 ? const Center(child: Text("No messages yet"))
@@ -234,41 +349,41 @@ class _ChatTabState extends State<ChatTab> {
               itemBuilder: (_, i) {
                 final msg = _messages[i];
                 return Align(
-                  alignment: msg.isMe
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment: msg.isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 4, horizontal: 8),
+                    margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: msg.isMe
-                          ? Colors.blue
-                          : Colors.grey.shade200,
+                      color: msg.isMe ? Colors.blue : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    constraints: const BoxConstraints(maxWidth: 320),
                     child: Column(
-                      crossAxisAlignment: msg.isMe
-                          ? CrossAxisAlignment.end
-                          : CrossAxisAlignment.start,
+                      crossAxisAlignment: msg.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                       children: [
                         if (!msg.isMe)
                           Text(
                             msg.sender,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                         const SizedBox(height: 4),
                         Text(
                           msg.content,
-                          style: TextStyle(
-                            color: msg.isMe
-                                ? Colors.white
-                                : Colors.black,
-                          ),
+                          style: TextStyle(color: msg.isMe ? Colors.white : Colors.black),
                         ),
+                        if (msg.timestamp != null) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            DateFormat.Hm().format(DateTime.parse(msg.timestamp!)),
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: msg.isMe ? Colors.white : Colors.blue,
+                            ),
+                          ),
+
+
+
+                        ],
                       ],
                     ),
                   ),
@@ -284,17 +399,21 @@ class _ChatTabState extends State<ChatTab> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    onChanged: (_) {
-                      _sendStartTyping();
-                      _resetTypingTimer();
+                    onChanged: (v) {
+                      _onTextChanged(v);
                     },
                     decoration: const InputDecoration(
                       hintText: "Message...",
                       border: OutlineInputBorder(),
                       isDense: true,
-                      contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     ),
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (val) {
+                      final text = val.trim();
+                      if (text.isEmpty) return;
+                      _sendMessageWS(text);
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),
