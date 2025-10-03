@@ -274,5 +274,7 @@
   "person" : "Person",
   "edit_name" : "Edit name",
   "edit_avatar" : "Edit avatar",
-  "remove_person" : "Remove person"
+  "remove_person" : "Remove person",
+  "starred_comment" : "starred comment",
+  "no_starred_comments" : "no starred comments"
 }

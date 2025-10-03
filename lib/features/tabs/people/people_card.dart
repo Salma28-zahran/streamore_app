@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:streamore_app/widgets/save_username_widgets/save_username.dart';
 
 class UserCard extends StatefulWidget {
   const UserCard({super.key});
@@ -24,7 +26,6 @@ class _UserCardState extends State<UserCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// الصورة
           Container(
             width: 60,
             height: 80,
@@ -37,41 +38,37 @@ class _UserCardState extends State<UserCard> {
             ),
           ),
           const SizedBox(width: 10),
-
-          /// النصوص + الأيقونات + الصوت (كلهم جوه عمود)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// الصف اللي فيه النصوص + الأيقونات
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// الجزء النصي
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Username",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                        UserNameWidget(
+                          style: GoogleFonts.poppins(
                             fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF323236),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
+                              padding: EdgeInsets.symmetric(
                                 vertical: 2,
                                 horizontal: 10,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF679FFF),
+                                color: Color(0xFF679FFF),
                                 borderRadius: BorderRadius.circular(3),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "host",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -80,8 +77,8 @@ class _UserCardState extends State<UserCard> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 5),
-                            const Text(
+                            SizedBox(width: 5),
+                            Text(
                               "480p",
                               style: TextStyle(
                                 color: Color(0xFF5E5E66),
@@ -93,46 +90,53 @@ class _UserCardState extends State<UserCard> {
                         ),
                       ],
                     ),
-
-                    /// أيقونات المايك والمنيو
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            isMicOn ? Icons.mic : Icons.mic_off,
-                            color: Colors.black,
+                        SizedBox(
+                          width: 25,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(
+                              isMicOn ? Icons.mic : Icons.mic_off,
+                              size: 25,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isMicOn = !isMicOn;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              isMicOn = !isMicOn;
-                            });
-                          },
                         ),
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, color: Colors.black),
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: "edit_name",
-                              child: Text("edit_name".tr()),
-                            ),
-                            PopupMenuItem(
-                              value: "edit_avatar",
-                              child: Text("edit_avatar".tr()),
-                            ),
-                            PopupMenuItem(
-                              value: "remove_person",
-                              child: Text("remove_person".tr()),
-                            ),
-                          ],
+                        SizedBox(
+                          width: 25,
+                          child: PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(Icons.more_vert,
+                                size: 25, color: Colors.black),
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: "edit_name",
+                                child: Text("edit_name".tr()),
+                              ),
+                              PopupMenuItem(
+                                value: "edit_avatar",
+                                child: Text("edit_avatar".tr()),
+                              ),
+                              PopupMenuItem(
+                                value: "remove_person",
+                                child: Text("remove_person".tr()),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 8),
-
-                /// الصف بتاع الصوت (volume bar)
                 Row(
                   children: [
                     const Icon(Icons.volume_off,
@@ -143,11 +147,10 @@ class _UserCardState extends State<UserCard> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: List.generate(
                           10,
-                              (index) => Container(
+                          (index) => Container(
                             width: 18,
                             height: 2,
-                            margin:
-                            const EdgeInsets.symmetric(horizontal: 2),
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
                             color: Colors.grey.shade400,
                           ),
                         ),

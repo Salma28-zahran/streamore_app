@@ -273,7 +273,11 @@
   "person" : "شخص",
   "edit_name" : "تعديل الاسم",
   "edit_avatar" : "تغير الصورة",
-  "remove_person" : "ازالة الشخص "
+  "remove_person" : "ازالة الشخص ",
+  "pinned_comment" : "التعليقات المثبتة",
+  "no_starred_comments" : "لا توجد تعليقات مثبتة"
+
+
 
 
 }
