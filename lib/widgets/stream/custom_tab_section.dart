@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
+import 'package:streamore_app/core/provider/my_provider.dart';
 
 import 'package:streamore_app/features/tabs/banners/banners_contant.dart';
 import 'package:streamore_app/features/tabs/banners/banners_tab.dart';
 import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
-import 'package:streamore_app/features/tabs/chat/chat_tab.dart';
+import 'package:streamore_app/features/tabs/chat/presentaion/views/chat_tab.dart';
 import 'package:streamore_app/features/tabs/comment/comments_tab.dart';
 import 'package:streamore_app/features/tabs/banners/tickers_contant.dart';
-
-
 
 class CustomTabSection extends StatelessWidget {
   final TabController tabController;
@@ -82,10 +82,11 @@ class CustomTabSection extends StatelessWidget {
                           ? const BannersContant()
                           : const BannersTab(),
                       const CommentsTab(),
-                      const ChatTab(),
+                      ChatTab(), // 👈 من غير const
                     ],
                   ),
                 ),
+
               ],
             ),
           ),
