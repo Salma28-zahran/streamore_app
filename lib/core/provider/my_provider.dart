@@ -77,4 +77,11 @@ class MyProvider extends ChangeNotifier {
     chatMessages.add(message);
     notifyListeners();
   }
+  int? _chatId;
+  int? get chatId => _chatId;
+
+  void setChatId(int id) {
+    _chatId = id;
+    notifyListeners();
+  }
 }

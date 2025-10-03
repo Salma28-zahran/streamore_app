@@ -4,6 +4,7 @@ class StorageHelper {
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("auth_token", token);
+    print('🔑 Token: $token');
   }
 
   static Future<String?> getToken() async {
@@ -51,4 +52,21 @@ class StorageHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  static Future<void> saveUserId(int userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('user_id', userId);
+  }
+
+  static Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('user_id');
+  }
+
+  static Future<void> clearUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_id');
+  }
+
+
 }
