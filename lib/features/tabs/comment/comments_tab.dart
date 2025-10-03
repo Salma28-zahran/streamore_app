@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/features/tabs/comment/starred_comment_body.dart';
+import 'package:streamore_app/widgets/save_username_widgets/save_username.dart';
 
 class CommentsTab extends StatefulWidget {
   static const String routeName = "/comments";
@@ -29,6 +31,8 @@ class _CommentsTabState extends State<CommentsTab> {
     Provider.of<CommentProvider>(context, listen: false).deleteComment(index);
   }
 
+  int selectedBody = 0;
+
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<MyProvider>(context);
@@ -44,6 +48,7 @@ class _CommentsTabState extends State<CommentsTab> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  if (selectedBody == 0)
                   Container(
                     width: 357,
                     padding: const EdgeInsets.all(10),
@@ -62,101 +67,191 @@ class _CommentsTabState extends State<CommentsTab> {
           Padding(
             padding: const EdgeInsets.only(top: 1, left: 1, right: 1),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Transform.scale(
-                  scaleX: 28 / 59,
-                  scaleY: 13 / 34,
-                  child: Switch(
-                    value: myProvider.isOverlayEnabled,
-                    onChanged: (value) {
-                      myProvider.toggleOverlay(value);
-                    },
-                    activeColor: Theme.of(context).colorScheme.primary,
+                if (selectedBody == 0)
+                  Row(
+                    children: [
+                      Transform.scale(
+                        scaleX: 28 / 59,
+                        scaleY: 13 / 34,
+                        child: Switch(
+                          value: myProvider.isOverlayEnabled,
+                          onChanged: (value) {
+                            myProvider.toggleOverlay(value);
+                          },
+                          activeColor: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      Text("overlay".tr(), style: GoogleFonts.inter(fontSize: 14)),
+                    ],
                   ),
-                ),
-                Text("overlay".tr(), style: GoogleFonts.inter(fontSize: 14)),
+
+                if (selectedBody == 0)
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedBody = 1; // فتح الـ pinned comments
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          "starred_comment".tr(),
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF5E5E66),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.arrow_forward_ios,
+                            size: 16, color: Color(0xFF5E5E66)),
+                      ],
+                    ),
+                  ),
+
+                if (selectedBody == 1)
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedBody = 0; // رجع للـ all comments
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end, // يخلي العنصر في أقصى اليمين
+                          children: [
+                            const Icon(Icons.arrow_back_ios,
+                                size: 18, color: Color(0xFF5E5E66)),
+                            const SizedBox(width: 6),
+                            Text(
+                              "all_comments".tr(),
+                              style: GoogleFonts.inter(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF5E5E66),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
           Expanded(
-            child:
-                commentProvider.comments.isEmpty
-                    ? Center(
-                      child: Text(
-                        "no_comments".tr(),
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+            child: selectedBody ==0 ?
+            commentProvider.comments.isEmpty
+                ? Center(
+                    child: Text(
+                      "no_comments".tr(),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.grey,
                       ),
-                    )
-                    : ListView.builder(
-                      itemCount: commentProvider.comments.length,
-                      itemBuilder: (context, index) {
-                        final commentText = commentProvider.comments[index];
-                        final isTapped = commentProvider.tappedComments
-                            .contains(index);
-                        final isShown =
-                            commentProvider.shownCommentIndex == index;
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: commentProvider.comments.length,
+                    itemBuilder: (context, index) {
+                      final commentText = commentProvider.comments[index];
+                      final isTapped =
+                          commentProvider.tappedComments.contains(index);
+                      final isShown =
+                          commentProvider.shownCommentIndex == index;
 
-                        final isStarred = commentProvider.isCommentStarred(
-                          index,
-                        );
+                      final isStarred = commentProvider.isCommentStarred(
+                        index,
+                      );
 
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              commentProvider.toggleCommentTapped(index);
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF9F9F9),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child:
-                                isTapped
-                                    ? buildCommentRow(
-                                      index: index,
-                                      comment: commentText,
-                                      isShown: isShown,
-                                      isStarred: isStarred,
-                                      onShowHideTap:
-                                          () => commentProvider
-                                              .toggleCommentShown(index),
-                                      onStarTap:
-                                          () => commentProvider
-                                              .toggleStarredComment(index),
-                                      onDeleteTap: () => _deleteComment(index),
-                                    )
-                                    : Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.person_rounded,
-                                          color: Color(0xFFBDBDBD),
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Text(
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            commentProvider.toggleCommentTapped(index);
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF9F9F9),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: isTapped
+                              ? buildCommentRow(
+                                  index: index,
+                                  comment: commentText,
+                                  isShown: isShown,
+                                  isStarred: isStarred,
+                                  onShowHideTap: () =>
+                                      commentProvider.toggleCommentShown(index),
+                                  onStarTap: () => commentProvider
+                                      .toggleStarredComment(index),
+                                  onDeleteTap: () => _deleteComment(index),
+                                )
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 18,
+                                      backgroundColor: Color(0xFFBDBDBD),
+                                      child: Icon(Icons.person,
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              if (isStarred)
+                                                Icon(
+                                                  Icons.star,
+                                                  size: 17,
+                                                  color: Color(0xFF1865E8),
+                                                ),
+                                              SizedBox(
+                                                width: 4,
+                                              ),
+                                              UserNameWidget(
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xFF5E5E66),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          SizedBox(height: 4),
+                                          Text(
                                             commentText,
-                                            style: const TextStyle(
+                                            style: GoogleFonts.inter(
                                               fontSize: 14,
-                                              color: Color(0xFF444444),
+                                              color: Color(0xFF555555),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                          ),
-                        );
-                      },
-                    ),
+                                  ],
+                                ),
+                        ),
+                      );
+                    },
+                  )
+                : StarredCommentsList(
+                commentProvider: commentProvider,
+                onDeleteComment: _deleteComment)
           ),
           SafeArea(
             child: Padding(
@@ -233,10 +328,8 @@ class _CommentsTabState extends State<CommentsTab> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(
-                        isStarred ? Icons.star : Icons.star_border,
-                        color: Colors.black87,
-                      ),
+                      icon: Icon(isStarred ? Icons.star : Icons.star_border,
+                          color: isStarred ? Color(0xFFFFC130) : Colors.black),
                       onPressed: onStarTap,
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
@@ -257,7 +350,6 @@ class _CommentsTabState extends State<CommentsTab> {
                 ),
               ],
             ),
-
             buildShowHideButton(isShown: isShown, onTap: onShowHideTap),
           ],
         ),
