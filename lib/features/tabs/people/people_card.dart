@@ -15,29 +15,33 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final double w = size.width;
+    final double h = size.height;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(w * 0.025),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300, width: 3),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300, width: w * 0.008),
+        borderRadius: BorderRadius.circular(w * 0.02),
         color: Colors.white,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 60,
-            height: 80,
+            width: w * 0.15,
+            height: h * 0.12,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(w * 0.015),
               child: Image.asset(
                 "assets/images/profile4.jpeg",
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: w * 0.025),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,38 +55,38 @@ class _UserCardState extends State<UserCard> {
                       children: [
                         UserNameWidget(
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: w * 0.035,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF323236),
+                            color: const Color(0xFF323236),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: h * 0.01),
                         Row(
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 10,
+                                vertical: h * 0.003,
+                                horizontal: w * 0.025,
                               ),
                               decoration: BoxDecoration(
-                                color: Color(0xFF679FFF),
-                                borderRadius: BorderRadius.circular(3),
+                                color: const Color(0xFF679FFF),
+                                borderRadius: BorderRadius.circular(w * 0.01),
                               ),
                               child: Text(
                                 "host",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize: w * 0.03,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: w * 0.015),
                             Text(
                               "480p",
                               style: TextStyle(
-                                color: Color(0xFF5E5E66),
-                                fontSize: 11,
+                                color: const Color(0xFF5E5E66),
+                                fontSize: w * 0.028,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -93,13 +97,13 @@ class _UserCardState extends State<UserCard> {
                     Row(
                       children: [
                         SizedBox(
-                          width: 25,
+                          width: w * 0.065,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
+                            constraints: const BoxConstraints(),
                             icon: Icon(
                               isMicOn ? Icons.mic : Icons.mic_off,
-                              size: 25,
+                              size: w * 0.065,
                               color: Colors.black,
                             ),
                             onPressed: () {
@@ -110,12 +114,12 @@ class _UserCardState extends State<UserCard> {
                           ),
                         ),
                         SizedBox(
-                          width: 25,
+                          width: w * 0.065,
                           child: PopupMenuButton<String>(
                             padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
+                            constraints: const BoxConstraints(),
                             icon: Icon(Icons.more_vert,
-                                size: 25, color: Colors.black),
+                                size: w * 0.065, color: Colors.black),
                             itemBuilder: (context) => [
                               PopupMenuItem(
                                 value: "edit_name",
@@ -136,21 +140,23 @@ class _UserCardState extends State<UserCard> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: h * 0.01),
                 Row(
                   children: [
-                    const Icon(Icons.volume_off,
-                        size: 20, color: Colors.black54),
-                    const SizedBox(width: 6),
+                    Icon(Icons.volume_off,
+                        size: w * 0.05,
+                        color: Colors.black54),
+                    SizedBox(width: w * 0.015),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: List.generate(
                           10,
-                          (index) => Container(
-                            width: 18,
-                            height: 2,
-                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                              (index) => Container(
+                            width: w * 0.045,
+                            height: h * 0.0025,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: w * 0.005),
                             color: Colors.grey.shade400,
                           ),
                         ),
