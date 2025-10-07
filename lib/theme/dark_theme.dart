@@ -41,10 +41,11 @@ class DarkTheme extends BaseTheme{
     dividerColor: Color(0xff24334A),
 
     cardColor: const Color(0xff0D142A),
-    tabBarTheme: TabBarTheme(
-        labelColor: Colors.white,
-        unselectedLabelColor: Color(0xff80A9CC)
+    tabBarTheme: const TabBarThemeData(
+      labelColor: Colors.white,
+      unselectedLabelColor: Color(0xff80A9CC),
     ),
+
 
 
   );

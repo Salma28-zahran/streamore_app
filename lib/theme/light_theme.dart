@@ -35,12 +35,13 @@ class LightTheme extends BaseTheme{
     cardColor: const Color(0xffFFFFFF),
     dividerColor: Colors.black,
 
-      tabBarTheme: TabBarTheme(
-          labelColor: Colors.white,
-          unselectedLabelColor: Color(0xff5E5E66)
-      )
+    tabBarTheme: const TabBarThemeData(
+      labelColor: Colors.white,
+      unselectedLabelColor: Color(0xff5E5E66),
+    ),
 
-      
+
+
 
 
   );
