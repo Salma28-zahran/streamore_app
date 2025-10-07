@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
@@ -76,6 +77,10 @@ class _BrandTabState extends State<BrandTab> {
   Widget build(BuildContext context) {
     final myProvider = Provider.of<MyProvider>(context);
     final bool isDark = myProvider.themeMode == ThemeMode.dark;
+    bool _isOverlayEnabled = false;
+    var myprovider = Provider.of<MyProvider>(context);
+
+
     final Color bgColor =
         isDark ? const Color(0xff0D142A) : const Color(0xffEFEFEF);
 
@@ -332,8 +337,53 @@ class _BrandTabState extends State<BrandTab> {
           const LogoSection(),
           const OverlaySection(),
           const BackgroundSection(),
+         const VirtualBackgroundSection(),
+          const SizedBox(height: 17),
 
-          const SizedBox(height: 100),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "for_best_performance_we_recommend_using_a_green_screen".tr(),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                  color: myprovider.themeMode == ThemeMode.dark
+                      ? Colors.white
+                      : const Color(0xff5E5E66),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(height: 17),
+          Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Row(
+              children: [
+                Transform.scale(
+                  scaleX: 28 / 59,
+                  scaleY: 13 / 34,
+                  child: Switch(
+                    value: _isOverlayEnabled,
+                    onChanged: (value) {
+                      setState(() {
+                        _isOverlayEnabled = value;
+                      });
+                    },
+                  ),
+                ),
+                Text(
+                  "green_screen_effect".tr(),
+                  style: GoogleFonts.poppins(
+                      fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+
+
+
+          const SizedBox(height: 30),
         ],
       ),
     );

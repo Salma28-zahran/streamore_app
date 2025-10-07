@@ -42,10 +42,9 @@ class _LogoSectionState extends State<LogoSection> {
                 Consumer<BackgroundOverlayLogoProvider>(
                   builder: (context, provider, child) {
                     return _buildImageBox(
-                      image:
-                          provider.logoImageFile == null
-                              ? Image.asset('assets/images/logo.png', width: 40)
-                              : null,
+                      image: provider.logoImageFile == null
+                          ? Image.asset('assets/images/logo.png', width: 40)
+                          : null,
                       file: provider.logoImageFile,
                       provider: provider,
                       isDefault: provider.logoImageFile == null,
@@ -69,7 +68,7 @@ class _LogoSectionState extends State<LogoSection> {
   }) {
     bool isSelected =
         (provider?.logoImageFile == file) ||
-        (isDefault && provider?.logoImageFile == null);
+            (isDefault && provider?.logoImageFile == null);
 
     Widget content;
 
@@ -80,19 +79,17 @@ class _LogoSectionState extends State<LogoSection> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: Colors.grey[300],
-          image:
-              file != null
-                  ? DecorationImage(
-                    image: FileImage(File(file.path)),
-                    fit: BoxFit.cover,
-                  )
-                  : image != null
-                  ? DecorationImage(image: image.image, fit: BoxFit.cover)
-                  : null,
-          border:
-              isSelected
-                  ? Border.all(color: Colors.blue, width: 3)
-                  : Border.all(color: Colors.transparent),
+          image: file != null
+              ? DecorationImage(
+            image: FileImage(File(file.path)),
+            fit: BoxFit.cover,
+          )
+              : image != null
+              ? DecorationImage(image: image.image, fit: BoxFit.cover)
+              : null,
+          border: isSelected
+              ? Border.all(color: Colors.blue, width: 3)
+              : Border.all(color: Colors.transparent),
         ),
       );
     } else {
@@ -192,11 +189,11 @@ class _OverlaySectionState extends State<OverlaySection> {
     int remainingSlots = 7 - provider.overlayImages.length;
 
     List<Widget> imageBoxes =
-        provider.overlayImages
-            .map(
-              (file) => _buildImageBox(overlayImage: file, provider: provider),
-            )
-            .toList();
+    provider.overlayImages
+        .map(
+          (file) => _buildImageBox(overlayImage: file, provider: provider),
+    )
+        .toList();
 
     imageBoxes.addAll(
       List.generate(remainingSlots.clamp(0, 7), (_) => _buildImageBox()),
@@ -220,20 +217,18 @@ class _OverlaySectionState extends State<OverlaySection> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: Colors.grey[300],
-          image:
-              overlayImage != null
-                  ? DecorationImage(
-                    image: FileImage(File(overlayImage.path)),
-                    fit: BoxFit.cover,
-                  )
-                  : null,
-          border:
-              overlayImage != null
-                  ? Border.all(
-                    color: isSelected ? Colors.blue : Colors.transparent,
-                    width: 3,
-                  )
-                  : Border.all(color: Colors.transparent),
+          image: overlayImage != null
+              ? DecorationImage(
+            image: FileImage(File(overlayImage.path)),
+            fit: BoxFit.cover,
+          )
+              : null,
+          border: overlayImage != null
+              ? Border.all(
+            color: isSelected ? Colors.blue : Colors.transparent,
+            width: 3,
+          )
+              : Border.all(color: Colors.transparent),
         ),
       ),
     );
@@ -279,9 +274,9 @@ class _BackgroundSectionState extends State<BackgroundSection> {
     int remainingSlots = 7 - provider.backgroundImages.length;
 
     List<Widget> imageBoxes =
-        provider.backgroundImages
-            .map((file) => _buildImageBox(file: file, provider: provider))
-            .toList();
+    provider.backgroundImages
+        .map((file) => _buildImageBox(file: file, provider: provider))
+        .toList();
 
     imageBoxes.addAll(
       List.generate(remainingSlots.clamp(0, 7), (_) => _buildImageBox()),
@@ -348,20 +343,128 @@ class _BackgroundSectionState extends State<BackgroundSection> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: Colors.grey[300],
-          image:
-              file != null
-                  ? DecorationImage(
-                    image: FileImage(File(file.path)),
-                    fit: BoxFit.cover,
-                  )
-                  : null,
-          border:
-              file != null
-                  ? Border.all(
-                    color: isSelected ? Colors.blue : Colors.transparent,
-                    width: 3,
-                  )
-                  : Border.all(color: Colors.transparent),
+          image: file != null
+              ? DecorationImage(
+            image: FileImage(File(file.path)),
+            fit: BoxFit.cover,
+          )
+              : null,
+          border: file != null
+              ? Border.all(
+            color: isSelected ? Colors.blue : Colors.transparent,
+            width: 3,
+          )
+              : Border.all(color: Colors.transparent),
+        ),
+      ),
+    );
+  }
+}
+
+///— Virtual Background Section ————————————————————————————————————————————
+class VirtualBackgroundSection extends StatefulWidget {
+  const VirtualBackgroundSection({super.key});
+
+  @override
+  State<VirtualBackgroundSection> createState() => _VirtualBackgroundSectionState();
+}
+
+class _VirtualBackgroundSectionState extends State<VirtualBackgroundSection> {
+  bool _isVisible = true;
+
+  Future<void> _pickVirtualBackground() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      context.read<BackgroundOverlayLogoProvider>().addVirtualBackground(pickedFile);
+    }
+  }
+
+  List<Widget> _buildVirtualList(BackgroundOverlayLogoProvider provider) {
+    int remainingSlots = 7 - provider.virtualBackgrounds.length;
+
+    List<Widget> imageBoxes = provider.virtualBackgrounds
+        .map((file) => _buildVirtualBox(file: file, provider: provider))
+        .toList();
+
+    imageBoxes.addAll(
+      List.generate(remainingSlots.clamp(0, 7), (_) => _buildVirtualBox()),
+    );
+
+    return imageBoxes;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SectionHeader(
+          title: 'virtual_background'.tr(),
+          isVisible: _isVisible,
+          onToggle: () => setState(() => _isVisible = !_isVisible),
+        ),
+        if (_isVisible)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Consumer<BackgroundOverlayLogoProvider>(
+              builder: (context, provider, child) {
+                return Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    ..._buildVirtualList(provider),
+                    _buildAddBox(onTap: _pickVirtualBackground),
+                  ],
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildAddBox({required VoidCallback onTap}) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.grey[300],
+      ),
+      child: const Icon(Icons.add),
+    ),
+  );
+
+  Widget _buildVirtualBox({XFile? file, BackgroundOverlayLogoProvider? provider}) {
+    bool isSelected = provider?.selectedVirtualBackground == file;
+
+    return GestureDetector(
+      onTap: () {
+        if (file != null) {
+          provider?.showVirtualBackground(file);
+          print("Virtual background selected: ${file.path}");
+        }
+      },
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.grey[300],
+          image: file != null
+              ? DecorationImage(
+            image: FileImage(File(file.path)),
+            fit: BoxFit.cover,
+          )
+              : null,
+          border: file != null
+              ? Border.all(
+            color: isSelected ? Colors.blue : Colors.transparent,
+            width: 3,
+          )
+              : Border.all(color: Colors.transparent),
         ),
       ),
     );
