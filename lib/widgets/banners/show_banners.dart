@@ -34,13 +34,13 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
   @override
   void initState() {
     super.initState();
-    loadUserName(); // نحمل الاسم عند بدء الـ widget
+    loadUserName();
   }
   Future<void> loadUserName() async {
     final email = await StorageHelper.getEmail();
     if (email != null && email.contains('@')) {
       setState(() {
-        userName = email.split('@')[0]; // ناخد الجزء قبل @
+        userName = email.split('@')[0];
       });
     }
   }
@@ -197,7 +197,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
         final shownIndex = commentProvider.shownCommentIndex;
         final textToShow = shownIndex != null
             ? commentProvider.comments[shownIndex]
-            :  (userName ?? "No User Found");
+            : (userName ?? "No User Found");
 
         switch (theme) {
           case 'bubble':
@@ -209,13 +209,16 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                   color: color,
                   borderRadius: BorderRadius.circular(100),
                 ),
-                child: Text(
-                  textToShow,
-                  style: getFontStyle(
-                    context,
-                    font,
-                    fontSize: 12,
-                    color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    textToShow,
+                    style: getFontStyle(
+                      context,
+                      font,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -236,18 +239,20 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                       height: 23,
                       color: Colors.white,
                       child: Center(
-                        child: Text(
-                          textToShow,
-                          style: getFontStyle(
-                            context,
-                            font,
-                            fontSize: 12,
-                            color: Colors.black87,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Text(
+                            textToShow,
+                            style: getFontStyle(
+                              context,
+                              font,
+                              fontSize: 12,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -263,13 +268,16 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                   color: color,
                   borderRadius: BorderRadius.circular(0),
                 ),
-                child: Text(
-                  textToShow,
-                  style: getFontStyle(
-                    context,
-                    font,
-                    fontSize: 12,
-                    color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Text(
+                    textToShow,
+                    style: getFontStyle(
+                      context,
+                      font,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
