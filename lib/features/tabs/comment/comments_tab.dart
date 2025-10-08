@@ -120,7 +120,7 @@ class _CommentsTabState extends State<CommentsTab> {
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end, // يخلي العنصر في أقصى اليمين
                           children: [
