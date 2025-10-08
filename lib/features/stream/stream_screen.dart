@@ -80,52 +80,57 @@ class _StreamScreenState extends State<StreamScreen>
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
 
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ProfileImageWithBanners(
-                      isZoomVisible: isZoomVisible,
-                      profileImageWidth: profileImageWidth,
-                      profileImageHeight: profileImageHeight,
-                      onZoomIconClick: _onZoomIconClick,
-                      onProfileImageClick: _onProfileImageClick,
-                    ),
+      body: GestureDetector(
+        onTap: () {
+          commentProvider.clearTappedComments();
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ProfileImageWithBanners(
+                        isZoomVisible: isZoomVisible,
+                        profileImageWidth: profileImageWidth,
+                        profileImageHeight: profileImageHeight,
+                        onZoomIconClick: _onZoomIconClick,
+                        onProfileImageClick: _onProfileImageClick,
+                      ),
 
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              ControlButtonsRow(
-                micOn: _micOn,
-                camOn: _camOn,
-                iconSize: iconSize,
-                isSmall: isSmall,
-                toggleMic: () => requestMicPermission(context, _toggleMic),
-                toggleCam: () => requestCameraPermission(context, _toggleCamera),
-              ),
+                ControlButtonsRow(
+                  micOn: _micOn,
+                  camOn: _camOn,
+                  iconSize: iconSize,
+                  isSmall: isSmall,
+                  toggleMic: () => requestMicPermission(context, _toggleMic),
+                  toggleCam: () => requestCameraPermission(context, _toggleCamera),
+                ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-              CustomTabSection(
-                tabController: _tabController,
-                profileImageWidth: profileImageWidth,
-                isSmall: isSmall,
-              ),
-            ],
-          ),
-          BackgroundWidget(),
-          OverlayWidget(),
-          LogoWidget(),
-          if (myProvider.isOverlayEnabled)
-            CommentOverlayWidget(),
-        ],
+                CustomTabSection(
+                  tabController: _tabController,
+                  profileImageWidth: profileImageWidth,
+                  isSmall: isSmall,
+                ),
+              ],
+            ),
+            BackgroundWidget(),
+            OverlayWidget(),
+            LogoWidget(),
+            if (myProvider.isOverlayEnabled)
+              CommentOverlayWidget(),
+          ],
+        ),
       ),
     );
   }

@@ -68,7 +68,6 @@ class CommentProvider with ChangeNotifier {
   bool isCommentStarred(int index) {
     return _starredComments.contains(index);
   }
-
   void toggleStarredComment(int index) {
     if (_starredComments.contains(index)) {
       _starredComments.remove(index);
@@ -116,6 +115,10 @@ class CommentProvider with ChangeNotifier {
 
   void toggleOverlay() {
     _isOverlayEnabled = !_isOverlayEnabled;
+    notifyListeners();
+  }
+  void clearTappedComments() {
+    _tappedComments.clear();
     notifyListeners();
   }
 }

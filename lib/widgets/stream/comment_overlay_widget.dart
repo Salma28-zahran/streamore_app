@@ -65,7 +65,7 @@ class CommentOverlayWidget extends StatelessWidget {
                           children: [
                             UserNameWidget(
                               style: GoogleFonts.poppins(
-                                fontSize: 8,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF5E5E66),
                               ),
@@ -79,7 +79,7 @@ class CommentOverlayWidget extends StatelessWidget {
                               style: GoogleFonts.inter(
                                 color: Color(0xFFFFFFFF),
                                 fontWeight: FontWeight.w600,
-                                fontSize: 7,
+                                fontSize: 10,
                               ),
                             ),
                           ],
