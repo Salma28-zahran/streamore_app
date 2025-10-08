@@ -90,121 +90,118 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     ),
                   ),
                   const SizedBox(width: 2),
-                  GestureDetector(
-                    onTapDown: (TapDownDetails details) async {
-                      final RenderBox overlay =
-                      Overlay.of(context).context.findRenderObject() as RenderBox;
+        GestureDetector(
+          onTapDown: (TapDownDetails details) async {
+            final RenderBox overlay =
+            Overlay.of(context).context.findRenderObject() as RenderBox;
 
-                      await showMenu(
-                        context: context,
-                        position: RelativeRect.fromRect(
-                          details.globalPosition & const Size(40, 40),
-                          Offset.zero & overlay.size,
-                        ),
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        items: [
-                          PopupMenuItem(
-                            enabled: false,
-                            padding: EdgeInsets.zero,
-                            child: StatefulBuilder(
-                              builder: (context, setInnerState) => Container(
-                                width: MediaQuery.of(context).size.width * 0.75, // ✅ العرض
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 12), // ✅ تباعد داخلي
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Center(
-                                      child: SizedBox(
-                                        height: 70,
-                                        width: double.infinity,
-                                        child: VolumeTest(),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Divider(
-                                        height: 18,
-                                        color: Colors.grey.withOpacity(0.4),
-                                        thickness: 0.6),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "echo_cancellation".tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: iconColor,
-                                          ),
-                                        ),
-                                        Transform.scale(
-                                          scaleX: 28 / 59,
-                                          scaleY: 13 / 34,
-                                          child: Switch(
-                                            value: _isEchoCancellation,
-                                            onChanged: (value) {
-                                              setInnerState(
-                                                      () => _isEchoCancellation = value);
-                                              setState(() =>
-                                              _isEchoCancellation = value);
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "noise_suppression".tr(),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: iconColor,
-                                          ),
-                                        ),
-                                        Transform.scale(
-                                          scaleX: 28 / 59,
-                                          scaleY: 13 / 34,
-                                          child: Switch(
-                                            value: _isNoiseSuppression,
-                                            onChanged: (value) {
-                                              setInnerState(
-                                                      () => _isNoiseSuppression = value);
-                                              setState(
-                                                      () => _isNoiseSuppression = value);
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+            await showMenu(
+              context: context,
+              position: RelativeRect.fromRect(
+                details.globalPosition & const Size(40, 40),
+                Offset.zero & overlay.size,
+              ),
+              color: Theme.of(context).cardColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              items: [
+                PopupMenuItem(
+                  enabled: false,
+                  padding: EdgeInsets.zero,
+                  child: StatefulBuilder(
+                    builder: (context, setInnerState) => Container(
+                      width: MediaQuery.of(context).size.width * 0.72,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 55,
+                            child: VolumeTest(),
+                          ),
+                          const SizedBox(height: 2),
+                          Divider(
+                            height: 6,
+                            color: Colors.grey.withOpacity(0.35),
+                            thickness: 0.5,
+                          ),
+                          const SizedBox(height: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "echo_cancellation".tr(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: iconColor,
                                 ),
                               ),
-                            ),
+                              Transform.scale(
+                                scaleX: 0.45,
+                                scaleY: 0.45,
+                                child: Switch(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  value: _isEchoCancellation,
+                                  onChanged: (value) {
+                                    setInnerState(() => _isEchoCancellation = value);
+                                    setState(() => _isEchoCancellation = value);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "noise_suppression".tr(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: iconColor,
+                                ),
+                              ),
+                              Transform.scale(
+                                scaleX: 0.45,
+                                scaleY: 0.45,
+                                child: Switch(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  value: _isNoiseSuppression,
+                                  onChanged: (value) {
+                                    setInnerState(() => _isNoiseSuppression = value);
+                                    setState(() => _isNoiseSuppression = value);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      );
-                    },
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      size: smallIconSize * 0.8,
-                      color: iconColor,
+                      ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            );
+          },
+          child: Icon(
+            Icons.arrow_drop_down,
+            size: smallIconSize * 0.8,
+            color: iconColor,
+          ),
+        )
+
+        ],
               ),
             ),
 
 
             // 📷 CAMERA with dropdown
             Padding(
-              padding: EdgeInsets.only(right: size.width * 0.05),
+              padding: EdgeInsets.only(right: size.width * 0.03),
               child: Row(
                 children: [
                   GestureDetector(
@@ -215,100 +212,103 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                       color: iconColor,
                     ),
                   ),
-                  const SizedBox(width: 2),
-                  GestureDetector(
-                    onTapDown: (TapDownDetails details) async {
-                      final RenderBox overlay =
-                      Overlay.of(context).context.findRenderObject() as RenderBox;
+                  //const SizedBox(width: 2),
+              GestureDetector(
+                onTapDown: (TapDownDetails details) async {
+                  final RenderBox overlay =
+                  Overlay.of(context).context.findRenderObject() as RenderBox;
 
-                      await showMenu(
-                        context: context,
-                        position: RelativeRect.fromRect(
-                          details.globalPosition & const Size(40, 40),
-                          Offset.zero & overlay.size,
-                        ),
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        items: [
-                          PopupMenuItem(
-                            enabled: false,
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            child: StatefulBuilder(
-                              builder: (context, setInnerState) => Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "flip_camera".tr(),
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: iconColor,
-                                    ),
-                                  ),
-                                  Transform.scale(
-                                    scaleX: 28 / 59,
-                                    scaleY: 13 / 34,
-                                    child: Switch(
-                                      value: _isOverlayEnabled,
-                                      onChanged: (value) {
-                                        setInnerState(
-                                                () => _isOverlayEnabled = value);
-                                        setState(() => _isOverlayEnabled = value);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            enabled: false,
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            child: StatefulBuilder(
-                              builder: (context, setInnerState) => Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "mirror_camera".tr(),
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: iconColor,
-                                    ),
-                                  ),
-                                  Transform.scale(
-                                    scaleX: 28 / 59,
-                                    scaleY: 13 / 34,
-                                    child: Switch(
-                                      value: _isOverlayEnabled2,
-                                      onChanged: (value) {
-                                        setInnerState(
-                                                () => _isOverlayEnabled2 = value);
-                                        setState(
-                                                () => _isOverlayEnabled2 = value);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      size: smallIconSize * 0.8,
-                      color: iconColor,
+                  await showMenu(
+                    context: context,
+                    position: RelativeRect.fromRect(
+                      details.globalPosition & const Size(40, 40),
+                      Offset.zero & overlay.size,
                     ),
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    items: [
+                      PopupMenuItem(
+                        enabled: false,
+                        padding: EdgeInsets.only(left: 4),
+                        height: 30,
+                        child: StatefulBuilder(
+                          builder: (context, setInnerState) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "flip_camera".tr(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: iconColor,
+                                ),
+                              ),
+                              Transform.scale(
+                                scaleX: 28 / 59,
+                                scaleY: 13 / 34,
+                                child: Switch(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  value: _isOverlayEnabled,
+                                  onChanged: (value) {
+                                    setInnerState(() => _isOverlayEnabled = value);
+                                    setState(() => _isOverlayEnabled = value);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      PopupMenuItem(
+                        enabled: false,
+                        padding: EdgeInsets.only(left: 4),
+                        height: 30,
+
+                        child: StatefulBuilder(
+                          builder: (context, setInnerState) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "mirror_camera".tr(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: iconColor,
+                                ),
+                              ),
+                              Transform.scale(
+                                scaleX: 28 / 59,
+                                scaleY: 13 / 34,
+                                child: Switch(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  value: _isOverlayEnabled2,
+                                  onChanged: (value) {
+                                    setInnerState(() => _isOverlayEnabled2 = value);
+                                    setState(() => _isOverlayEnabled2 = value);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Icon(
+                    Icons.arrow_drop_down,
+                    size: smallIconSize * 0.8,
+                    color: iconColor,
                   ),
-                ],
+                ),
+              )
+
+              ],
               ),
             ),
 
@@ -351,8 +351,8 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                         enabled: false,
                         padding: EdgeInsets.zero,
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.8, // ✅ عريض
-                          height: MediaQuery.of(context).size.height * 0.55, // ✅ طويل وسكروول
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: MediaQuery.of(context).size.height * 0.55,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -376,7 +376,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                                 return GestureDetector(
                                   onTap: () {
                                     setState(() => selectedIndex = index);
-                                    Navigator.pop(context); // يقفل القائمة بعد الاختيار
+                                    Navigator.pop(context);
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
@@ -438,10 +438,13 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     ],
                   );
                 },
-                child: Icon(
-                  Icons.person_pin_sharp,
-                  size: smallIconSize,
-                  color: iconColor,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Icon(
+                    Icons.person_pin_sharp,
+                    size: smallIconSize,
+                    color: iconColor,
+                  ),
                 ),
               ),
             ),
@@ -546,14 +549,17 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     ),
                   );
                 },
-                child: Icon(Icons.person_add,
-                    size: smallIconSize, color: iconColor),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Icon(Icons.person_add,
+                      size: smallIconSize, color: iconColor),
+                ),
               ),
             ),
 
             // ⚙️ SETTINGS
             Padding(
-              padding: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.only(right: 10,left: 5),
               child: GestureDetector(
                 onTap: () => Navigator.pushNamed(context, "/settings_icon"),
                 child: Icon(Icons.settings_outlined,

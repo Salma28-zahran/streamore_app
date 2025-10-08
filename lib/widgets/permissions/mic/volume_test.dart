@@ -115,7 +115,7 @@ class _VolumeTestState extends State<VolumeTest> {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 2),
                   width: 7,
-                  height: 40,
+                  height: 30,
                   decoration: BoxDecoration(
                     color: getColor(index),
                     borderRadius: BorderRadius.circular(4),
