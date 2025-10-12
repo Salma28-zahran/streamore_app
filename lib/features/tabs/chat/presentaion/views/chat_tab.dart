@@ -103,9 +103,12 @@ class _ChatTabState extends State<ChatTab> {
   }
 
   Future<void> _initSetup() async {
+
+
     _token = await StorageHelper.getToken();
     _email = await StorageHelper.getEmail();
     final myUserId = await StorageHelper.getUserId(); // expecting int
+
     if (_token == null || _email == null || myUserId == null) {
       print("⚠️ Missing auth data — cannot start chat");
       return;
@@ -114,7 +117,9 @@ class _ChatTabState extends State<ChatTab> {
     _myUserId = myUserId;
     currentUser = _email!.split('@')[0];
 
-    // --- create or get chat (example) ---
+    // --- create or get chat ---
+    print("🔑 Token used: $_token");
+
     final newChat = await ChatService.createChat(
       _token!,
       userIds: [21], // replace with real other participants (exclude self)
@@ -122,7 +127,7 @@ class _ChatTabState extends State<ChatTab> {
       name: "Study Group",
     );
 
-    print("DEBUG createChat response: $newChat");
+    print("🧠 createChat full response: ${newChat.toString()}");
 
     if (newChat != null) {
       if (newChat['id'] != null) {
@@ -142,16 +147,16 @@ class _ChatTabState extends State<ChatTab> {
     }
 
     // load history first (optional)
-    await _loadHistory();
+    //await _loadHistory();
 
-    // connect websocket (use the corrected ChatWebsocketManager)
+    // connect websocket
     ChatWebsocketManager.instance.connect(token: _token!, chatId: _chatId);
-
     _sub = ChatWebsocketManager.instance.stream.listen(_handleSocketEvent);
 
     setState(() {});
   }
 
+/*
   Future<void> _loadHistory() async {
     if (_token == null || _chatId == 0) return;
     try {
@@ -174,6 +179,8 @@ class _ChatTabState extends State<ChatTab> {
       print("❌ loadHistory error: $e");
     }
   }
+
+ */
 
   void _handleSocketEvent(Map<String, dynamic> data) {
     // Expect server events: "message", "typing", "seen", "user_status"
