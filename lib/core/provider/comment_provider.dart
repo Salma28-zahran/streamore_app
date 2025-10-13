@@ -77,6 +77,11 @@ class CommentProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeFromStarredBody(int index) {
+    _starredComments.remove(index);
+    notifyListeners();
+  }
+
 
   final List<int> _tappedComments = [];
   int? _shownCommentIndex;

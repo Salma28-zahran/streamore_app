@@ -257,7 +257,8 @@ class _CommentsTabState extends State<CommentsTab> {
                     )
                   : StarredCommentsList(
                   commentProvider: commentProvider,
-                  onDeleteComment: _deleteComment)
+                  onDeleteComment: (index) => commentProvider.removeFromStarredBody(index),
+    )
             ),
             SafeArea(
               child: Padding(
