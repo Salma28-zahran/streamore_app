@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
-import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
+import 'package:streamore_app/features/auth/presentaion/views/verify_email2.dart';
 
 class SignUp extends StatefulWidget {
   static const String routeName = "/signup";
@@ -32,8 +32,11 @@ class _SignUpState extends State<SignUp> {
         if (state is RegisterSuccessState) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => VerifyEmail1()),
+            MaterialPageRoute(
+              builder: (context) => VerifyEmail2(email: emailController.text.trim()),
+            ),
           );
+
         } else if (state is FailedToRegisterState) {
           showDialog(
             context: context,
