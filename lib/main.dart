@@ -10,7 +10,6 @@ import 'package:streamore_app/features/auth/presentaion/views/password/verify_pa
 import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass2.dart';
 import 'package:streamore_app/features/auth/presentaion/views/sign_in.dart';
 import 'package:streamore_app/features/auth/presentaion/views/sign_up.dart';
-import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email2.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email3.dart';
 import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
@@ -121,7 +120,7 @@ class MyApp extends StatelessWidget {
           OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
           SignIn.routeName: (context) => const SignIn(),
           SignUp.routeName: (context) => SignUp(),
-          VerifyEmail1.routeName: (context) => const VerifyEmail1(),
+
           VerifyEmail2.routeName: (context) {
             final args = ModalRoute.of(context)!.settings.arguments as String;
             return VerifyEmail2(email: args);

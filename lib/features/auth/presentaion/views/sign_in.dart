@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass1.dart';
-import 'package:streamore_app/features/auth/presentaion/views/verify_email1.dart';
 
 class SignIn extends StatefulWidget {
   static const String routeName = "/signin";

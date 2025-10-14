@@ -67,135 +67,132 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: size.width * 0.08,
+        left: size.width * 0.010,
         top: 10,
-        right: size.width * 0.04,
+        //right: size.width * 0.02,
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // 🎤 MIC with dropdown
-            Padding(
-              padding: EdgeInsets.only(right: size.width * 0.05),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: widget.toggleMic,
-                    child: Icon(
-                      widget.micOn ? Icons.mic_rounded : Icons.mic_off_rounded,
-                      size: smallIconSize,
-                      color: iconColor,
-                    ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: widget.toggleMic,
+                  child: Icon(
+                    widget.micOn ? Icons.mic_rounded : Icons.mic_off_rounded,
+                    size: smallIconSize * 0.9,
+                    color: iconColor,
                   ),
-                  const SizedBox(width: 2),
-        GestureDetector(
-          onTapDown: (TapDownDetails details) async {
-            final RenderBox overlay =
-            Overlay.of(context).context.findRenderObject() as RenderBox;
+                ),
+                const SizedBox(width: 2),
+                    GestureDetector(
+                      onTapDown: (TapDownDetails details) async {
+                        final RenderBox overlay =
+                        Overlay.of(context).context.findRenderObject() as RenderBox;
 
-            await showMenu(
-              context: context,
-              position: RelativeRect.fromRect(
-                details.globalPosition & const Size(40, 40),
-                Offset.zero & overlay.size,
-              ),
-              color: Theme.of(context).cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              items: [
-                PopupMenuItem(
-                  enabled: false,
-                  padding: EdgeInsets.zero,
-                  child: StatefulBuilder(
-                    builder: (context, setInnerState) => Container(
-                      width: MediaQuery.of(context).size.width * 0.72,
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          SizedBox(
-                            height: 55,
-                            child: VolumeTest(),
-                          ),
-                          const SizedBox(height: 2),
-                          Divider(
-                            height: 6,
-                            color: Colors.grey.withOpacity(0.35),
-                            thickness: 0.5,
-                          ),
-                          const SizedBox(height: 1),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "echo_cancellation".tr(),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: iconColor,
-                                ),
+                        await showMenu(
+            context: context,
+            position: RelativeRect.fromRect(
+              details.globalPosition & const Size(40, 40),
+              Offset.zero & overlay.size,
+            ),
+            color: Theme.of(context).cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            items: [
+              PopupMenuItem(
+                enabled: false,
+                padding: EdgeInsets.zero,
+                child: StatefulBuilder(
+                  builder: (context, setInnerState) => Container(
+                    width: MediaQuery.of(context).size.width * 0.72,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 55,
+                          child: VolumeTest(),
+                        ),
+                        const SizedBox(height: 2),
+                        Divider(
+                          height: 6,
+                          color: Colors.grey.withOpacity(0.35),
+                          thickness: 0.5,
+                        ),
+                        const SizedBox(height: 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "echo_cancellation".tr(),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: iconColor,
                               ),
-                              Transform.scale(
-                                scaleX: 0.45,
-                                scaleY: 0.45,
-                                child: Switch(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  value: _isEchoCancellation,
-                                  onChanged: (value) {
-                                    setInnerState(() => _isEchoCancellation = value);
-                                    setState(() => _isEchoCancellation = value);
-                                  },
-                                ),
+                            ),
+                            Transform.scale(
+                              scaleX: 0.45,
+                              scaleY: 0.45,
+                              child: Switch(
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                value: _isEchoCancellation,
+                                onChanged: (value) {
+                                  setInnerState(() => _isEchoCancellation = value);
+                                  setState(() => _isEchoCancellation = value);
+                                },
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 1),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "noise_suppression".tr(),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: iconColor,
-                                ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "noise_suppression".tr(),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: iconColor,
                               ),
-                              Transform.scale(
-                                scaleX: 0.45,
-                                scaleY: 0.45,
-                                child: Switch(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  value: _isNoiseSuppression,
-                                  onChanged: (value) {
-                                    setInnerState(() => _isNoiseSuppression = value);
-                                    setState(() => _isNoiseSuppression = value);
-                                  },
-                                ),
+                            ),
+                            Transform.scale(
+                              scaleX: 0.45,
+                              scaleY: 0.45,
+                              child: Switch(
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                value: _isNoiseSuppression,
+                                onChanged: (value) {
+                                  setInnerState(() => _isNoiseSuppression = value);
+                                  setState(() => _isNoiseSuppression = value);
+                                },
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-          child: Icon(
-            Icons.arrow_drop_down,
-            size: smallIconSize * 0.8,
-            color: iconColor,
-          ),
-        )
-
-        ],
               ),
+            ],
+                        );
+                      },
+                      child: Icon(
+                        Icons.arrow_drop_down,
+                        size: smallIconSize * 0.8,
+                        color: iconColor,
+                      ),
+                    )
+
+                    ],
             ),
 
 
@@ -208,10 +205,11 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     onTap: widget.toggleCam,
                     child: Icon(
                       widget.camOn ? Icons.camera_alt_rounded : Icons.videocam_off,
-                      size: smallIconSize,
+                      size: smallIconSize * 0.9,
                       color: iconColor,
                     ),
                   ),
+
                   //const SizedBox(width: 2),
               GestureDetector(
                 onTapDown: (TapDownDetails details) async {
@@ -324,7 +322,9 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     builder: (_) => const BottomSheetWidget(),
                   );
                 },
-                child: Icon(Icons.cast_sharp, size: smallIconSize, color: iconColor),
+                child: Icon(Icons.cast_sharp,
+                    size: smallIconSize * 0.8,
+                    color: iconColor),
               ),
             ),
 
@@ -442,8 +442,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                   padding: const EdgeInsets.only(left: 5),
                   child: Icon(
                     Icons.person_pin_sharp,
-                    size: smallIconSize,
-                    color: iconColor,
+                    size: smallIconSize * 0.9,                     color: iconColor,
                   ),
                 ),
               ),
@@ -552,7 +551,8 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
                   child: Icon(Icons.person_add,
-                      size: smallIconSize, color: iconColor),
+                      size: smallIconSize * 0.9,
+                      color: iconColor),
                 ),
               ),
             ),
@@ -563,7 +563,8 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
               child: GestureDetector(
                 onTap: () => Navigator.pushNamed(context, "/settings_icon"),
                 child: Icon(Icons.settings_outlined,
-                    size: smallIconSize, color: iconColor),
+                    size: smallIconSize * 0.9,
+                    color: iconColor),
               ),
             ),
           ],
