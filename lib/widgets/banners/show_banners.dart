@@ -210,7 +210,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: const EdgeInsets.only(left: 4,right: 4),
                   child: Text(
                     textToShow,
                     style: getFontStyle(
@@ -240,7 +240,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                       color: Colors.white,
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 4),
+                          padding: const EdgeInsets.only(left: 4,right: 4),
                           child: Text(
                             textToShow,
                             style: getFontStyle(
@@ -269,7 +269,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                   borderRadius: BorderRadius.circular(0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.only(left: 5,right: 4),
                   child: Text(
                     textToShow,
                     style: getFontStyle(
