@@ -42,11 +42,14 @@ class CommentProvider with ChangeNotifier {
       ..clear()
       ..addAll(updatedTapped);
 
-    if (_starredCommentIndex == index) {
-      _starredCommentIndex = null;
-    } else if (_starredCommentIndex != null && _starredCommentIndex! > index) {
-      _starredCommentIndex = _starredCommentIndex! - 1;
-    }
+    _starredComments.remove(index);
+
+    final updatedStarred = _starredComments
+        .map((i) => i > index ? i - 1 : i)
+        .toSet();
+    _starredComments
+      ..clear()
+      ..addAll(updatedStarred);
 
     if (_shownCommentIndex == index) {
       _shownCommentIndex = null;
@@ -59,19 +62,23 @@ class CommentProvider with ChangeNotifier {
   }
 
 
-  int? _starredCommentIndex;
-  int? get starredCommentIndex => _starredCommentIndex;
+  final Set<int> _starredComments = {};
+  Set<int> get starredComments => _starredComments;
 
   bool isCommentStarred(int index) {
-    return _starredCommentIndex == index;
+    return _starredComments.contains(index);
+  }
+  void toggleStarredComment(int index) {
+    if (_starredComments.contains(index)) {
+      _starredComments.remove(index);
+    } else {
+      _starredComments.add(index);
+    }
+    notifyListeners();
   }
 
-  void toggleStarredComment(int index) {
-    if (_starredCommentIndex == index) {
-      _starredCommentIndex = null;
-    } else {
-      _starredCommentIndex = index;
-    }
+  void removeFromStarredBody(int index) {
+    _starredComments.remove(index);
     notifyListeners();
   }
 
@@ -106,6 +113,17 @@ class CommentProvider with ChangeNotifier {
 
   void hideCommentText() {
     _shownCommentText = null;
+    notifyListeners();
+  }
+  bool _isOverlayEnabled = false;
+  bool get isOverlayEnabled => _isOverlayEnabled;
+
+  void toggleOverlay() {
+    _isOverlayEnabled = !_isOverlayEnabled;
+    notifyListeners();
+  }
+  void clearTappedComments() {
+    _tappedComments.clear();
     notifyListeners();
   }
 }

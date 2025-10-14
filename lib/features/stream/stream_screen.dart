@@ -4,7 +4,6 @@ import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/stream/drawer/main_drawer.dart';
-
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/brand_widgets/background/background.dart';
 import 'package:streamore_app/widgets/banners/show_banners.dart';
@@ -14,6 +13,8 @@ import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
 import 'package:streamore_app/widgets/brand_widgets/background/overlay.dart';
 import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
 import 'package:streamore_app/widgets/stream/custom_tab_section.dart';
+
+import '../../widgets/stream/comment_overlay_widget.dart';
 
 
 class StreamScreen extends StatefulWidget {
@@ -79,50 +80,57 @@ class _StreamScreenState extends State<StreamScreen>
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
 
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ProfileImageWithBanners(
-                      isZoomVisible: isZoomVisible,
-                      profileImageWidth: profileImageWidth,
-                      profileImageHeight: profileImageHeight,
-                      onZoomIconClick: _onZoomIconClick,
-                      onProfileImageClick: _onProfileImageClick,
-                    ),
+      body: GestureDetector(
+        onTap: () {
+          commentProvider.clearTappedComments();
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ProfileImageWithBanners(
+                        isZoomVisible: isZoomVisible,
+                        profileImageWidth: profileImageWidth,
+                        profileImageHeight: profileImageHeight,
+                        onZoomIconClick: _onZoomIconClick,
+                        onProfileImageClick: _onProfileImageClick,
+                      ),
 
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              ControlButtonsRow(
-                micOn: _micOn,
-                camOn: _camOn,
-                iconSize: iconSize,
-                isSmall: isSmall, 
-                toggleMic: () => requestMicPermission(context, _toggleMic),
-                toggleCam: () => requestCameraPermission(context, _toggleCamera),
-              ),
+                ControlButtonsRow(
+                  micOn: _micOn,
+                  camOn: _camOn,
+                  iconSize: iconSize,
+                  isSmall: isSmall,
+                  toggleMic: () => requestMicPermission(context, _toggleMic),
+                  toggleCam: () => requestCameraPermission(context, _toggleCamera),
+                ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-              CustomTabSection(
-                tabController: _tabController,
-                profileImageWidth: profileImageWidth,
-                isSmall: isSmall,
-              ),
-            ],
-          ),
-          BackgroundWidget(),
-          OverlayWidget(),
-          LogoWidget(),
-        ],
+                CustomTabSection(
+                  tabController: _tabController,
+                  profileImageWidth: profileImageWidth,
+                  isSmall: isSmall,
+                ),
+              ],
+            ),
+            BackgroundWidget(),
+            OverlayWidget(),
+            LogoWidget(),
+            if (myProvider.isOverlayEnabled)
+              CommentOverlayWidget(),
+          ],
+        ),
       ),
     );
   }
