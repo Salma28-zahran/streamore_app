@@ -4,16 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/helpers/storage_helper.dart';
 
-class UserNameWidget extends StatefulWidget{
-
-  const UserNameWidget({super.key , this.style});
+class UserNameWidget extends StatefulWidget {
+  const UserNameWidget({super.key, this.style});
   final TextStyle? style;
 
   @override
   State<UserNameWidget> createState() => _UserNameWidgetState();
-
-
 }
+
 class _UserNameWidgetState extends State<UserNameWidget> {
   String? userName;
 
@@ -31,17 +29,21 @@ class _UserNameWidgetState extends State<UserNameWidget> {
       });
     }
   }
+
+  @override
   Widget build(BuildContext context) {
-    return Text(
-      userName ?? "No User Found ",
-      style:
-      widget.style ??
-          GoogleFonts.poppins(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: Colors.black,
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        userName ?? "No User Found",
+        style: widget.style ??
+            GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+        overflow: TextOverflow.ellipsis,
       ),
-      overflow: TextOverflow.ellipsis,
     );
   }
-  }
+}

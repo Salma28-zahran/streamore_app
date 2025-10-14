@@ -79,9 +79,9 @@ class _VolumeTestState extends State<VolumeTest> {
 
   Color getColor(int index) {
     if (index < currentLevel) {
-      if (index < 5) return Colors.green;
-      if (index < 10) return Colors.yellow;
-      if (index < 13) return Colors.orange;
+      if (index < 4) return Colors.green;
+      if (index < 5) return Colors.yellow;
+      if (index < 3) return Colors.orange;
       return Colors.red;
     }
     return Colors.grey.shade300;
@@ -109,13 +109,13 @@ class _VolumeTestState extends State<VolumeTest> {
           borderRadius: BorderRadius.zero,
         ),
             ),),
-             SizedBox(width: 10),
+             SizedBox(width: 8),
             Row(
-              children: List.generate(16, (index) {
+              children: List.generate(12, (index) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 2),
-                  width: 10,
-                  height: 40,
+                  width: 7,
+                  height: 30,
                   decoration: BoxDecoration(
                     color: getColor(index),
                     borderRadius: BorderRadius.circular(4),
