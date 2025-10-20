@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
@@ -7,6 +8,7 @@ import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
 
 import '../../core/helpers/storage_helper.dart';
+import '../../core/provider/tickers_provider.dart';
 
 class ProfileImageWithBanners extends StatefulWidget {
   final double profileImageWidth;
@@ -47,7 +49,8 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
   @override
   Widget build(BuildContext context) {
     final bannersProvider = Provider.of<BannersProvider>(context);
-
+    final tickersProvider = Provider.of<TickersProvider>(context);
+    final isTickerMode = tickersProvider.tFolderClicked;
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: Row(
@@ -92,7 +95,47 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
 
               Consumer<MyProvider>(
                 builder: (context, myProvider, child) {
-                  if (bannersProvider.shownBanners.isNotEmpty) {
+                  if (isTickerMode && tickersProvider.shownTickers.isNotEmpty) {
+                    return Positioned(
+                      bottom: isTickerMode ? 0 : null,
+                      top: isTickerMode ? null : widget.profileImageHeight - 35,
+                      left: 0,
+                      right: 0,
+                      child: Column(
+                        children: tickersProvider.shownTickers.map((index) {
+                          final tickerText = tickersProvider.tickers[index];
+                          return SizedBox(
+                            height: 25,
+                            child: Container(
+                              height: 25,
+                              width: double.infinity,
+                              color: myProvider.primaryColor,
+                              child: Marquee(
+                                text: tickerText,
+                                style: getFontStyle(
+                                  context,
+                                  myProvider.selectedFont,
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                                scrollAxis: Axis.horizontal,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                blankSpace: 50.0,
+                                velocity: 40.0,
+                                pauseAfterRound: const Duration(seconds: 1),
+                                startPadding: 10.0,
+                                accelerationDuration: const Duration(seconds: 1),
+                                decelerationDuration: const Duration(milliseconds: 500),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }
+
+                  // 2) حالة البانرز: تعرض عناصر bannersProvider.shownBanners فقط
+                  else if (!isTickerMode && bannersProvider.shownBanners.isNotEmpty) {
                     return Positioned(
                       top: widget.profileImageHeight - 35,
                       left: 0,
@@ -169,7 +212,9 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                         }).toList(),
                       ),
                     );
-                  } else {
+                  }
+
+                  else {
                     return Positioned(
                       bottom: 0,
                       left: 0,

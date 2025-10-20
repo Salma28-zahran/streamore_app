@@ -46,7 +46,12 @@ class _BannersContantState extends State<BannersContant> {
   final myProvider = Provider.of<BannersProvider>(context, listen: false);
   myProvider.removeBannerAt(index);
 }
-
+  @override
+  void initState() {
+    super.initState();
+    final bannersProvider = Provider.of<BannersProvider>(context, listen: false);
+    bannersProvider.resetTappedState();
+  }
 
   @override
   Widget build(BuildContext context) {

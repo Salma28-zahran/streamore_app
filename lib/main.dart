@@ -43,6 +43,7 @@ import 'package:streamore_app/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 import 'core/helpers/storage_helper.dart';
+import 'core/provider/tickers_provider.dart';
 import 'features/auth/bloc/auth_states.dart';
 import 'features/auth/bloc/delete_account/delete_account_cubit.dart';
 
@@ -63,6 +64,8 @@ void main() async {
           ChangeNotifierProvider(create: (context) => MyProvider()),
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
+          ChangeNotifierProvider(create: (_) => TickersProvider()),
+
           ChangeNotifierProvider(
               create: (context) => BackgroundOverlayLogoProvider()),
           BlocProvider<AuthCubit>(
