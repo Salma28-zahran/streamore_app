@@ -95,7 +95,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
 
               Consumer<MyProvider>(
                 builder: (context, myProvider, child) {
-                  if (isTickerMode && tickersProvider.shownTickers.isNotEmpty) {
+                  if (tickersProvider.shownTickers.isNotEmpty) {
                     return Positioned(
                       bottom: isTickerMode ? 0 : null,
                       top: isTickerMode ? null : widget.profileImageHeight - 35,

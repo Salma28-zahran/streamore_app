@@ -38,6 +38,7 @@ class _TickersContantState extends State<TickersContant> {
 
   void _toggleShowHide(int index) {
     final provider = Provider.of<TickersProvider>(context, listen: false);
+    provider.setTFolderClicked(true);
     provider.toggleTickerVisibility(index);
   }
 
@@ -45,12 +46,7 @@ class _TickersContantState extends State<TickersContant> {
     final provider = Provider.of<TickersProvider>(context, listen: false);
     provider.removeTickerAt(index);
   }
-  @override
-  void initState() {
-    super.initState();
-      final tickerProvider = Provider.of<TickersProvider>(context, listen: false);
-      tickerProvider.resetTappedState();
-  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TickersProvider>(context);
