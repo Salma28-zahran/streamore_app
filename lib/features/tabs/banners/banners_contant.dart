@@ -47,12 +47,12 @@ class _BannersContantState extends State<BannersContant> {
   myProvider.removeBannerAt(index);
 }
 
-
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<BannersProvider>(context);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+
     });
 
     return Scaffold(
