@@ -4,25 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 
-
-class Folder {
-  String? name;
-  int itemCount;
-  bool isEditing;
-
-  Folder({this.name, this.isEditing = false, this.itemCount = 0});
-}
-
-class TickerItem {
-  String? name;
-  int itemCount;
-  bool isEditing;
-
-  TickerItem({this.name, this.isEditing = false, this.itemCount = 0});
-}
+import '../../../core/provider/tickers_provider.dart';
 
 class BannersTab extends StatefulWidget {
   const BannersTab({super.key});
+
   static const String routeName = "/banners";
 
   @override
@@ -30,9 +16,6 @@ class BannersTab extends StatefulWidget {
 }
 
 class _BannersTabState extends State<BannersTab> {
-  final ValueNotifier<List<Folder>> folders = ValueNotifier([]);
-  final ValueNotifier<List<TickerItem>> tickers = ValueNotifier([]);
-
   bool showFolders = true;
   bool showTickers = true;
   bool showAddFolderCard = false;
@@ -56,7 +39,7 @@ class _BannersTabState extends State<BannersTab> {
   void _submitFolderName(String value) {
     if (value.trim().isNotEmpty) {
       final newFolder = Folder(name: value);
-      folders.value = [...folders.value, newFolder];
+      Provider.of<BannersProvider>(context, listen: false).addFolder(newFolder);
       folderController.clear();
       setState(() {
         showAddFolderCard = false;
@@ -64,15 +47,40 @@ class _BannersTabState extends State<BannersTab> {
     }
   }
 
+  void _renameFolder(Folder folder, String newName) {
+    if (newName.trim().isEmpty) return;
+
+    setState(() {
+      folder.name = newName.trim();
+      folder.isEditing = false;
+    });
+
+    final provider = Provider.of<BannersProvider>(context, listen: false);
+    provider.notifyListeners();
+  }
+
   void _submitTickerName(String value) {
     if (value.trim().isNotEmpty) {
-      final newTicker = TickerItem(name: value);
-      tickers.value = [...tickers.value, newTicker];
+      final newTicker = Ticker(name: value);
+      Provider.of<TickersProvider>(context, listen: false)
+          .addTickerFolder(newTicker);
       tickerController.clear();
       setState(() {
         showAddTickerCard = false;
       });
     }
+  }
+
+  void _renameTicker(Ticker ticker, String newName) {
+    if (newName.trim().isEmpty) return;
+
+    setState(() {
+      ticker.name = newName.trim();
+      ticker.isEditing = false;
+    });
+
+    final provider = Provider.of<TickersProvider>(context, listen: false);
+    provider.notifyListeners();
   }
 
   @override
@@ -84,6 +92,8 @@ class _BannersTabState extends State<BannersTab> {
 
   @override
   Widget build(BuildContext context) {
+    final bannerProvider = Provider.of<BannersProvider>(context);
+    final tickerProvider = Provider.of<TickersProvider>(context);
     final theme = Theme.of(context);
     return Scaffold(
       body: SingleChildScrollView(
@@ -133,9 +143,9 @@ class _BannersTabState extends State<BannersTab> {
               const SizedBox(height: 16),
               if (showAddFolderCard) _buildAddFolderCard(),
               if (showFolders)
-                ValueListenableBuilder<List<Folder>>(
-                  valueListenable: folders,
-                  builder: (context, folderList, _) {
+                Consumer<BannersProvider>(
+                  builder: (context, provider, _) {
+                    final folderList = provider.folders;
                     if (folderList.isEmpty) {
                       return Text(
                         "no_folders_yet".tr(),
@@ -144,35 +154,28 @@ class _BannersTabState extends State<BannersTab> {
                         ),
                       );
                     }
+
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: folderList.length,
                       itemBuilder: (context, index) {
                         final folder = folderList[index];
-                        return KeyedSubtree(
-                          key: ValueKey("folder_$index"),
-                          child: GestureDetector(
-                            onTap: () {
-                              Provider.of<BannersProvider>(
-                                context,
-                                listen: false,
-                              ).setBFolderClicked(true);
-                              DefaultTabController.of(context).animateTo(1);
-                            },
-                            child: _buildItemTile(
-                              context,
-                              title: folder.name,
-                              count: folder.itemCount,
-                              isEditing: folder.isEditing,
-                              onSubmit: (value) => _submitFolderName(value),
-                              onEdit:
-                                  () => setState(() => folder.isEditing = true),
-                              onRemove: () {
-                                folderList.removeAt(index);
-                                folders.notifyListeners();
-                              },
-                            ),
+                        return GestureDetector(
+                          onTap: () {
+                            provider.setBFolderClicked(true);
+                            provider.setCurrentFolder(folder);
+                            DefaultTabController.of(context).animateTo(1);
+                          },
+                          child: _buildItemTile(
+                            context,
+                            title: folder.name,
+                            count: folder.itemCount,
+                            isEditing: folder.isEditing,
+                            onSubmit: (value) => _renameFolder(folder, value),
+                            onEdit: () =>
+                                setState(() => folder.isEditing = true),
+                            onRemove: () => provider.removeFolderAt(index),
                           ),
                         );
                       },
@@ -223,9 +226,9 @@ class _BannersTabState extends State<BannersTab> {
               const SizedBox(height: 3),
               if (showAddTickerCard) _buildAddTickerCard(),
               if (showTickers)
-                ValueListenableBuilder<List<TickerItem>>(
-                  valueListenable: tickers,
-                  builder: (context, tickerList, _) {
+                Consumer<TickersProvider>(
+                  builder: (context, provider, _) {
+                    final tickerList = provider.tickersFolder;
                     if (tickerList.isEmpty) {
                       return Text(
                         "no_tickers_yet".tr(),
@@ -234,9 +237,10 @@ class _BannersTabState extends State<BannersTab> {
                         ),
                       );
                     }
+
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: tickerList.length,
                       itemBuilder: (context, index) {
                         final ticker = tickerList[index];
@@ -244,10 +248,8 @@ class _BannersTabState extends State<BannersTab> {
                           key: ValueKey("ticker_$index"),
                           child: GestureDetector(
                             onTap: () {
-                              Provider.of<BannersProvider>(
-                                context,
-                                listen: false,
-                              ).setTFolderClicked(true);
+                              bannerProvider.setTFolderClicked(true);
+                              provider.setCurrentTicker(ticker);
                               DefaultTabController.of(context).animateTo(1);
                             },
                             child: _buildItemTile(
@@ -255,13 +257,9 @@ class _BannersTabState extends State<BannersTab> {
                               title: ticker.name,
                               count: ticker.itemCount,
                               isEditing: ticker.isEditing,
-                              onSubmit: (value) => _submitTickerName(value),
-                              onEdit:
-                                  () => setState(() => ticker.isEditing = true),
-                              onRemove: () {
-                                tickerList.removeAt(index);
-                                tickers.notifyListeners();
-                              },
+                              onSubmit: (value) => _renameTicker(ticker, value),
+                              onEdit: () => setState(() => ticker.isEditing = true),
+                              onRemove: () => provider.removeTickerFolderAt(index),
                             ),
                           ),
                         );
@@ -294,8 +292,7 @@ class _BannersTabState extends State<BannersTab> {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color:
-              Theme.of(context).textTheme.bodyLarge?.color ??
+          color: Theme.of(context).textTheme.bodyLarge?.color ??
               Colors.grey.withOpacity(0.5),
           width: 1,
         ),
@@ -318,45 +315,44 @@ class _BannersTabState extends State<BannersTab> {
           ),
           const SizedBox(width: 16),
           Expanded(
-            child:
-                isEditing
-                    ? TextField(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: "folder_name".tr(),
-                        hintStyle: TextStyle(
+            child: isEditing
+                ? TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: "folder_name".tr(),
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        onSubmit(value);
+                      }
+                    },
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title ?? "Unnamed Folder",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                           color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
-                        border: InputBorder.none,
                       ),
-                      onSubmitted: (value) {
-                        if (value.trim().isNotEmpty) {
-                          onSubmit(value);
-                        }
-                      },
-                    )
-                    : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          title ?? "Unnamed Folder",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$count ${'items'.plural(count)}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '$count ${'items'.plural(count)}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
           ),
           PopupMenuButton<String>(
             icon: Icon(
@@ -370,32 +366,31 @@ class _BannersTabState extends State<BannersTab> {
                 onRemove();
               }
             },
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    value: 'edit'.tr(),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.edit, color: Colors.grey),
-                        const SizedBox(width: 8),
-                        Text('edit'.tr()),
-                      ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'edit'.tr(),
+                child: Row(
+                  children: [
+                    const Icon(Icons.edit, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text('edit'.tr()),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'remove'.tr(),
+                child: Row(
+                  children: [
+                    const Icon(Icons.delete, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Text(
+                      'remove'.tr(),
+                      style: const TextStyle(color: Colors.red),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: 'remove'.tr(),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Text(
-                          'remove'.tr(),
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -420,10 +415,9 @@ class _BannersTabState extends State<BannersTab> {
             decoration: InputDecoration(
               hintText: "Folders".tr(),
               hintStyle: TextStyle(
-                color:
-                    Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey.shade600
-                        : Colors.grey.shade400,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade400,
                 fontWeight: FontWeight.bold,
               ),
               filled: true,
@@ -435,10 +429,9 @@ class _BannersTabState extends State<BannersTab> {
               ),
             ),
             style: TextStyle(
-              color:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.black87,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black87,
             ),
           ),
           const SizedBox(height: 4),
@@ -456,8 +449,7 @@ class _BannersTabState extends State<BannersTab> {
                 child: Text(
                   "Cancel".tr(),
                   style: TextStyle(
-                    color:
-                        Theme.of(context).textTheme.bodyLarge?.color ??
+                    color: Theme.of(context).textTheme.bodyLarge?.color ??
                         Colors.grey,
                   ),
                 ),
@@ -511,10 +503,9 @@ class _BannersTabState extends State<BannersTab> {
             decoration: InputDecoration(
               hintText: "Ticker Name".tr(),
               hintStyle: TextStyle(
-                color:
-                    Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey.shade600
-                        : Colors.grey.shade400,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade400,
                 fontWeight: FontWeight.bold,
               ),
               filled: true,
@@ -526,10 +517,9 @@ class _BannersTabState extends State<BannersTab> {
               ),
             ),
             style: TextStyle(
-              color:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.black87,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.black87,
             ),
           ),
           const SizedBox(height: 4),
@@ -547,8 +537,7 @@ class _BannersTabState extends State<BannersTab> {
                 child: Text(
                   "Cancel".tr(),
                   style: TextStyle(
-                    color:
-                        Theme.of(context).textTheme.bodyLarge?.color ??
+                    color: Theme.of(context).textTheme.bodyLarge?.color ??
                         Colors.grey,
                   ),
                 ),

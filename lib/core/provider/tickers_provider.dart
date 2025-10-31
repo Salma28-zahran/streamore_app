@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'banners_provider.dart';
+class Ticker {
+  String? name;
+  int itemCount;
+  bool isEditing;
+  List<String> tickers;
+  Ticker({this.name, this.isEditing = false, this.itemCount = 0 , List<String>? tickers,}): tickers = tickers ?? [];
+}
+
 class TickersProvider extends ChangeNotifier {
 
   bool _tFolderClicked = false;
@@ -20,7 +29,10 @@ class TickersProvider extends ChangeNotifier {
   Set<int> get tappedTickers => _tappedTickers;
 
   void addTicker(String tickerContent) {
-    _tickers.add(tickerContent);
+    if (_currentTicker != null) {
+      _currentTicker!.tickers.add(tickerContent);
+      _currentTicker!.itemCount++;
+    }
     notifyListeners();
   }
 
@@ -43,8 +55,10 @@ class TickersProvider extends ChangeNotifier {
   }
 
   void removeTickerAt(int index) {
-    _tickers.removeAt(index);
-
+    if (_currentTicker != null && _currentTicker!.itemCount > 0) {
+      _currentTicker!.tickers.removeAt(index);
+      _currentTicker!.itemCount--;
+    }
     _shownTickers.remove(index);
     _shownTickers = _shownTickers.map((i) => i > index ? i - 1 : i).toSet();
 
@@ -60,8 +74,33 @@ class TickersProvider extends ChangeNotifier {
     _tappedTickers.clear();
     notifyListeners();
   }
+  List<Ticker> _tickersFolder = [];
+  List<Ticker> get tickersFolder => _tickersFolder;
+  void addTickerFolder(Ticker tickerFolder) {
+    _tickersFolder .add(tickerFolder);
+    notifyListeners();
+  }
+
+  void removeTickerFolderAt(int index) {
+    _tickersFolder .removeAt(index);
+
+    notifyListeners();
+  }
+
+  void clearTickersFolder() {
+    _tickers.clear();
+    notifyListeners();
+  }
   void resetTappedState() {
     _tappedTickers.clear();
+    notifyListeners();
+  }
+  /// item count provider Tickers Folder ////
+  Ticker? _currentTicker;
+  Ticker? get currentTicker => _currentTicker;
+
+  void setCurrentTicker(Ticker? ticker) {
+    _currentTicker = ticker;
     notifyListeners();
   }
   }
