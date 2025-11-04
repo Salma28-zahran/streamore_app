@@ -90,7 +90,7 @@ class _BannersContantState extends State<BannersContant> {
 
             const SizedBox(height: 16),
 
-            ...myProvider.banners.asMap().entries.map((entry) {
+            ...(myProvider.currentFolder?.banners ?? []).asMap().entries.map((entry) {
               final index = entry.key;
               final text = entry.value;
               final isTapped = myProvider.tappedBanners.contains(index);

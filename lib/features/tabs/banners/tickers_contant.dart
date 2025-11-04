@@ -93,7 +93,7 @@ class _TickersContantState extends State<TickersContant> {
 
             const SizedBox(height: 16),
 
-            ...provider.tickers.asMap().entries.map((entry) {
+            ...(provider.currentTicker?.tickers ?? []).asMap().entries.map((entry) {
               final index = entry.key;
               final text = entry.value;
               final isTapped = provider.tappedTickers.contains(index);
