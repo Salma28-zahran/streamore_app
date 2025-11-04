@@ -96,6 +96,15 @@ class BannersProvider extends ChangeNotifier {
     _tappedBanners.clear();
     notifyListeners();
   }
+  void clearShownBanners() {
+    _shownBanners.clear();
+    notifyListeners();
+  }
+  void clearTappedBanners() {
+    _tappedBanners.clear();
+    notifyListeners();
+  }
+
   void resetTappedState() {
     _tappedBanners.clear();
     notifyListeners();

@@ -129,12 +129,12 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 blankSpace: 50.0,
                                 velocity: 40.0,
-                                pauseAfterRound: const Duration(seconds: 1),
+                                pauseAfterRound:  Duration(seconds: 1),
                                 startPadding: 10.0,
                                 accelerationDuration:
-                                    const Duration(seconds: 1),
+                                     Duration(seconds: 1),
                                 decelerationDuration:
-                                    const Duration(milliseconds: 500),
+                                     Duration(milliseconds: 500),
                               ),
                             ),
                           );
@@ -143,22 +143,22 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                     );
                   }
 
-                  // 2) حالة البانرز: تعرض عناصر bannersProvider.shownBanners فقط
                   else if (bannersProvider.shownBanners.isNotEmpty) {
                     return Positioned(
-                      top: widget.profileImageHeight - 35,
+                     bottom: 0,
                       left: 0,
-                      right: 0,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: bannersProvider.shownBanners.map((index) {
                           final folderBanners =
                               bannersProvider.currentFolder?.banners ?? [];
                           final bannerText = folderBanners[index];
                           switch (myProvider.selectedTheme) {
                             case 'bubble':
-                              return Center(
+                              return Padding(
+                                padding:  EdgeInsets.all(11),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
+                                  padding:  EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: myProvider.primaryColor,
@@ -176,36 +176,39 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                                 ),
                               );
                             case 'minimal':
-                              return Center(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                        width: 12,
-                                        height: 24,
-                                        color: myProvider.primaryColor),
-                                    Container(
-                                      width: 76,
-                                      height: 23,
-                                      color: Colors.white,
-                                      child: Center(
-                                        child: Text(
-                                          bannerText,
-                                          style: getFontStyle(
-                                            context,
-                                            myProvider.selectedFont,
-                                            fontSize: 12,
-                                            color: Colors.black87,
+                              return Padding(
+                                padding:  EdgeInsets.only(bottom: 11),
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                          width: 12,
+                                          height: 24,
+                                          color: myProvider.primaryColor),
+                                      Container(
+                                        width: 76,
+                                        height: 23,
+                                        color: Colors.white,
+                                        child: Center(
+                                          child: Text(
+                                            bannerText,
+                                            style: getFontStyle(
+                                              context,
+                                              myProvider.selectedFont,
+                                              fontSize: 12,
+                                              color: Colors.black87,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               );
                             case 'news':
                             default:
-                              return Center(
+                              return Padding(
+                                padding: const EdgeInsets.all(11),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 4),
@@ -380,8 +383,8 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.03,
-                      vertical: MediaQuery.of(context).size.height * 0.004,
+                      horizontal: MediaQuery.of(context).size.width * 0.01,
+                      vertical: MediaQuery.of(context).size.height * 0.003,
                     ),
                     decoration: BoxDecoration(
                       color: color,
@@ -391,7 +394,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircleAvatar(
-                          radius: 15,
+                          radius: 12,
                           backgroundColor:  Color(0xFFBDBDBD),
                           child:  Icon(Icons.person,
                               color: Colors.white, size: 16),
@@ -400,7 +403,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                         Text(
                           userName ?? "User",
                           style: GoogleFonts.inter(
-                            fontSize: 13,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFFFFFFFF),
                           ),
@@ -531,7 +534,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                       Text(
                         userName ?? "User",
                         style: GoogleFonts.inter(
-                          fontSize: 13,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF000000),
                         ),

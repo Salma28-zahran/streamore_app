@@ -110,7 +110,7 @@ class _BannersTabState extends State<BannersTab> {
                     "Folders".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 20,
+                      fontSize: 18,
                       color: theme.textTheme.bodyLarge?.color, //Colors.grey
                     ),
                   ),
@@ -140,7 +140,7 @@ class _BannersTabState extends State<BannersTab> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 3),
               if (showAddFolderCard) _buildAddFolderCard(),
               if (showFolders)
                 Consumer<BannersProvider>(
@@ -163,6 +163,7 @@ class _BannersTabState extends State<BannersTab> {
                         final folder = folderList[index];
                         return GestureDetector(
                           onTap: () {
+                            provider.clearTappedBanners();
                             provider.setBFolderClicked(true);
                             provider.setCurrentFolder(folder);
                             DefaultTabController.of(context).animateTo(1);
@@ -183,7 +184,7 @@ class _BannersTabState extends State<BannersTab> {
                   },
                 ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 15),
 
               /// ----------------- TICKERS SECTION -----------------
               Row(
@@ -193,7 +194,7 @@ class _BannersTabState extends State<BannersTab> {
                     "tickers".tr(),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 20,
+                      fontSize: 18,
                       color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
@@ -223,7 +224,7 @@ class _BannersTabState extends State<BannersTab> {
                   ),
                 ],
               ),
-              const SizedBox(height: 3),
+              const SizedBox(height: 4),
               if (showAddTickerCard) _buildAddTickerCard(),
               if (showTickers)
                 Consumer<TickersProvider>(
@@ -248,6 +249,7 @@ class _BannersTabState extends State<BannersTab> {
                           key: ValueKey("ticker_$index"),
                           child: GestureDetector(
                             onTap: () {
+                              provider.clearTappedTickers();
                               bannerProvider.setTFolderClicked(true);
                               provider.setCurrentTicker(ticker);
                               DefaultTabController.of(context).animateTo(1);
@@ -286,7 +288,7 @@ class _BannersTabState extends State<BannersTab> {
     return Container(
       width: double.infinity,
       height: 90,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.only(bottom: 18),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,

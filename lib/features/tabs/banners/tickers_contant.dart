@@ -85,106 +85,111 @@ class _TickersContantState extends State<TickersContant> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (showAddTickerCard) _buildAddTickerCard(),
+      body: GestureDetector(
+        onTap: () {
+          provider.clearTappedTickers();
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              if (showAddTickerCard) _buildAddTickerCard(),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            ...(provider.currentTicker?.tickers ?? []).asMap().entries.map((entry) {
-              final index = entry.key;
-              final text = entry.value;
-              final isTapped = provider.tappedTickers.contains(index);
-              final isShown = provider.shownTickers.contains(index);
+              ...(provider.currentTicker?.tickers ?? []).asMap().entries.map((entry) {
+                final index = entry.key;
+                final text = entry.value;
+                final isTapped = provider.tappedTickers.contains(index);
+                final isShown = provider.shownTickers.contains(index);
 
-              return GestureDetector(
-                onTap: () => setState(() {
-                  provider.toggleTickerTapped(index);
-                }),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0F0F0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.drag_indicator, color: Color(0xFFBDBDBD), size: 20),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Opacity(
-                                opacity: isTapped ? 0.4 : 1.0,
-                                child: Text(
-                                  text,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF666666),
+                return GestureDetector(
+                  onTap: () => setState(() {
+                    provider.toggleTickerTapped(index);
+                  }),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0F0F0),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.drag_indicator, color: Color(0xFFBDBDBD), size: 20),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Opacity(
+                                  opacity: isTapped ? 0.4 : 1.0,
+                                  child: Text(
+                                    text,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF666666),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            if (isTapped)
-                              GestureDetector(
-                                onTap: () => _toggleShowHide(index),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
+                              if (isTapped)
+                                GestureDetector(
+                                  onTap: () => _toggleShowHide(index),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: const Color(0xFF666666),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          isShown ? Icons.remove : Icons.add,
+                                          size: 16,
                                           color: const Color(0xFF666666),
-                                          width: 1.5,
                                         ),
                                       ),
-                                      child: Icon(
-                                        isShown ? Icons.remove : Icons.add,
-                                        size: 16,
-                                        color: const Color(0xFF666666),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        isShown ? "hide".tr() : "show".tr(),
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF4F4F4F),
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      isShown ? "hide".tr() : "show".tr(),
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF4F4F4F),
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (isTapped) ...[
-                        const SizedBox(width: 12),
-                        GestureDetector(
-                          onTap: () => _deleteTicker(index),
-                          child: const Icon(
-                            Icons.delete_outline,
-                            size: 22,
-                            color: Color(0xFFBDBDBD),
+                            ],
                           ),
                         ),
+                        if (isTapped) ...[
+                          const SizedBox(width: 12),
+                          GestureDetector(
+                            onTap: () => _deleteTicker(index),
+                            child: const Icon(
+                              Icons.delete_outline,
+                              size: 22,
+                              color: Color(0xFFBDBDBD),
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ],
+                );
+              }).toList(),
+            ],
+          ),
         ),
       ),
     );

@@ -74,6 +74,14 @@ class TickersProvider extends ChangeNotifier {
     _tappedTickers.clear();
     notifyListeners();
   }
+  void clearShownTickers() {
+    _shownTickers.clear();
+    notifyListeners();
+  }
+  void clearTappedTickers() {
+    _tappedTickers.clear();
+    notifyListeners();
+  }
   List<Ticker> _tickersFolder = [];
   List<Ticker> get tickersFolder => _tickersFolder;
   void addTickerFolder(Ticker tickerFolder) {

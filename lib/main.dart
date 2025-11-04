@@ -64,7 +64,7 @@ void main() async {
           ChangeNotifierProvider(create: (context) => MyProvider()),
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
-          ChangeNotifierProvider(create: (_) => TickersProvider()),
+          ChangeNotifierProvider(create: (context) => TickersProvider()),
 
           ChangeNotifierProvider(
               create: (context) => BackgroundOverlayLogoProvider()),

@@ -7,6 +7,9 @@ import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/comment/starred_comment_body.dart';
 import 'package:streamore_app/widgets/save_username_widgets/save_username.dart';
 
+import '../../../core/provider/banners_provider.dart';
+import '../../../core/provider/tickers_provider.dart';
+
 class CommentsTab extends StatefulWidget {
   static const String routeName = "/comments";
 
@@ -40,6 +43,7 @@ class _CommentsTabState extends State<CommentsTab> {
     final bool isDark = myProvider.themeMode == ThemeMode.dark;
 
     return Scaffold(
+      
       body: GestureDetector(
         onTap: () {
           commentProvider.clearTappedComments();
@@ -169,11 +173,11 @@ class _CommentsTabState extends State<CommentsTab> {
                             commentProvider.tappedComments.contains(index);
                         final isShown =
                             commentProvider.shownCommentIndex == index;
-        
+
                         final isStarred = commentProvider.isCommentStarred(
                           index,
                         );
-        
+
                         return GestureDetector(
                           onTap: () {
                             setState(() {
@@ -196,8 +200,13 @@ class _CommentsTabState extends State<CommentsTab> {
                                     comment: commentText,
                                     isShown: isShown,
                                     isStarred: isStarred,
-                                    onShowHideTap: () =>
-                                        commentProvider.toggleCommentShown(index),
+                              onShowHideTap: () {
+                                final bannersProvider = Provider.of<BannersProvider>(context, listen: false);
+                                final tickersProvider = Provider.of<TickersProvider>(context, listen: false);
+                                bannersProvider.clearShownBanners();
+                                tickersProvider.clearShownTickers();
+                                commentProvider.toggleCommentShown(index);
+                              },
                                     onStarTap: () => commentProvider
                                         .toggleStarredComment(index),
                                     onDeleteTap: () => _deleteComment(index),
@@ -237,7 +246,7 @@ class _CommentsTabState extends State<CommentsTab> {
                                                 ),
                                               ],
                                             ),
-        
+
                                             SizedBox(height: 4),
                                             Text(
                                               commentText,
