@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class ChatService {
-  static const String baseUrl = "http://34.39.27.45:8000/api/chat/";
+  static const String baseUrl = "https://api.streamore.net/api/chat/";
 
   /// 1. Create Chat
   static Future<Map<String, dynamic>?> createChat(

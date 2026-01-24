@@ -15,7 +15,7 @@ class AuthCubit extends Cubit<AuthStates> {
   void register({required String email, required String password}) async {
     emit(RegisterLoadingState());
     Response response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/register/"),
+        Uri.parse("https://api.streamore.net/api/users/register/"),
         headers: {
           'lang': "en"
         },
@@ -40,9 +40,9 @@ class AuthCubit extends Cubit<AuthStates> {
   Future<void> autoLogin() async {
     final token = await StorageHelper.getToken();
     if (token != null && token.isNotEmpty) {
-      final userId = await StorageHelper.getUserId(); // ⬅️ استرجاع الـ userId
+      final userId = await StorageHelper.getUserId();
       debugPrint("🔑 Token found → auto login success");
-      debugPrint("👤 Logged in User ID: $userId"); // ⬅️ طباعة الـ userId
+      debugPrint("👤 Logged in User ID: $userId");
       emit(LogInSuccessState());
     } else {
       debugPrint("🚪 No token → go to onboarding/login");
@@ -55,7 +55,7 @@ class AuthCubit extends Cubit<AuthStates> {
     required String email,
     required int activationCode,
   }) async {
-    emit(ActivateLoadingState()); // 🔄 أول ما يضغط يبين انه بيحمّل
+    emit(ActivateLoadingState());
 
     try {
       print("📩 Sending activation request...");
@@ -63,7 +63,7 @@ class AuthCubit extends Cubit<AuthStates> {
       print("➡️ activation_code: $activationCode");
 
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/activate/"),
+        Uri.parse("https://api.streamore.net/api/users/activate/"),
         headers: {
           "accept": "*/*",
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         debugPrint("✅ Activated successfully: $data");
-        emit(ActivateSuccessState()); // 🔥 هتدخلي بعد كده على اللوجين مثلاً
+        emit(ActivateSuccessState());
       } else {
         final errorMessage =
             data['message'] ?? data['error'] ?? "Failed to activate account";
@@ -99,7 +99,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/login/"),
+        Uri.parse("https://api.streamore.net/api/users/login/"),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -153,45 +153,53 @@ class AuthCubit extends Cubit<AuthStates> {
 
   void logout() async {
     emit(LogOutLoadingState());
+
     final token = await StorageHelper.getToken();
     debugPrint("🚪 Trying logout with token: $token");
 
     try {
-      final token = await StorageHelper.getToken();
+      if (token != null && token.isNotEmpty) {
+        final response = await http.post(
+          Uri.parse("https://api.streamore.net/api/users/logout/"),
+          headers: {
+            "accept": "*/*",
+            "Content-Type": "application/json",
+            "Authorization": "Token $token",
+          },
+        );
 
-      final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/logout/"),
-        headers: {
-          "accept": "*/*",
-          "Content-Type": "application/json",
-          "Authorization": "Token $token",
-        },
-      );
+        try {
+          final responseBody = jsonDecode(response.body);
+          debugPrint("📦 Logout Response: $responseBody");
 
-      final responseBody = jsonDecode(response.body);
-      debugPrint("📦 Logout Response: $responseBody");
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        await StorageHelper.clearToken();
-        emit(LogOutSuccessState(
-            message: responseBody["Message"] ?? "Logged out successfully"));
-      } else {
-        emit(FailedToLogOutState(
-            error: responseBody["error"] ??
-                responseBody["detail"] ??
-                "Failed to logout"));
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            await StorageHelper.clearToken();
+            emit(LogOutSuccessState(
+                message: responseBody["Message"] ?? "Logged out successfully"));
+            return;
+          } else {
+            debugPrint("⚠️ Logout failed on server: $responseBody");
+          }
+        } catch (_) {
+          debugPrint("⚠️ Logout response is not JSON: ${response.body}");
+        }
       }
+
+      await StorageHelper.clearToken();
+      emit(LogOutSuccessState(message: "Logged out locally"));
     } catch (e) {
+      await StorageHelper.clearToken();
       emit(FailedToLogOutState(error: e.toString()));
     }
   }
+
 
   void sendActivate({required String email}) async {
     emit(SendActivateLoadingState());
 
     try {
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/sendactivate/"),
+        Uri.parse("https://api.streamore.net/api/users/sendactivate/"),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -223,7 +231,8 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(ResetPasswordLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/resetpassword/"),
+        Uri.parse("https://api.streamore.net/api/users/resetpassword/"),
+
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email}),
       );
@@ -249,7 +258,7 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(VerifyPassCodeLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/resetpassword-verify/"),
+        Uri.parse("https://api.streamore.net/api/users/resetpassword-verify/"),
         body: {
           "email": email,
           "reset_code": code,
@@ -279,7 +288,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://34.39.27.45:8000/api/users/password-reset-done/"),
+        Uri.parse("https://api.streamore.net/api/users/password-reset-done/"),
         headers: {
           "Content-Type": "application/json",
         },
@@ -312,7 +321,7 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(ChangePasswordLoadingState());
     try {
       final response = await http.put(
-        Uri.parse("http://34.39.27.45:8000/api/users/change-password/"),
+        Uri.parse("https://api.streamore.net/api/users/change-password/"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Token $token",
