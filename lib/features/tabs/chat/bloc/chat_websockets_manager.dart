@@ -26,7 +26,7 @@ class ChatWebsocketManager {
     _isConnecting = true;
     _manualClose = false;
 
-    final url = "ws://34.39.27.45:8000/ws/chat/$chatId/?token=$token";
+    final url = "wss://api.streamore.net/ws/chat/$chatId/?token=$token";
     print("🔌 Connecting to: $url");
 
     try {

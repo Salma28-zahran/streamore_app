@@ -199,7 +199,8 @@ class _SignInState extends State<SignIn> {
                         top: 12,
                         right: 43,
                       ),
-                      child: GestureDetector(
+                      child:
+                      GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,

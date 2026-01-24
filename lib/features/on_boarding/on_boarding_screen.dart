@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streamore_app/core/helpers/storage_helper.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   static const String routeName = "/onboarding";
@@ -44,7 +45,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       );
     }
   }
-  void _goToSignIn() {
+  void _goToSignIn() async{
+    await StorageHelper.clearAll();
     Navigator.pushNamed(context, '/signin');
   }
 
