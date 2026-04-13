@@ -26,7 +26,7 @@ class ChatWebsocketManager {
     _isConnecting = true;
     _manualClose = false;
 
-    final url = "wss://api.streamore.net/ws/chat/$chatId/?token=$token";
+    final url = "wss://api.streamore.net/ws/chat/$chatId/";
     print("🔌 Connecting to: $url");
 
     try {
@@ -73,16 +73,16 @@ class ChatWebsocketManager {
 
   void _handleMessage(Map<String, dynamic> data) {
     switch (data['type']) {
-      case "message": // 📩 رسالة جديدة
+      case "message":
         _controller.add(data);
         break;
-      case "typing": // ⌨️ حد بيكتب
+      case "typing":
         _controller.add(data);
         break;
-      case "seen": // 👀 رسائل اتعملها seen
+      case "seen":
         _controller.add(data);
         break;
-      case "user_status": // 🟢 مين أونلاين
+      case "user_status":
         _controller.add(data);
         break;
       default:
