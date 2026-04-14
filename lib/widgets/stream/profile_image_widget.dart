@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:livekit_client/livekit_client.dart'
+    show VideoTrackRenderer, Participant, TrackType, VideoTrack;
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-
+import 'package:collection/collection.dart';
 
 class ProfileImageWidget extends StatelessWidget {
   final bool isZoomVisible;
@@ -10,7 +12,7 @@ class ProfileImageWidget extends StatelessWidget {
   final VoidCallback onZoomClick;
   final VoidCallback onProfileClick;
   final Widget themeOverlay;
-
+  final Participant participant;
 
   const ProfileImageWidget({
     super.key,
@@ -20,25 +22,39 @@ class ProfileImageWidget extends StatelessWidget {
     required this.onZoomClick,
     required this.onProfileClick,
     required this.themeOverlay,
-
+    required this.participant,
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
+    final videoTrack = participant.trackPublications.values
+        .where((p) => p.kind == TrackType.VIDEO && p.track != null)
+        .map((p) => p.track)
+        .whereType<VideoTrack>()
+        .firstOrNull;
+
+    final provider = context.watch<MyProvider>();
+
     return Stack(
       children: [
         GestureDetector(
           onTap: onProfileClick,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(7),
-            child: Image.asset(
-              "assets/images/profile4.png",
+            child: SizedBox(
               width: profileImageWidth,
               height: profileImageHeight,
-              fit: BoxFit.cover,
+              child: videoTrack != null
+                  ? VideoTrackRenderer(videoTrack)
+                  : Image.asset(
+                "assets/images/profile4.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
+
         if (isZoomVisible)
           Positioned(
             top: profileImageHeight / 2 - 27,
@@ -46,7 +62,7 @@ class ProfileImageWidget extends StatelessWidget {
             child: GestureDetector(
               onTap: onZoomClick,
               child: Container(
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.6),
                   shape: BoxShape.circle,
@@ -59,14 +75,13 @@ class ProfileImageWidget extends StatelessWidget {
               ),
             ),
           ),
-        if (Provider.of<MyProvider>(context).isOverlayEnabled)
+
+        if (provider.isOverlayEnabled)
           Positioned(
             bottom: 0,
             left: 0,
             child: themeOverlay,
           ),
-
-
       ],
     );
   }
