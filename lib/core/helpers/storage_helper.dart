@@ -18,6 +18,17 @@ class StorageHelper {
   }
 
 
+  static Future<void> saveInviteToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("invite_token", token);
+  }
+
+  static Future<String?> getInviteToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("invite_token");
+  }
+
+
   static Future<void> saveEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('user_email', email);

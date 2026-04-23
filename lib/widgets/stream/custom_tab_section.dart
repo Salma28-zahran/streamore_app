@@ -85,7 +85,7 @@ class CustomTabSection extends StatelessWidget {
                           : const BannersTab(),
                       const CommentsTab(),
                       ChatTab(),
-                      PeopleTab()// 👈 من غير const
+                      PeopleTab()
                     ],
                   ),
                 ),

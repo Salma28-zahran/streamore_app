@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:streamore_app/widgets/permissions/mic/volume_test.dart';
 import 'package:streamore_app/widgets/stream/circle_and_action_icons.dart';
+import 'package:flutter/services.dart';
 
 class ControlButtonsRow extends StatefulWidget {
   final bool micOn;
@@ -522,7 +523,17 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                             width: 110,
                             height: 28,
                             child: ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                const link = "https://www.examplecode.com/xyz-pwd-srt";
+
+                                Clipboard.setData(const ClipboardData(text: link));
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Link copied"),
+                                  ),
+                                );
+                              },
                               icon: const Icon(Icons.copy, size: 18),
                               label: Text(
                                 "copy_link".tr(),
