@@ -52,7 +52,7 @@ class _FullImageScreenState extends State<FullImageScreen> {
             child: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, "/stream");
+                Navigator.pop(context);
               },
             ),
           ),

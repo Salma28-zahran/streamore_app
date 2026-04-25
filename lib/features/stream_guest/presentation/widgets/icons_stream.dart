@@ -66,12 +66,14 @@ class _IconsStreamState extends State<IconsStream> {
     final double smallIconSize = widget.iconSize * 0.7;
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
 
           /// 🎤 MIC
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
               GestureDetector(
                 onTap: widget.toggleMic,
@@ -196,45 +198,23 @@ class _IconsStreamState extends State<IconsStream> {
             child: Icon(Icons.cast, color: iconColor),
           ),
 
-          const SizedBox(width: 10),
-
-          /// 🪪 PROFILE + LIST (نفس الكود الأصلي بدون تغيير)
-          GestureDetector(
-            onTapDown: (details) async {
-              final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-
-              await showMenu(
-                context: context,
-                position: RelativeRect.fromRect(
-                  details.globalPosition & const Size(40, 40),
-                  Offset.zero & overlay.size,
-                ),
-                items: [
-                  PopupMenuItem(
-                    enabled: false,
-                    child: Container(),
-                  ),
-                ],
-              );
-            },
-            child: Icon(Icons.person_pin_sharp, color: iconColor),
-          ),
 
           const SizedBox(width: 10),
 
-          /// ➕ ADD PERSON
+          ///  INVITE
           GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: Text("add_members".tr()),
-                  content: Text("Link UI unchanged"),
-                ),
-              );
-            },
-            child: Icon(Icons.person_add, color: iconColor),
+            onTap: () => Navigator.pushNamed(context, "/invite"),
+            child: const Icon(
+              Icons.login_rounded,
+              color: Colors.red,
+              size: 26,
+            ),
           ),
+
+
+
+
+
 
           const SizedBox(width: 10),
 

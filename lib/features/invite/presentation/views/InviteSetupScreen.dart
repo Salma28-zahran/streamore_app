@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/invite/bloc/invite_cubit.dart';
 import 'package:streamore_app/features/invite/bloc/invite_state.dart';
+import 'package:streamore_app/features/stream_guest/presentation/views/stream_guest.dart';
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
 
@@ -21,7 +23,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocProvider(
@@ -30,8 +31,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
         listener: (context, state) {
           if (state is InviteJoinSuccess) {
             final liveKitToken = state.liveKitToken;
-
-            /// ⬅️ الخطوة الجاية: permissions + LiveKit connect
             debugPrint("LIVEKIT TOKEN: $liveKitToken");
           }
         },
@@ -41,17 +40,14 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
             child: BlocBuilder<InviteCubit, InviteState>(
               builder: (context, state) {
 
-                /// ⏳ LOADING
                 if (state is InviteLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                /// ❌ ERROR
                 if (state is InviteError) {
                   return Center(child: Text(state.message));
                 }
 
-                /// ✅ LOADED
                 if (state is InviteLoaded) {
                   return SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
@@ -59,7 +55,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                        /// 🔥 Stream Info
                         Text(
                           state.streamName,
                           style: TextStyle(
@@ -78,7 +73,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
                         const SizedBox(height: 20),
 
-                        /// 🎥 Preview
                         Container(
                           height: 200,
                           width: double.infinity,
@@ -90,8 +84,7 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.videocam_off,
-                                    color: Colors.grey, size: 40),
+                                Icon(Icons.videocam_off, color: Colors.grey, size: 40),
                                 SizedBox(height: 8),
                                 Text(
                                   "Camera is off",
@@ -122,7 +115,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
                         const SizedBox(height: 20),
 
-                        /// 👤 Name Input
                         TextField(
                           controller: nameController,
                           maxLength: 100,
@@ -136,7 +128,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
                         const SizedBox(height: 16),
 
-                        /// 🚀 BUTTON
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -146,16 +137,14 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
                               if (name.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Name is required"),
-                                  ),
+                                  const SnackBar(content: Text("Name is required")),
                                 );
                                 return;
                               }
 
-                              context
-                                  .read<InviteCubit>()
-                                  .joinStream(name);
+                              context.read<MyProvider>().setGuestName(name);
+                              context.read<InviteCubit>().joinStream(name);
+                              Navigator.pushNamed(context, StreamGuest.routeName); // ✅
                             },
                             child: const Text("Enter Studio"),
                           ),
@@ -163,7 +152,6 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
 
                         const SizedBox(height: 20),
 
-                        /// 🔊 Status
                         Row(
                           children: [
                             Expanded(
@@ -203,6 +191,7 @@ class _InviteSetupScreenState extends State<InviteSetupScreen> {
                             ),
                           ],
                         ),
+
                       ],
                     ),
                   );

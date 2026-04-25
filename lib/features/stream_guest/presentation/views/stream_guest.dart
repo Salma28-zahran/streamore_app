@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:streamore_app/core/helpers/storage_helper.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'
+    show FontAwesomeIcons;
 import 'package:streamore_app/core/provider/comment_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:streamore_app/features/stream/drawer/main_drawer.dart';
 import 'package:streamore_app/features/stream_guest/presentation/widgets/icons_stream.dart';
-import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
-import 'package:streamore_app/widgets/brand_widgets/background/background.dart';
-import 'package:streamore_app/widgets/banners/show_banners.dart';
+import 'package:streamore_app/features/stream_guest/presentation/widgets/tabs.dart';
+import 'package:streamore_app/features/stream_guest/presentation/widgets/video.dart';
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
-import 'package:streamore_app/widgets/brand_widgets/logo/logo.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
-import 'package:streamore_app/widgets/brand_widgets/background/overlay.dart';
-import 'package:streamore_app/widgets/stream/comment_overlay_widget.dart';
-import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
-import 'package:streamore_app/widgets/stream/custom_tab_section.dart';
+
 
 class StreamGuest extends StatefulWidget {
-  static const String routeName = "/stream";
+  static const String routeName = "/guest";
+  final bool hasNotification;
 
-  const StreamGuest({super.key});
+
+  const StreamGuest({
+    super.key,
+    this.hasNotification = false,
+  });
 
   @override
-  State<StreamGuest> createState() => _StreamScreenState();
+  State<StreamGuest> createState() => _StreamGuestState();
 }
 
-class _StreamScreenState extends State<StreamGuest>
+class _StreamGuestState extends State<StreamGuest>
     with TickerProviderStateMixin {
-  bool micOn = true;
-  bool camOn = true;
+  bool _micOn = true;
+  bool _camOn = true;
   late TabController _tabController;
   bool isZoomVisible = false;
   int? userId;
@@ -36,33 +36,59 @@ class _StreamScreenState extends State<StreamGuest>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-    _loadUserId();
-  }
+    _tabController = TabController(length: 2, vsync: this);
+    // _tabController = TabController(length: 4, vsync: this);
 
-  Future<void> _loadUserId() async {
-    final id = await StorageHelper.getUserId();
-    setState(() {
-      userId = id;
-    });
-    debugPrint("🆔 User ID in StreamScreen: $userId");
+
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     final bool isSmall = size.width < 360;
     final double iconSize = isSmall ? 44.0 : 50.0;
     final myprovider = Provider.of<MyProvider>(context);
+    final selectedTheme = myprovider.selectedTheme;
+    final font = myprovider.selectedFont;
+    final primaryColor = myprovider.primaryColor;
+    final myProvider = Provider.of<MyProvider>(context);
 
     final double profileImageWidth = size.width * 0.9425;
     final double profileImageHeight = size.height * 0.28;
+    final bool isDark = myprovider.themeMode == ThemeMode.dark;
+
 
     final commentProvider = Provider.of<CommentProvider>(context);
 
     return Scaffold(
-      drawer: MainDrawer(),
-      appBar: CustomAppBar(hasNotification: false),
+      appBar: AppBar(
+        title: Image.asset("assets/images/app_name.png"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Stack(
+              children: [
+                const Icon(FontAwesomeIcons.bell, size: 24),
+                if (widget.hasNotification) // ✅ widget. صح هنا
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
       body: GestureDetector(
         onTap: () {
           commentProvider.clearTappedComments();
@@ -72,37 +98,44 @@ class _StreamScreenState extends State<StreamGuest>
             Column(
               children: [
                 Padding(
-                  padding:
-                  const EdgeInsets.only(top: 0, left: 8, right: 8),
+                  padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ProfileImageWithBanners(
+                      VideoWidget(
                         isZoomVisible: isZoomVisible,
                         profileImageWidth: profileImageWidth,
                         profileImageHeight: profileImageHeight,
                         onZoomIconClick: _onZoomIconClick,
                         onProfileImageClick: _onProfileImageClick,
                       ),
+
+
                     ],
                   ),
                 ),
-
                 IconsStream(
-                  micOn: micOn,
-                  camOn: camOn,
+                  micOn: _micOn,
+                  camOn: _camOn,
                   iconSize: iconSize,
                   isSmall: isSmall,
-                  toggleMic: toggleMic,
-                  toggleCam: toggleCam,
-                ),
+                  toggleMic: () => requestMicPermission(context, _toggleMic),
+                  toggleCam: () =>
+                      requestCameraPermission(context, _toggleCamera),
 
-                const SizedBox(height: 8),
+                ),
+                SizedBox(height: 15,),
+                TabsSection(
+                  tabController: _tabController,
+                  profileImageWidth: profileImageWidth,
+                  isSmall: isSmall,
+                )
               ],
-            ),
+            )
           ],
         ),
       ),
+
     );
   }
 
@@ -116,15 +149,15 @@ class _StreamScreenState extends State<StreamGuest>
     Navigator.pushNamed(context, '/full_image');
   }
 
-  void toggleMic() {
+  void _toggleMic() {
     setState(() {
-      micOn = !micOn;
+      _micOn = !_micOn;
     });
   }
 
-  void toggleCam() {
+  void _toggleCamera() {
     setState(() {
-      camOn = !camOn;
+      _camOn = !_camOn;
     });
   }
 }

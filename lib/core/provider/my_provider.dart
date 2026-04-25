@@ -84,4 +84,10 @@ class MyProvider extends ChangeNotifier {
     _chatId = id;
     notifyListeners();
   }
+  String? guestName;
+
+  void setGuestName(String name) {
+    guestName = name;
+    notifyListeners();
+  }
 }

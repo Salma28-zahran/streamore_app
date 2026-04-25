@@ -140,9 +140,7 @@ class _MyAppState extends State<MyApp> {
       Widget startScreen;
 
       if (state is LogInSuccessState) {
-            startScreen = StreamGuest(
-
-        );
+            startScreen = StreamScreen();
       } else if (state is AuthInitialState) {
         startScreen = const OnBoardingScreen();
       } else {
@@ -196,10 +194,9 @@ class _MyAppState extends State<MyApp> {
           InviteSetupScreen.routeName:(context)=> InviteSetupScreen(),
           PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
           VerifyPass1.routeName: (context) => VerifyPass1(),
-         StreamGuest.routeName:(context)=>StreamGuest(
+          StreamGuest.routeName: (context) => StreamGuest(
 
-
-         ),
+          ),
           VerifyPass2.routeName: (context) {
             final args = ModalRoute.of(context)!.settings.arguments as String;
             return VerifyPass2(email: args);
