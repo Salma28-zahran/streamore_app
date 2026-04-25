@@ -9,6 +9,9 @@ class LiveKitCubit extends Cubit<LiveKitState> {
 
   Room? _room;
 
+  String? _url;
+  String? _token;
+
   List<String> _previousParticipantIds = [];
 
   ///  init & connect
@@ -17,6 +20,9 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     required String token,
   }) async {
     emit(LiveKitLoading());
+
+    _url = url;
+    _token = token;
 
     try {
       /// 1. Permissions
@@ -58,13 +64,47 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     }
   }
 
+  /// 🔥 RECONNECT (Network switch handling)
+  Future<void> reconnect() async {
+    try {
+      if (_url == null || _token == null) return;
+
+      print("🔄 Reconnecting to LiveKit...");
+
+      await _room?.disconnect();
+      _room?.removeListener(_onRoomUpdate);
+
+      _room = Room(
+        roomOptions: const RoomOptions(
+          adaptiveStream: true,
+        ),
+      );
+
+      _room!.addListener(_onRoomUpdate);
+
+      await _room!.connect(
+        _url!,
+        _token!,
+        connectOptions: const ConnectOptions(
+          autoSubscribe: true,
+        ),
+      );
+
+      print("✅ Reconnected successfully");
+
+      _emitParticipants();
+    } catch (e) {
+      emit(LiveKitError("Reconnect failed: $e"));
+    }
+  }
+
   ///  ROOM UPDATE
   void _onRoomUpdate() {
     _handleJoinLeft();
     _emitParticipants();
   }
 
-  ///  JOIN /  LEFT logic
+  ///  JOIN / LEFT logic
   void _handleJoinLeft() {
     final room = _room;
     if (room == null) return;
@@ -80,21 +120,18 @@ class LiveKitCubit extends Cubit<LiveKitState> {
       currentIds.add(p.identity);
     }
 
-    ///  JOINED
     for (final id in currentIds) {
       if (!_previousParticipantIds.contains(id)) {
-        print(" Participant JOINED: $id");
+        print("👤 Participant JOINED: $id");
       }
     }
 
-    ///  LEFT
     for (final id in _previousParticipantIds) {
       if (!currentIds.contains(id)) {
-        print(" Participant LEFT: $id");
+        print("👤 Participant LEFT: $id");
       }
     }
 
-    /// update snapshot
     _previousParticipantIds = currentIds;
   }
 
@@ -152,7 +189,6 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     emit(LiveKitInitial());
   }
 
-  ///  cleanup
   @override
   Future<void> close() async {
     await disconnect();
