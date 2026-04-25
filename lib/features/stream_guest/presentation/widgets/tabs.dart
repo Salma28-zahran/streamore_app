@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/features/stream_guest/presentation/views/tabs/comment_tab.dart';
 
 import 'package:streamore_app/features/tabs/banners/banners_contant.dart';
 import 'package:streamore_app/features/tabs/banners/banners_tab.dart';
@@ -12,14 +13,14 @@ import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
 import 'package:streamore_app/features/tabs/chat/presentaion/views/chat_tab.dart';
 import 'package:streamore_app/features/tabs/comment/comments_tab.dart';
 import 'package:streamore_app/features/tabs/banners/tickers_contant.dart';
-import '../../features/tabs/people/people_tab.dart';
+import 'package:streamore_app/features/tabs/people/people_tab.dart';
 
-class CustomTabSection extends StatelessWidget {
+class TabsSection extends StatelessWidget {
   final TabController tabController;
   final double profileImageWidth;
   final bool isSmall;
 
-  const CustomTabSection({
+  const TabsSection({
     super.key,
     required this.tabController,
     required this.profileImageWidth,
@@ -66,26 +67,19 @@ class CustomTabSection extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                   tabs: [
-                    Tab(text: "brand".tr()),
-                    Tab(text: "banners".tr()),
+
                     Tab(text: "comments".tr()),
                     Tab(text: "chat".tr()),
-                    Tab(text: "people".tr()),
+
                   ],
                 ),
                 Expanded(
                   child: TabBarView(
                     controller: tabController,
                     children: [
-                      const BrandTab(),
-                      myprovider.tFolderClicked
-                          ? const TickersContant()
-                          : myprovider.bFolderClicked
-                          ? const BannersContant()
-                          : const BannersTab(),
-                      const CommentsTab(),
+
+                     CommentTab(),
                       ChatTab(),
-                      PeopleTab()
                     ],
                   ),
                 ),
