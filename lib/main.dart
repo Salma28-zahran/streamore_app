@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'package:app_links/app_links.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:livekit_client/livekit_client.dart';
+import 'package:streamore_app/core/Network/bloc/NetworkCubit.dart';
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
@@ -42,7 +46,6 @@ import 'package:streamore_app/theme/dark_theme.dart';
 import 'package:streamore_app/theme/light_theme.dart';
 import 'package:streamore_app/theme/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_links/uni_links.dart';
 import 'core/helpers/storage_helper.dart';
 import 'core/provider/tickers_provider.dart';
 import 'features/auth/bloc/auth_states.dart';
@@ -64,6 +67,7 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => MyProvider()),
+          BlocProvider(create: (_) => NetworkCubit()),
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
           ChangeNotifierProvider(create: (_) => TickersProvider()),
@@ -94,6 +98,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  late final AppLinks _appLinks;
+  StreamSubscription<Uri>? _sub;
+
   @override
   void initState() {
     super.initState();
@@ -101,16 +108,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void initDeepLink() async {
-    final link = await getInitialLink();
+    _appLinks = AppLinks();
 
-    if (link != null) {
-      handleLink(link);
+    final uri = await _appLinks.getInitialLink();
+
+    if (uri != null) {
+      handleLink(uri.toString());
     }
 
-    linkStream.listen((link) {
-      if (link != null) {
-        handleLink(link);
-      }
+    _sub = _appLinks.uriLinkStream.listen((uri) {
+      handleLink(uri.toString());
     });
   }
 
@@ -130,80 +137,96 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MyProvider>(context);
 
     final BaseTheme lightTheme = LightTheme();
     final BaseTheme darkTheme = DarkTheme();
     final Participant? participant;
-    return BlocBuilder<AuthCubit, AuthStates>(builder: (context, state) {
-      Widget startScreen;
 
-      if (state is LogInSuccessState) {
-            startScreen = StreamScreen();
-      } else if (state is AuthInitialState) {
-        startScreen = const OnBoardingScreen();
-      } else {
-        startScreen = const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+    return BlocListener<NetworkCubit, ConnectivityResult>(
+      listener: (context, state) {
+        if (state == ConnectivityResult.none) {
+          print("❌ No internet");
+        } else {
+          print("🌐 Internet back → reconnect");
+
+         // reconnectToStream();
+        }
+      },
+      child: BlocBuilder<AuthCubit, AuthStates>(builder: (context, state) {
+        Widget startScreen;
+
+        if (state is LogInSuccessState) {
+          startScreen = StreamScreen();
+        } else if (state is AuthInitialState) {
+          startScreen = const OnBoardingScreen();
+        } else {
+          startScreen = const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          theme: lightTheme.themeData,
+          darkTheme: darkTheme.themeData,
+          themeMode: provider.themeMode,
+          debugShowCheckedModeBanner: false,
+          home: startScreen,
+          routes: {
+            OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
+            SignIn.routeName: (context) => const SignIn(),
+            SignUp.routeName: (context) => SignUp(),
+            VerifyEmail2.routeName: (context) {
+              final args = ModalRoute.of(context)!.settings.arguments as String;
+              return VerifyEmail2(email: args);
+            },
+            VerifyEmail3.routeName: (context) {
+              final email = ModalRoute.of(context)!.settings.arguments as String;
+              return VerifyEmail3(email: email);
+            },
+            StreamScreen.routeName: (context) => const StreamScreen(),
+            Library.routeName: (context) => const Library(),
+            Members.routeName: (context) => const Members(),
+            Destination.routeName: (context) => const Destination(),
+            Referrals.routeName: (context) => const Referrals(),
+            Settings.routeName: (context) => const Settings(),
+            SettingsIcon.routeName: (context) => const SettingsIcon(),
+            General.routeName: (context) => const General(),
+            Camera.routeName: (context) => const Camera(),
+            Audio.routeName: (context) => const Audio(),
+            Back.routeName: (context) => const Back(),
+            LayoutScreen.routeName: (context) => const LayoutScreen(),
+            Profile.routeName: (context) => const Profile(),
+            ContactUsScreen.routeName: (context) => const ContactUsScreen(),
+            ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
+            ChangePassword.routeName: (context) => const ChangePassword(),
+            ForgetPass1.routeName: (context) => const ForgetPass1(),
+            ForgetPass2.routeName: (context) => ForgetPass2(),
+            ForgetPass3.routeName: (context) => ForgetPass3(),
+            FullImageScreen.routeName: (context) => FullImageScreen(),
+            InviteSetupScreen.routeName:(context)=> InviteSetupScreen(),
+            PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
+            VerifyPass1.routeName: (context) => VerifyPass1(),
+            StreamGuest.routeName: (context) => StreamGuest(),
+            VerifyPass2.routeName: (context) {
+              final args = ModalRoute.of(context)!.settings.arguments as String;
+              return VerifyPass2(email: args);
+            },
+            ChangePass.routeName: (context) => const ChangePass(),
+          },
         );
-      }
-
-      return MaterialApp(
-        navigatorKey: navigatorKey,
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        theme: lightTheme.themeData,
-        darkTheme: darkTheme.themeData,
-        themeMode: provider.themeMode,
-        debugShowCheckedModeBanner: false,
-        home: startScreen,
-        routes: {
-          OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
-          SignIn.routeName: (context) => const SignIn(),
-          SignUp.routeName: (context) => SignUp(),
-          VerifyEmail2.routeName: (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as String;
-            return VerifyEmail2(email: args);
-          },
-          VerifyEmail3.routeName: (context) {
-            final email = ModalRoute.of(context)!.settings.arguments as String;
-            return VerifyEmail3(email: email);
-          },
-          StreamScreen.routeName: (context) => const StreamScreen(),
-          Library.routeName: (context) => const Library(),
-          Members.routeName: (context) => const Members(),
-          Destination.routeName: (context) => const Destination(),
-          Referrals.routeName: (context) => const Referrals(),
-          Settings.routeName: (context) => const Settings(),
-          SettingsIcon.routeName: (context) => const SettingsIcon(),
-          General.routeName: (context) => const General(),
-          Camera.routeName: (context) => const Camera(),
-          Audio.routeName: (context) => const Audio(),
-          Back.routeName: (context) => const Back(),
-          LayoutScreen.routeName: (context) => const LayoutScreen(),
-          Profile.routeName: (context) => const Profile(),
-          ContactUsScreen.routeName: (context) => const ContactUsScreen(),
-          ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
-          ChangePassword.routeName: (context) => const ChangePassword(),
-          ForgetPass1.routeName: (context) => const ForgetPass1(),
-          ForgetPass2.routeName: (context) => ForgetPass2(),
-          ForgetPass3.routeName: (context) => ForgetPass3(),
-          FullImageScreen.routeName: (context) => FullImageScreen(),
-          InviteSetupScreen.routeName:(context)=> InviteSetupScreen(),
-          PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
-          VerifyPass1.routeName: (context) => VerifyPass1(),
-          StreamGuest.routeName: (context) => StreamGuest(
-
-          ),
-          VerifyPass2.routeName: (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as String;
-            return VerifyPass2(email: args);
-          },
-          ChangePass.routeName: (context) => const ChangePass(),
-        },
-      );
-    });
+      }),
+    );
   }
 }
