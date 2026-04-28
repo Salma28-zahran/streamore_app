@@ -60,6 +60,7 @@ dependencies:
   collection: ^1.19.1
   uni_links: ^0.5.1
   app_links: ^6.4.1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
