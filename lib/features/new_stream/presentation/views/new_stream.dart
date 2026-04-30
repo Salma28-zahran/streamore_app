@@ -1,107 +1,137 @@
 import 'package:easy_localization/easy_localization.dart' show DateFormat;
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' show read;
 import 'package:streamore_app/features/stream/stream_screen.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
+import 'package:provider/provider.dart';
 
-class NewStream extends StatelessWidget {
+
+import '../../../../core/provider/my_provider.dart';
+
+class NewStream extends StatefulWidget {
+  final bool hasNotification;
   static const String routeName = "/new_stream";
 
-  const NewStream({super.key});
+  const NewStream({
+    super.key,
+    this.hasNotification = false,
+  });
+
+  @override
+  State<NewStream> createState() => _NewStreamState();
+}
+
+class _NewStreamState extends State<NewStream> {
   String formatDateTime(DateTime dateTime) {
     return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
   }
 
   @override
   Widget build(BuildContext context) {
+    final myprovider = Provider.of<MyProvider>(context);
+
     final isDark = Theme
         .of(context)
         .brightness == Brightness.dark;
+    final bool hasNotification;
 
     return Scaffold(
       //backgroundColor: isDark ? Colors.black : Colors.white,
-      appBar: CustomAppBar(),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Create:",
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 15),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: buildCard(
-                      context: context,
-                      icon: Icons.videocam,
-                      title: "Livestream",
-                      subtitle: "Go live on 10 destinations",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StreamScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: buildCard(
-                      context: context,
-                      icon: Icons.fiber_manual_record,
-                      title: "Recording",
-                      subtitle: "Record without going live",
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "Streams and Recordings:",
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Column(
-                children: [
-                  buildStreamItem(
-                    context: context,
-                    title: "G",
-                    type: "Record only",
-                    created: DateTime.now(),
-                    scheduled: null,
-                  ),
-
-                  buildStreamItem(
-                    context: context,
-                    title: "G",
-                    type: "Record only",
-                    created: DateTime.now(),
-                    scheduled: null,
-                  ),
-                ],
-              )
-
-            ],
+      appBar: AppBar(
+          automaticallyImplyLeading: true,
+          backgroundColor: Theme
+              .of(context)
+              .appBarTheme
+              .backgroundColor,
+          title: Image.asset("assets/images/app_name.png"),
+          leading: GestureDetector(
+            onTap: () {
+              context.read<MyProvider>().changeTheme();
+            },
+            child: Icon(
+              isDark ? Icons.wb_sunny : Icons.dark_mode,
+              size: 25,
+              color:
+              isDark ? Colors.amber : Theme
+                  .of(context)
+                  .primaryColor,
+            ),
           ),
-        ),
+
+          bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+      child: Divider(
+        color: Theme
+            .of(context)
+            .dividerColor,
+        thickness: 0.5,
+        height: 1,
       ),
+    ),
+    ),
+    body: SafeArea(
+    child: Padding(
+    padding: const EdgeInsets.all(15),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    const SizedBox(height: 15),
+    Row(
+    children: [
+    Expanded(
+    child: buildCard(
+    context: context,
+    icon: Icons.videocam,
+    title: "New Stream",
+    subtitle: "Go live on 10 destinations",
+    onTap: () {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => StreamScreen(),
+    ),
+    );
+    },
+    ),
+    ),
+    const SizedBox(width: 12),
+    ],
+    ),
+    const SizedBox(height: 20),
+    Text(
+    "Streams and Recordings:",
+    style: TextStyle(
+    color: isDark ? Colors.white : Colors.black,
+    fontSize: 24,
+    fontWeight: FontWeight.w800,
+    ),
+    ),
+    const SizedBox(height: 15),
+    Column(
+    children: [
+    buildStreamItem(
+    context: context,
+    title: "G",
+    type: "Record only",
+    created: DateTime.now(),
+    scheduled: null,
+    ),
+    buildStreamItem(
+    context: context,
+    title: "G",
+    type: "Record only",
+    created: DateTime.now(),
+    scheduled: null,
+    ),
+    ],
+    )
+    ],
+    ),
+    ),
+    ),
     );
   }
-
 
   Widget buildStreamItem({
     required BuildContext context,
@@ -110,7 +140,9 @@ class NewStream extends StatelessWidget {
     required DateTime created,
     DateTime? scheduled,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
 
     final date = DateFormat('dd MMM');
     final time = DateFormat('HH:mm');
@@ -130,6 +162,7 @@ class NewStream extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
           /// 🔵 Icon
           Container(
             padding: const EdgeInsets.all(6),
@@ -218,7 +251,6 @@ class NewStream extends StatelessWidget {
 
           /// ⏳ Scheduled (سطرين)
 
-
           const SizedBox(width: 8),
 
           /// 🔘 Button
@@ -235,15 +267,12 @@ class NewStream extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               minimumSize: const Size(0, 28),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-
               side: const BorderSide(
                 color: Color(0xff1865E8),
                 width: 1,
               ),
-
               foregroundColor: isDark ? Colors.white : Colors.black,
               textStyle: const TextStyle(fontSize: 11),
-
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -265,7 +294,9 @@ class NewStream extends StatelessWidget {
     required String subtitle,
     VoidCallback? onTap, // 👈 ضيفي دي
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
 
     return InkWell(
       onTap: onTap,
