@@ -7,6 +7,7 @@ import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
+import 'package:streamore_app/widgets/banners/ParticipantsIndicator.dart';
 
 import '../../core/helpers/storage_helper.dart';
 import '../../core/provider/tickers_provider.dart';
@@ -64,6 +65,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
           Stack(
             clipBehavior: Clip.none,
             children: [
+
               GestureDetector(
                 onTap: widget._onProfileImageClick,
                 child: ClipRRect(
@@ -74,6 +76,25 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                     height: widget.profileImageHeight,
                     fit: BoxFit.cover,
                   ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ParticipantsIndicator(
+                      participants: ["person1", "person2", "person3", "person4", "person5"],
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    StatusIndicator(
+                      initialStatus: true,
+                    ),
+                  ],
                 ),
               ),
 
