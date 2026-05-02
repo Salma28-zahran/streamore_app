@@ -16,12 +16,14 @@ class ControlButtonsRow extends StatefulWidget {
   final bool camOn;
   final double iconSize;
   final bool isSmall;
+  final Function(String) onLayoutChanged;
   final VoidCallback toggleMic;
   final VoidCallback toggleCam;
 
   const ControlButtonsRow({
     super.key,
     required this.micOn,
+    required this.onLayoutChanged,
     required this.camOn,
     required this.iconSize,
     required this.isSmall,
@@ -42,13 +44,13 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
   int selectedIndex = 1;
 
   final List<LayoutOption> layouts = [
-    LayoutOption(titleKey: 'default'),
-    LayoutOption(titleKey: 'cropped_layout'),
-    LayoutOption(titleKey: 'spotlight_layout'),
-    LayoutOption(titleKey: 'screen_layout'),
-    LayoutOption(titleKey: 'picture_in_picture'),
-    LayoutOption(titleKey: 'news_layout'),
-    LayoutOption(titleKey: 'cinema_layout'),
+    LayoutOption(titleKey: 'default', type: 'grid'),
+    LayoutOption(titleKey: 'cropped_layout', type: 'grid'),
+    LayoutOption(titleKey: 'spotlight_layout', type: 'speaker'),
+    LayoutOption(titleKey: 'screen_layout', type: 'single'),
+    LayoutOption(titleKey: 'picture_in_picture', type: 'speaker'),
+    LayoutOption(titleKey: 'news_layout', type: 'grid'),
+    LayoutOption(titleKey: 'cinema_layout', type: 'single'),
   ];
 
   void selectLayout(int index) => setState(() => selectedIndex = index);
@@ -336,8 +338,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                 onTapDown: (TapDownDetails details) async {
                   final RenderBox overlay =
                   Overlay.of(context).context.findRenderObject() as RenderBox;
-
-                  await showMenu(
+                  final result = await showMenu(
                     context: context,
                     position: RelativeRect.fromRect(
                       details.globalPosition & const Size(40, 40),
@@ -347,6 +348,8 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+
+
                     items: [
                       PopupMenuItem(
                         enabled: false,
@@ -376,8 +379,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
 
                                 return GestureDetector(
                                   onTap: () {
-                                    setState(() => selectedIndex = index);
-                                    Navigator.pop(context);
+                                    Navigator.pop(context, layouts[index].type); // 🔥
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
@@ -438,6 +440,9 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                       ),
                     ],
                   );
+                  if (result != null) {
+                    widget.onLayoutChanged(result); // 🔥 هنا الصح
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
@@ -583,4 +588,14 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
       ),
     );
   }
+
+}
+class LayoutOption {
+  final String titleKey;
+  final String type; // 🔥 أضيفي ده
+
+  LayoutOption({
+    required this.titleKey,
+    required this.type,
+  });
 }

@@ -18,10 +18,12 @@ class ProfileImageWithBanners extends StatefulWidget {
   final bool isZoomVisible;
   final VoidCallback _onProfileImageClick;
   final VoidCallback _onZoomIconClick;
+  final String layout;
 
   const ProfileImageWithBanners({
     super.key,
     required this.profileImageWidth,
+    required this.layout,
     required this.profileImageHeight,
     required this.isZoomVisible,
     required VoidCallback onProfileImageClick,
@@ -36,6 +38,7 @@ class ProfileImageWithBanners extends StatefulWidget {
 
 class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
   String? userName;
+  String currentLayout = "grid";
 
   @override
   void initState() {
@@ -110,10 +113,16 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                         color: Colors.grey.withOpacity(0.6),
                         shape: BoxShape.circle,
                       ),
-                      child: Image.asset(
-                        'assets/images/zoom.png',
-                        width: 50,
-                        height: 50,
+                      child: Container(
+                        width: widget.profileImageWidth,
+                        height: widget.profileImageHeight,
+                        color: Colors.black,
+                        child: Center(
+                          child: Text(
+                            widget.layout, // 👈 نشوف القيمة الأول
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -54,7 +54,7 @@ class _StreamScreenState extends State<StreamScreen>
   }
 
 
-
+  String currentLayout = 'grid'; // 🔥 مهم
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +72,7 @@ class _StreamScreenState extends State<StreamScreen>
     final bool isDark = myprovider.themeMode == ThemeMode.dark;
 
     final bool hasNotification = false;
+
 
     final commentProvider = Provider.of<CommentProvider>(context);
 
@@ -99,6 +100,7 @@ class _StreamScreenState extends State<StreamScreen>
                         profileImageHeight: profileImageHeight,
                         onZoomIconClick: _onZoomIconClick,
                         onProfileImageClick: _onProfileImageClick,
+                          layout: currentLayout,
                       ),
 
 
@@ -107,6 +109,11 @@ class _StreamScreenState extends State<StreamScreen>
                 ),
 
                 ControlButtonsRow(
+                  onLayoutChanged: (layout) {
+                    setState(() {
+                      currentLayout = layout;
+                    });
+                  },
                   micOn: _micOn,
                   camOn: _camOn,
                   iconSize: iconSize,
