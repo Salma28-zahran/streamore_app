@@ -54,8 +54,7 @@ class _StreamScreenState extends State<StreamScreen>
   }
 
 
-  String currentLayout = 'grid'; // 🔥 مهم
-
+  String currentLayout = 'default';
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -109,6 +108,7 @@ class _StreamScreenState extends State<StreamScreen>
                 ),
 
                 ControlButtonsRow(
+                  currentLayout: currentLayout,
                   onLayoutChanged: (layout) {
                     setState(() {
                       currentLayout = layout;

@@ -19,6 +19,7 @@ class ControlButtonsRow extends StatefulWidget {
   final Function(String) onLayoutChanged;
   final VoidCallback toggleMic;
   final VoidCallback toggleCam;
+  final String currentLayout;
 
   const ControlButtonsRow({
     super.key,
@@ -29,6 +30,7 @@ class ControlButtonsRow extends StatefulWidget {
     required this.isSmall,
     required this.toggleMic,
     required this.toggleCam,
+    required this.currentLayout,
   });
 
   @override
@@ -41,19 +43,17 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
   bool _isOverlayEnabled = false;
   bool _isOverlayEnabled2 = false;
   bool _isOverlayEnabled3 = false;
-  int selectedIndex = 1;
 
   final List<LayoutOption> layouts = [
-    LayoutOption(titleKey: 'default', type: 'grid'),
-    LayoutOption(titleKey: 'cropped_layout', type: 'grid'),
-    LayoutOption(titleKey: 'spotlight_layout', type: 'speaker'),
-    LayoutOption(titleKey: 'screen_layout', type: 'single'),
-    LayoutOption(titleKey: 'picture_in_picture', type: 'speaker'),
-    LayoutOption(titleKey: 'news_layout', type: 'grid'),
-    LayoutOption(titleKey: 'cinema_layout', type: 'single'),
+    LayoutOption(titleKey: 'default', type: 'default'),
+    LayoutOption(titleKey: 'cropped_layout', type: 'cropped'),
+    LayoutOption(titleKey: 'screen_layout', type: 'screen'),
+    LayoutOption(titleKey: 'spotlight_layout', type: 'spotlight'),
+    LayoutOption(titleKey: 'news_layout', type: 'news'),
+    LayoutOption(titleKey: 'picture_in_picture', type: 'pip'),
+    LayoutOption(titleKey: 'cinema_layout', type: 'cinema'),
   ];
 
-  void selectLayout(int index) => setState(() => selectedIndex = index);
 
   String getImageName(String key, bool isSelected) {
     final prefix = key == 'default' ? 'defaultt' : key;
@@ -373,7 +373,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                               ),
                               itemBuilder: (context, index) {
                                 final layout = layouts[index];
-                                final isSelected = index == selectedIndex;
+                                final isSelected = layout.type == widget.currentLayout;
                                 final imagePath =
                                     'assets/images/${getImageName(layout.titleKey, isSelected)}';
 
