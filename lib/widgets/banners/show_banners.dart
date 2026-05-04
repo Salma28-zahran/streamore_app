@@ -8,6 +8,7 @@ import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
 import 'package:streamore_app/widgets/banners/ParticipantsIndicator.dart';
+import 'package:streamore_app/widgets/stream/stream_layout_view.dart';
 
 import '../../core/helpers/storage_helper.dart';
 import '../../core/provider/tickers_provider.dart';
@@ -18,10 +19,12 @@ class ProfileImageWithBanners extends StatefulWidget {
   final bool isZoomVisible;
   final VoidCallback _onProfileImageClick;
   final VoidCallback _onZoomIconClick;
+  final String layout;
 
   const ProfileImageWithBanners({
     super.key,
     required this.profileImageWidth,
+    required this.layout,
     required this.profileImageHeight,
     required this.isZoomVisible,
     required VoidCallback onProfileImageClick,
@@ -66,17 +69,11 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
             clipBehavior: Clip.none,
             children: [
 
-              GestureDetector(
+              StreamLayoutView(
+                layout: widget.layout,
+                width: widget.profileImageWidth,
+                height: widget.profileImageHeight,
                 onTap: widget._onProfileImageClick,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(7),
-                  child: Image.asset(
-                    "assets/images/profile4.png",
-                    width: widget.profileImageWidth,
-                    height: widget.profileImageHeight,
-                    fit: BoxFit.cover,
-                  ),
-                ),
               ),
               Positioned(
                 top: 10,
@@ -97,7 +94,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                   ],
                 ),
               ),
-
+/*
               if (widget.isZoomVisible)
                 Positioned(
                   top: widget.profileImageHeight / 2 - 27,
@@ -110,15 +107,23 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                         color: Colors.grey.withOpacity(0.6),
                         shape: BoxShape.circle,
                       ),
-                      child: Image.asset(
-                        'assets/images/zoom.png',
-                        width: 50,
-                        height: 50,
+                      child: Container(
+                        width: widget.profileImageWidth,
+                        height: widget.profileImageHeight,
+                        color: Colors.black,
+                        child: Center(
+                          child: Text(
+                            widget.layout, // 👈 نشوف القيمة الأول
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
 
+
+ */
               Consumer<MyProvider>(
                 builder: (context, myProvider, child) {
                   if (tickersProvider.shownTickers.isNotEmpty) {
@@ -274,6 +279,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
       ),
     );
   }
+
 
   Widget _buildThemeOverlay(BuildContext context, MyProvider provider) {
     final theme = provider.selectedTheme;
@@ -589,3 +595,4 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
     );
   }
 }
+

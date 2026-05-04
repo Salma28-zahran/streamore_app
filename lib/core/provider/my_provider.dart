@@ -90,4 +90,11 @@ class MyProvider extends ChangeNotifier {
     guestName = name;
     notifyListeners();
   }
+
+  String currentLayout = "grid";
+
+  void setLayout(String layout) {
+    currentLayout = layout;
+    notifyListeners();
+  }
 }

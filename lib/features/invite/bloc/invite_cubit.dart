@@ -58,7 +58,6 @@ class InviteCubit extends Cubit<InviteState> {
 
         final liveKitToken = data['livekit_token'];
 
-        /// هنستخدمه في الخطوة اللي بعدها
         emit(InviteJoinSuccess(liveKitToken));
       } else {
         emit(InviteError("Join failed"));

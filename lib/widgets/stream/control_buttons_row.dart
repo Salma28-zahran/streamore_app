@@ -16,17 +16,21 @@ class ControlButtonsRow extends StatefulWidget {
   final bool camOn;
   final double iconSize;
   final bool isSmall;
+  final Function(String) onLayoutChanged;
   final VoidCallback toggleMic;
   final VoidCallback toggleCam;
+  final String currentLayout;
 
   const ControlButtonsRow({
     super.key,
     required this.micOn,
+    required this.onLayoutChanged,
     required this.camOn,
     required this.iconSize,
     required this.isSmall,
     required this.toggleMic,
     required this.toggleCam,
+    required this.currentLayout,
   });
 
   @override
@@ -39,19 +43,17 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
   bool _isOverlayEnabled = false;
   bool _isOverlayEnabled2 = false;
   bool _isOverlayEnabled3 = false;
-  int selectedIndex = 1;
 
   final List<LayoutOption> layouts = [
-    LayoutOption(titleKey: 'default'),
-    LayoutOption(titleKey: 'cropped_layout'),
-    LayoutOption(titleKey: 'spotlight_layout'),
-    LayoutOption(titleKey: 'screen_layout'),
-    LayoutOption(titleKey: 'picture_in_picture'),
-    LayoutOption(titleKey: 'news_layout'),
-    LayoutOption(titleKey: 'cinema_layout'),
+    LayoutOption(titleKey: 'default', type: 'default'),
+    LayoutOption(titleKey: 'cropped_layout', type: 'cropped'),
+    LayoutOption(titleKey: 'screen_layout', type: 'screen'),
+    LayoutOption(titleKey: 'spotlight_layout', type: 'spotlight'),
+    LayoutOption(titleKey: 'news_layout', type: 'news'),
+    LayoutOption(titleKey: 'picture_in_picture', type: 'pip'),
+    LayoutOption(titleKey: 'cinema_layout', type: 'cinema'),
   ];
 
-  void selectLayout(int index) => setState(() => selectedIndex = index);
 
   String getImageName(String key, bool isSelected) {
     final prefix = key == 'default' ? 'defaultt' : key;
@@ -336,8 +338,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                 onTapDown: (TapDownDetails details) async {
                   final RenderBox overlay =
                   Overlay.of(context).context.findRenderObject() as RenderBox;
-
-                  await showMenu(
+                  final result = await showMenu(
                     context: context,
                     position: RelativeRect.fromRect(
                       details.globalPosition & const Size(40, 40),
@@ -347,6 +348,8 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+
+
                     items: [
                       PopupMenuItem(
                         enabled: false,
@@ -370,14 +373,13 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                               ),
                               itemBuilder: (context, index) {
                                 final layout = layouts[index];
-                                final isSelected = index == selectedIndex;
+                                final isSelected = layout.type == widget.currentLayout;
                                 final imagePath =
                                     'assets/images/${getImageName(layout.titleKey, isSelected)}';
 
                                 return GestureDetector(
                                   onTap: () {
-                                    setState(() => selectedIndex = index);
-                                    Navigator.pop(context);
+                                    Navigator.pop(context, layouts[index].type); // 🔥
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
@@ -438,6 +440,9 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                       ),
                     ],
                   );
+                  if (result != null) {
+                    widget.onLayoutChanged(result); // 🔥 هنا الصح
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
@@ -583,4 +588,14 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
       ),
     );
   }
+
+}
+class LayoutOption {
+  final String titleKey;
+  final String type; // 🔥 أضيفي ده
+
+  LayoutOption({
+    required this.titleKey,
+    required this.type,
+  });
 }
