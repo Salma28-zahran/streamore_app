@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:streamore_app/features/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/features/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/brand_widgets/background/background.dart';
 import 'package:streamore_app/widgets/banners/show_banners.dart';

@@ -9,7 +9,7 @@ import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 import 'package:streamore_app/features/auth/bloc/delete_account/delete_account_cubit.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/change_pass.dart';
+import 'package:streamore_app/features/drawer/settings/profile/change_pass.dart';
 import 'package:streamore_app/widgets/account_widgets/account_custombox.dart';
 
 import '../../../../widgets/account_widgets/account_delete_section.dar.dart';

@@ -10,11 +10,9 @@ import 'package:streamore_app/features/stream_guest/presentation/widgets/video.d
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
 
-
 class StreamGuest extends StatefulWidget {
   static const String routeName = "/guest";
   final bool hasNotification;
-
 
   const StreamGuest({
     super.key,
@@ -37,18 +35,13 @@ class _StreamGuestState extends State<StreamGuest>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    // _tabController = TabController(length: 4, vsync: this);
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     final bool isSmall = size.width < 360;
-    final double iconSize = isSmall ? 44.0 : 50.0;
+    final double iconSize = isSmall ? size.width * 0.122 : size.width * 0.139;
     final myprovider = Provider.of<MyProvider>(context);
     final selectedTheme = myprovider.selectedTheme;
     final font = myprovider.selectedFont;
@@ -59,25 +52,33 @@ class _StreamGuestState extends State<StreamGuest>
     final double profileImageHeight = size.height * 0.28;
     final bool isDark = myprovider.themeMode == ThemeMode.dark;
 
-
     final commentProvider = Provider.of<CommentProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset("assets/images/app_name.png"),
+        title: Image.asset(
+          "assets/images/app_name2.png",
+          height: size.height * 0.05,
+          width: size.width * 0.46,
+        ),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: size.width * 0.025,
+            ),
             child: Stack(
               children: [
-                const Icon(FontAwesomeIcons.bell, size: 24),
-                if (widget.hasNotification) // ✅ widget. صح هنا
+                Icon(
+                  FontAwesomeIcons.bell,
+                  size: size.width * 0.06,
+                ),
+                if (widget.hasNotification)
                   Positioned(
                     right: 0,
                     top: 0,
                     child: Container(
-                      width: 8,
-                      height: 8,
+                      width: size.width * 0.02,
+                      height: size.width * 0.02,
                       decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
@@ -98,7 +99,11 @@ class _StreamGuestState extends State<StreamGuest>
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 0, left: 8, right: 8),
+                  padding: EdgeInsets.only(
+                    top: 0,
+                    left: size.width * 0.02,
+                    right: size.width * 0.02,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -109,8 +114,6 @@ class _StreamGuestState extends State<StreamGuest>
                         onZoomIconClick: _onZoomIconClick,
                         onProfileImageClick: _onProfileImageClick,
                       ),
-
-
                     ],
                   ),
                 ),
@@ -122,20 +125,20 @@ class _StreamGuestState extends State<StreamGuest>
                   toggleMic: () => requestMicPermission(context, _toggleMic),
                   toggleCam: () =>
                       requestCameraPermission(context, _toggleCamera),
-
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: size.height * 0.018,
+                ),
                 TabsSection(
                   tabController: _tabController,
                   profileImageWidth: profileImageWidth,
                   isSmall: isSmall,
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
-
     );
   }
 

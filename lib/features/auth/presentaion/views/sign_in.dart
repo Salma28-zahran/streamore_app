@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:streamore_app/features/auth/bloc/auth_cubit.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 import 'package:streamore_app/features/auth/presentaion/views/password/verify_pass1.dart';
+import 'package:streamore_app/features/stream/stream_screen.dart';
 
 class SignIn extends StatefulWidget {
   static const String routeName = "/signin";
@@ -41,12 +42,14 @@ class _SignInState extends State<SignIn> {
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/stream',
-              (route) => false,
+                  (route) => false,
             );
           } else if (state is FailedToLogInState) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text("failed_to_login".tr())));
+            ).showSnackBar(
+              SnackBar(content: Text("failed_to_login".tr())),
+            );
           } else if (state is ResetPasswordLoadingState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Sending reset email...")),
@@ -60,15 +63,16 @@ class _SignInState extends State<SignIn> {
           } else if (state is FailedToResetPasswordState) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
           }
         },
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                ),
+                padding: const EdgeInsets.only(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,8 +91,12 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
+
                     Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 32),
+                      padding: const EdgeInsets.only(
+                        left: 32,
+                        right: 32,
+                      ),
                       child: Text(
                         "back".tr(),
                         style: GoogleFonts.poppins(
@@ -97,9 +105,14 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 15),
+
                     Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 40),
+                      padding: const EdgeInsets.only(
+                        left: 32,
+                        right: 40,
+                      ),
                       child: Container(
                         width: double.infinity,
                         height: 55,
@@ -138,9 +151,14 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 31),
+
                     Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 40),
+                      padding: const EdgeInsets.only(
+                        left: 32,
+                        right: 40,
+                      ),
                       child: Container(
                         width: double.infinity,
                         height: 55,
@@ -193,14 +211,14 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
+
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 32,
                         top: 12,
                         right: 43,
                       ),
-                      child:
-                      GestureDetector(
+                      child: GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -221,43 +239,58 @@ class _SignInState extends State<SignIn> {
                     ),
 
                     const SizedBox(height: 88),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        /*
                         ElevatedButton(
                           onPressed:
                               state is LogInLoadingState
                                   ? null
                                   : () {
-                                    context.read<AuthCubit>().login(
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                    );
-                                  },
+                                      context.read<AuthCubit>().login(
+                                            email: emailController.text,
+                                            password:
+                                                passwordController.text,
+                                          );
+                                    },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff1865E8),
                             minimumSize: const Size(317, 55),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius:
+                                  BorderRadius.circular(4),
                             ),
                           ),
                           child:
                               state is LogInLoadingState
                                   ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                  : Text(
-                                    "login".tr(),
-                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
+                                    )
+                                  : Text(
+                                      "login".tr(),
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight:
+                                            FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
+                        ),
+                        */
+
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/stream");
+                          },
+                          child: const Text("Login"),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 15),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -275,13 +308,17 @@ class _SignInState extends State<SignIn> {
                                   color: Colors.blue,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
+                                  decoration:
+                                  TextDecoration.underline,
                                 ),
                                 recognizer:
-                                    TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.pushNamed(context, '/signup');
-                                      },
+                                TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/signup',
+                                    );
+                                  },
                               ),
                             ],
                           ),

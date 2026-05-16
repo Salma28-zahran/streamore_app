@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:streamore_app/features/stream/drawer/main_drawer.dart';
+import 'package:streamore_app/features/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 
 import '../../../widgets/referrls_widgets/referral_header_section.dart';
