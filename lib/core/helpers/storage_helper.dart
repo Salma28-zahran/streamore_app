@@ -80,4 +80,37 @@ class StorageHelper {
   }
 
 
+
+
+  static const String accountsKey = 'saved_accounts';
+
+  static Future<List<String>> getAccounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(accountsKey) ?? [];
+  }
+
+  static Future<void> saveAccount(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final accounts = prefs.getStringList(accountsKey) ?? [];
+
+    if (!accounts.contains(email)) {
+      accounts.add(email);
+      await prefs.setStringList(accountsKey, accounts);
+    }
+
+    await prefs.setString('user_email', email);
+  }
+
+  static Future<void> setCurrentEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_email', email);
+  }
+
+  static Future<void> clearAccounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(accountsKey);
+  }
+
+
 }

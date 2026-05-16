@@ -4,14 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:streamore_app/features/stream/drawer/contact_us_screen.dart';
-
+import 'package:streamore_app/features/drawer/contact_us_screen.dart';
 
 import '../../../widgets/save_username_widgets/save_username.dart';
 import 'privacy_policy.dart';
 
 class MainDrawer extends StatefulWidget {
   static const String routeName = "/drawer";
+
   MainDrawer({super.key});
 
   @override
@@ -23,6 +23,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   Widget buildDrawerItem(int index, IconData icon, String title) {
     bool isSelected = index == selectedIndex;
+    final mq = MediaQuery.of(context).size;
     var myprovider = Provider.of<MyProvider>(context);
 
     return InkWell(
@@ -50,11 +51,17 @@ class _MainDrawerState extends State<MainDrawer> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: EdgeInsets.symmetric(
+          horizontal: mq.width * 0.041,
+          vertical: mq.height * 0.014,
+        ),
+        margin: EdgeInsets.symmetric(
+          horizontal: mq.width * 0.02,
+          vertical: mq.height * 0.004,
+        ),
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF4D8EFF) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(mq.width * 0.03),
         ),
         child: Row(
           children: [
@@ -64,11 +71,11 @@ class _MainDrawerState extends State<MainDrawer> {
                   ? Theme.of(context).tabBarTheme.labelColor
                   : Theme.of(context).tabBarTheme.unselectedLabelColor,
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: mq.width * 0.041),
             Text(
               title,
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: mq.width * 0.041,
                 color: isSelected
                     ? Theme.of(context).tabBarTheme.labelColor
                     : Theme.of(context).tabBarTheme.unselectedLabelColor,
@@ -84,25 +91,29 @@ class _MainDrawerState extends State<MainDrawer> {
   Widget build(BuildContext context) {
     var myprovider = Provider.of<MyProvider>(context);
     bool isDark = myprovider.themeMode == ThemeMode.dark;
-    Size mq = MediaQuery.of(context).size; // ✅ MediaQuery for responsive use
+    Size mq = MediaQuery.of(context).size;
 
     return Drawer(
       backgroundColor: Theme.of(context).cardColor,
-      width: 348,
+      width: mq.width * 0.89,
       child: SafeArea(
         child: Column(
           children: [
-            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                    color: Theme.of(context).cardColor,
-                    padding: const EdgeInsets.all(16),
-                    alignment: Alignment.bottomLeft,
-                    child: Image.asset("assets/images/app_name.png")),
+                  color: Theme.of(context).cardColor,
+                  padding: EdgeInsets.all(mq.width * 0.041),
+                  alignment: Alignment.bottomLeft,
+                  child: Image.asset(
+                    "assets/images/app_name2.png",
+                    height: mq.height * 0.05,
+                    width: mq.width * 0.46,
+                  ),
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 17),
+                  padding: EdgeInsets.only(right: mq.width * 0.044),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -111,16 +122,19 @@ class _MainDrawerState extends State<MainDrawer> {
                         },
                         child: Icon(
                           isDark ? Icons.wb_sunny : Icons.dark_mode,
-                          size: 25,
-                          color:
-                          isDark ? Colors.amber : Theme.of(context).primaryColor,
+                          size: mq.width * 0.064,
+                          color: isDark
+                              ? Colors.amber
+                              : Theme.of(context).primaryColor,
                         ),
                       ),
                       IconButton(
                         icon: Text(
                           context.locale.languageCode == 'en' ? 'AR' : 'EN',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: mq.width * 0.041,
+                          ),
                         ),
                         onPressed: () {
                           if (context.locale.languageCode == 'en') {
@@ -137,14 +151,19 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
               ],
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: mq.height * 0.006),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              margin: const EdgeInsets.symmetric(horizontal: 14),
+              padding: EdgeInsets.symmetric(
+                horizontal: mq.width * 0.051,
+                vertical: mq.height * 0.014,
+              ),
+              margin: EdgeInsets.symmetric(
+                horizontal: mq.width * 0.036,
+              ),
               decoration: BoxDecoration(
                 color: const Color(0xFFBBDEFB),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(mq.width * 0.03),
               ),
               alignment: Alignment.centerLeft,
               child: const UserNameWidget(),
@@ -152,23 +171,22 @@ class _MainDrawerState extends State<MainDrawer> {
             Divider(
               thickness: 1,
               color: Theme.of(context).dividerColor,
-              indent: 50,
-              endIndent: 50,
+              indent: mq.width * 0.127,
+              endIndent: mq.width * 0.127,
             ),
-            const SizedBox(height: 16),
-
-            // Main Items
+            SizedBox(height: mq.height * 0.019),
             buildDrawerItem(0, Icons.grid_view, "home".tr()),
             buildDrawerItem(1, Icons.share, "destination".tr()),
             buildDrawerItem(2, Icons.group, "members".tr()),
             buildDrawerItem(3, Icons.video_library, "library".tr()),
             buildDrawerItem(5, FontAwesomeIcons.gift, "referrals".tr()),
             buildDrawerItem(6, Icons.settings_outlined, "settings".tr()),
-
             const Spacer(),
-
             Padding(
-              padding: const EdgeInsets.only(left: 39, right: 39),
+              padding: EdgeInsets.only(
+                left: mq.width * 0.099,
+                right: mq.width * 0.099,
+              ),
               child: Row(
                 children: [
                   GestureDetector(
@@ -179,12 +197,12 @@ class _MainDrawerState extends State<MainDrawer> {
                       "contact_us".tr(),
                       style: GoogleFonts.montserrat(
                         color: isDark ? Colors.white : const Color(0xffAFAFAF),
-                        fontSize: 16,
+                        fontSize: mq.width * 0.041,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 45),
+                  SizedBox(width: mq.width * 0.114),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/');
@@ -193,7 +211,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       "help_center".tr(),
                       style: GoogleFonts.montserrat(
                         color: isDark ? Colors.white : const Color(0xffAFAFAF),
-                        fontSize: 16,
+                        fontSize: mq.width * 0.041,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -201,9 +219,12 @@ class _MainDrawerState extends State<MainDrawer> {
                 ],
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: mq.height * 0.018),
             Padding(
-              padding: const EdgeInsets.only(left: 39, right: 39),
+              padding: EdgeInsets.only(
+                left: mq.width * 0.099,
+                right: mq.width * 0.099,
+              ),
               child: Row(
                 children: [
                   GestureDetector(
@@ -214,21 +235,24 @@ class _MainDrawerState extends State<MainDrawer> {
                       "news".tr(),
                       style: GoogleFonts.montserrat(
                         color: isDark ? Colors.white : const Color(0xffAFAFAF),
-                        fontSize: 16,
+                        fontSize: mq.width * 0.041,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 80),
+                  SizedBox(width: mq.width * 0.203),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, PrivacyPolicy.routeName);
+                      Navigator.pushNamed(
+                        context,
+                        PrivacyPolicy.routeName,
+                      );
                     },
                     child: Text(
                       "our_policies".tr(),
                       style: GoogleFonts.montserrat(
                         color: isDark ? Colors.white : const Color(0xffAFAFAF),
-                        fontSize: 16,
+                        fontSize: mq.width * 0.041,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

@@ -17,23 +17,24 @@ import 'package:streamore_app/features/auth/presentaion/views/sign_in.dart';
 import 'package:streamore_app/features/auth/presentaion/views/sign_up.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email2.dart';
 import 'package:streamore_app/features/auth/presentaion/views/verify_email3.dart';
+import 'package:streamore_app/features/drawer/contact_us_screen.dart';
+import 'package:streamore_app/features/drawer/destination.dart';
+import 'package:streamore_app/features/drawer/library.dart';
+import 'package:streamore_app/features/drawer/members.dart';
+import 'package:streamore_app/features/drawer/privacy_policy.dart';
+import 'package:streamore_app/features/drawer/referrals.dart';
+import 'package:streamore_app/features/drawer/settings/choose_plan_screen.dart';
+import 'package:streamore_app/features/drawer/settings/profile/change_pass.dart';
+import 'package:streamore_app/features/drawer/settings/profile/change_password.dart';
+import 'package:streamore_app/features/drawer/settings/profile/forget_pass1.dart';
+import 'package:streamore_app/features/drawer/settings/profile/forget_pass2.dart';
+import 'package:streamore_app/features/drawer/settings/profile/forget_pass3.dart';
+import 'package:streamore_app/features/drawer/settings/profile/profile.dart';
+import 'package:streamore_app/features/drawer/settings/settings.dart'
+    show Settings;
 import 'package:streamore_app/features/new_stream/presentation/views/new_stream.dart';
 import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
 import 'package:streamore_app/features/invite/presentation/views/InviteSetupScreen.dart';
-import 'package:streamore_app/features/stream/drawer/contact_us_screen.dart';
-import 'package:streamore_app/features/stream/drawer/destination.dart';
-import 'package:streamore_app/features/stream/drawer/library.dart';
-import 'package:streamore_app/features/stream/drawer/members.dart';
-import 'package:streamore_app/features/stream/drawer/privacy_policy.dart';
-import 'package:streamore_app/features/stream/drawer/referrals.dart';
-import 'package:streamore_app/features/stream/drawer/settings/choose_plan_screen.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/change_pass.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/change_password.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/forget_pass1.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/forget_pass2.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/forget_pass3.dart';
-import 'package:streamore_app/features/stream/drawer/settings/profile/profile.dart';
-import 'package:streamore_app/features/stream/drawer/settings/settings.dart';
 import 'package:streamore_app/features/stream/icons/full_image_screen.dart';
 import 'package:streamore_app/features/stream/icons/settings/audio.dart';
 import 'package:streamore_app/features/stream/icons/settings/back.dart';
@@ -68,7 +69,10 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => MyProvider()),
-          BlocProvider(create: (_) => NetworkCubit()),
+
+          // ❌ NetworkCubit تم تعطيله مؤقتًا
+          // BlocProvider(create: (_) => NetworkCubit()),
+
           ChangeNotifierProvider(create: (context) => CommentProvider()),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
           ChangeNotifierProvider(create: (_) => TickersProvider()),
@@ -98,7 +102,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _sub;
 
@@ -128,7 +131,6 @@ class _MyAppState extends State<MyApp> {
     if (uri.pathSegments.isNotEmpty &&
         uri.pathSegments.first == 'invite' &&
         uri.pathSegments.length > 1) {
-
       final inviteToken = uri.pathSegments[1];
 
       await StorageHelper.saveInviteToken(inviteToken);
@@ -149,86 +151,85 @@ class _MyAppState extends State<MyApp> {
 
     final BaseTheme lightTheme = LightTheme();
     final BaseTheme darkTheme = DarkTheme();
-    final Participant? participant;
 
-    return BlocListener<NetworkCubit, ConnectivityResult>(
+    return /* ❌ تم تعطيل BlocListener الخاص بالإنترنت مؤقتًا
+    BlocListener<NetworkCubit, ConnectivityResult>(
       listener: (context, state) {
         if (state == ConnectivityResult.none) {
           print("❌ No internet");
         } else {
           print("🌐 Internet back → reconnect");
-
-         // reconnectToStream();
         }
       },
-      child: BlocBuilder<AuthCubit, AuthStates>(builder: (context, state) {
-        Widget startScreen;
+      child:
+    */ BlocBuilder<AuthCubit, AuthStates>(builder: (context, state) {
+      Widget startScreen;
 
-        if (state is LogInSuccessState) {
-          startScreen = NewStream();
-        } else if (state is AuthInitialState) {
-          startScreen = const OnBoardingScreen();
-        } else {
-          startScreen = const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        return MaterialApp(
-          navigatorKey: navigatorKey,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          theme: lightTheme.themeData,
-          darkTheme: darkTheme.themeData,
-          themeMode: provider.themeMode,
-          debugShowCheckedModeBanner: false,
-          home: startScreen,
-          routes: {
-            OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
-            SignIn.routeName: (context) => const SignIn(),
-            SignUp.routeName: (context) => SignUp(),
-            VerifyEmail2.routeName: (context) {
-              final args = ModalRoute.of(context)!.settings.arguments as String;
-              return VerifyEmail2(email: args);
-            },
-            VerifyEmail3.routeName: (context) {
-              final email = ModalRoute.of(context)!.settings.arguments as String;
-              return VerifyEmail3(email: email);
-            },
-            StreamScreen.routeName: (context) => const StreamScreen(),
-            Library.routeName: (context) => const Library(),
-            Members.routeName: (context) => const Members(),
-            Destination.routeName: (context) => const Destination(),
-            Referrals.routeName: (context) => const Referrals(),
-            Settings.routeName: (context) => const Settings(),
-            SettingsIcon.routeName: (context) => const SettingsIcon(),
-            General.routeName: (context) => const General(),
-            Camera.routeName: (context) => const Camera(),
-            Audio.routeName: (context) => const Audio(),
-            Back.routeName: (context) => const Back(),
-            LayoutScreen.routeName: (context) => const LayoutScreen(),
-            Profile.routeName: (context) => const Profile(),
-            ContactUsScreen.routeName: (context) => const ContactUsScreen(),
-            ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
-            ChangePassword.routeName: (context) => const ChangePassword(),
-            ForgetPass1.routeName: (context) => const ForgetPass1(),
-            ForgetPass2.routeName: (context) => ForgetPass2(),
-            ForgetPass3.routeName: (context) => ForgetPass3(),
-            FullImageScreen.routeName: (context) => FullImageScreen(),
-            InviteSetupScreen.routeName:(context)=> InviteSetupScreen(),
-            PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
-            VerifyPass1.routeName: (context) => VerifyPass1(),
-            NewStream.routeName:(context)=>NewStream(),
-            StreamGuest.routeName: (context) => StreamGuest(),
-            VerifyPass2.routeName: (context) {
-              final args = ModalRoute.of(context)!.settings.arguments as String;
-              return VerifyPass2(email: args);
-            },
-            ChangePass.routeName: (context) => const ChangePass(),
-          },
+      if (state is LogInSuccessState) {
+        startScreen = NewStream();
+      } else if (state is AuthInitialState) {
+        startScreen = const OnBoardingScreen();
+      } else {
+        startScreen = const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
         );
-      }),
-    );
+      }
+
+      return MaterialApp(
+        navigatorKey: navigatorKey,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        theme: lightTheme.themeData,
+        darkTheme: darkTheme.themeData,
+        themeMode: provider.themeMode,
+        debugShowCheckedModeBanner: false,
+        home: startScreen,
+        routes: {
+          OnBoardingScreen.routeName: (context) => const OnBoardingScreen(),
+          SignIn.routeName: (context) => const SignIn(),
+          SignUp.routeName: (context) => SignUp(),
+          VerifyEmail2.routeName: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyEmail2(email: args);
+          },
+          VerifyEmail3.routeName: (context) {
+            final email =
+            ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyEmail3(email: email);
+          },
+          StreamScreen.routeName: (context) => const StreamScreen(),
+          Library.routeName: (context) => const Library(),
+          Members.routeName: (context) => const Members(),
+          Destination.routeName: (context) => const Destination(),
+          Referrals.routeName: (context) => const Referrals(),
+          Settings.routeName: (context) => const Settings(),
+          SettingsIcon.routeName: (context) => const SettingsIcon(),
+          General.routeName: (context) => const General(),
+          Camera.routeName: (context) => const Camera(),
+          Audio.routeName: (context) => const Audio(),
+          Back.routeName: (context) => const Back(),
+          LayoutScreen.routeName: (context) => const LayoutScreen(),
+          Profile.routeName: (context) => const Profile(),
+          ContactUsScreen.routeName: (context) => const ContactUsScreen(),
+          ChoosePlanScreen.routeName: (context) => const ChoosePlanScreen(),
+          ChangePassword.routeName: (context) => const ChangePassword(),
+          ForgetPass1.routeName: (context) => const ForgetPass1(),
+          ForgetPass2.routeName: (context) => ForgetPass2(),
+          ForgetPass3.routeName: (context) => ForgetPass3(),
+          FullImageScreen.routeName: (context) => FullImageScreen(),
+          InviteSetupScreen.routeName: (context) => InviteSetupScreen(),
+          PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
+          VerifyPass1.routeName: (context) => VerifyPass1(),
+          NewStream.routeName: (context) => NewStream(),
+          StreamGuest.routeName: (context) => StreamGuest(),
+          VerifyPass2.routeName: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as String;
+            return VerifyPass2(email: args);
+          },
+          ChangePass.routeName: (context) => const ChangePass(),
+        },
+      );
+    });
   }
 }

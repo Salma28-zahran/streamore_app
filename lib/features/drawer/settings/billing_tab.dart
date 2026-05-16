@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:streamore_app/features/stream/drawer/settings/choose_plan_screen.dart';
+import 'package:streamore_app/features/drawer/settings/choose_plan_screen.dart';
 import 'package:streamore_app/utils/billing_info_dialog.dart';
 
 class BillingTab extends StatefulWidget {

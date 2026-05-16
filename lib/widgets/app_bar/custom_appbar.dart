@@ -14,28 +14,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      AppBar(
+    final media = MediaQuery.of(context).size;
+
+    return AppBar(
       automaticallyImplyLeading: true,
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      title: Image.asset("assets/images/app_name.png"),
+      title: Image.asset(
+        "assets/images/app_name2.png",
+        height: media.height * 0.05,
+        width: media.width * 0.46,
+      ),
       actions: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(
+            horizontal: media.width * 0.025,
+          ),
           child: Stack(
             children: [
               Icon(
                 FontAwesomeIcons.bell,
                 color: Theme.of(context).colorScheme.primary,
-                size: 24,
+                size: media.width * 0.06,
               ),
               if (hasNotification)
                 Positioned(
                   right: 0,
                   top: 0,
                   child: Container(
-                    width: 8,
-                    height: 8,
+                    width: media.width * 0.02,
+                    height: media.width * 0.02,
                     decoration: const BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
@@ -47,11 +54,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
+        preferredSize: Size.fromHeight(media.height * 0.001),
         child: Divider(
           color: Theme.of(context).dividerColor,
-          thickness: 0.5,
-          height: 1,
+          thickness: media.height * 0.0006,
+          height: media.height * 0.001,
         ),
       ),
     );

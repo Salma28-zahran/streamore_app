@@ -6,7 +6,6 @@ import 'package:streamore_app/features/stream/stream_screen.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
-
 import '../../../../core/provider/my_provider.dart';
 
 class NewStream extends StatefulWidget {
@@ -30,106 +29,99 @@ class _NewStreamState extends State<NewStream> {
   @override
   Widget build(BuildContext context) {
     final myprovider = Provider.of<MyProvider>(context);
+    final size = MediaQuery.of(context).size;
 
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bool hasNotification;
 
     return Scaffold(
-      //backgroundColor: isDark ? Colors.black : Colors.white,
       appBar: AppBar(
-          automaticallyImplyLeading: true,
-          backgroundColor: Theme
-              .of(context)
-              .appBarTheme
-              .backgroundColor,
-          title: Image.asset("assets/images/app_name.png"),
-          leading: GestureDetector(
-            onTap: () {
-              context.read<MyProvider>().changeTheme();
-            },
-            child: Icon(
-              isDark ? Icons.wb_sunny : Icons.dark_mode,
-              size: 25,
-              color:
-              isDark ? Colors.amber : Theme
-                  .of(context)
-                  .primaryColor,
-            ),
+        automaticallyImplyLeading: true,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: Image.asset(
+          "assets/images/app_name2.png",
+          height: size.height * 0.05,
+          width: size.width * 0.46,
+        ),
+        leading: GestureDetector(
+          onTap: () {
+            context.read<MyProvider>().changeTheme();
+          },
+          child: Icon(
+            isDark ? Icons.wb_sunny : Icons.dark_mode,
+            size: size.width * 0.064,
+            color: isDark ? Colors.amber : Theme.of(context).primaryColor,
           ),
-
-          bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-      child: Divider(
-        color: Theme
-            .of(context)
-            .dividerColor,
-        thickness: 0.5,
-        height: 1,
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(size.height * 0.001),
+          child: Divider(
+            color: Theme.of(context).dividerColor,
+            thickness: size.height * 0.0006,
+            height: size.height * 0.001,
+          ),
+        ),
       ),
-    ),
-    ),
-    body: SafeArea(
-    child: Padding(
-    padding: const EdgeInsets.all(15),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    const SizedBox(height: 15),
-    Row(
-    children: [
-    Expanded(
-    child: buildCard(
-    context: context,
-    icon: Icons.videocam,
-    title: "New Stream",
-    subtitle: "Go live on 10 destinations",
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => StreamScreen(),
-    ),
-    );
-    },
-    ),
-    ),
-    const SizedBox(width: 12),
-    ],
-    ),
-    const SizedBox(height: 20),
-    Text(
-    "Streams and Recordings:",
-    style: TextStyle(
-    color: isDark ? Colors.white : Colors.black,
-    fontSize: 24,
-    fontWeight: FontWeight.w800,
-    ),
-    ),
-    const SizedBox(height: 15),
-    Column(
-    children: [
-    buildStreamItem(
-    context: context,
-    title: "G",
-    type: "Record only",
-    created: DateTime.now(),
-    scheduled: null,
-    ),
-    buildStreamItem(
-    context: context,
-    title: "G",
-    type: "Record only",
-    created: DateTime.now(),
-    scheduled: null,
-    ),
-    ],
-    )
-    ],
-    ),
-    ),
-    ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(size.width * 0.038),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: size.height * 0.018),
+              Row(
+                children: [
+                  Expanded(
+                    child: buildCard(
+                      context: context,
+                      icon: Icons.videocam,
+                      title: "New Stream",
+                      subtitle: "Go live on 10 destinations",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StreamScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(width: size.width * 0.03),
+                ],
+              ),
+              SizedBox(height: size.height * 0.024),
+              Text(
+                "Streams and Recordings:",
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                  fontSize: size.width * 0.061,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: size.height * 0.018),
+              Column(
+                children: [
+                  buildStreamItem(
+                    context: context,
+                    title: "G",
+                    type: "Record only",
+                    created: DateTime.now(),
+                    scheduled: null,
+                  ),
+                  buildStreamItem(
+                    context: context,
+                    title: "G",
+                    type: "Record only",
+                    created: DateTime.now(),
+                    scheduled: null,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -140,19 +132,23 @@ class _NewStreamState extends State<NewStream> {
     required DateTime created,
     DateTime? scheduled,
   }) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
 
     final date = DateFormat('dd MMM');
     final time = DateFormat('HH:mm');
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      margin: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.036,
+        vertical: size.height * 0.014,
+      ),
+      margin: EdgeInsets.only(
+        bottom: size.height * 0.012,
+      ),
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(size.width * 0.036),
         border: Border.all(
           color: isDark
               ? Colors.white.withOpacity(0.25)
@@ -162,10 +158,8 @@ class _NewStreamState extends State<NewStream> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
-          /// 🔵 Icon
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.all(size.width * 0.015),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -174,14 +168,11 @@ class _NewStreamState extends State<NewStream> {
             ),
             child: Icon(
               Icons.circle,
-              size: 10,
+              size: size.width * 0.025,
               color: isDark ? Colors.white : Colors.black,
             ),
           ),
-
-          const SizedBox(width: 12),
-
-          /// 📝 Title + Type
+          SizedBox(width: size.width * 0.03),
           Expanded(
             flex: 3,
             child: Column(
@@ -193,27 +184,27 @@ class _NewStreamState extends State<NewStream> {
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: size.width * 0.036,
                   ),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: size.height * 0.003),
                 Row(
                   children: [
                     Text(
                       type,
                       style: TextStyle(
                         color: isDark ? Colors.white60 : Colors.black54,
-                        fontSize: 11,
+                        fontSize: size.width * 0.028,
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: size.width * 0.015),
                     GestureDetector(
                       onTap: () {},
-                      child: const Text(
+                      child: Text(
                         "Edit",
                         style: TextStyle(
                           color: Colors.blue,
-                          fontSize: 11,
+                          fontSize: size.width * 0.028,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -223,9 +214,7 @@ class _NewStreamState extends State<NewStream> {
               ],
             ),
           ),
-          const SizedBox(width: 3),
-
-          /// 📅 Created (سطرين)
+          SizedBox(width: size.width * 0.008),
           Expanded(
             flex: 2,
             child: Column(
@@ -235,25 +224,20 @@ class _NewStreamState extends State<NewStream> {
                   date.format(created),
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
-                    fontSize: 12,
+                    fontSize: size.width * 0.031,
                   ),
                 ),
                 Text(
                   time.format(created),
                   style: TextStyle(
                     color: isDark ? Colors.white60 : Colors.black54,
-                    fontSize: 11,
+                    fontSize: size.width * 0.028,
                   ),
                 ),
               ],
             ),
           ),
-
-          /// ⏳ Scheduled (سطرين)
-
-          const SizedBox(width: 8),
-
-          /// 🔘 Button
+          SizedBox(width: size.width * 0.02),
           OutlinedButton(
             onPressed: () {
               Navigator.push(
@@ -264,17 +248,22 @@ class _NewStreamState extends State<NewStream> {
               );
             },
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              minimumSize: const Size(0, 28),
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.025,
+                vertical: size.height * 0.0045,
+              ),
+              minimumSize: Size(0, size.height * 0.034),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               side: const BorderSide(
                 color: Color(0xff1865E8),
                 width: 1,
               ),
               foregroundColor: isDark ? Colors.white : Colors.black,
-              textStyle: const TextStyle(fontSize: 11),
+              textStyle: TextStyle(
+                fontSize: size.width * 0.028,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(size.width * 0.02),
               ),
             ),
             child: const Text(
@@ -292,20 +281,19 @@ class _NewStreamState extends State<NewStream> {
     required IconData icon,
     required String title,
     required String subtitle,
-    VoidCallback? onTap, // 👈 ضيفي دي
+    VoidCallback? onTap,
   }) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(size.width * 0.03),
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(size.width * 0.041),
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(size.width * 0.03),
           border: Border.all(
             color: isDark
                 ? Colors.white.withOpacity(0.3)
@@ -315,14 +303,18 @@ class _NewStreamState extends State<NewStream> {
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(size.width * 0.025),
               decoration: BoxDecoration(
-                color: Color(0xff1865E8),
-                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xff1865E8),
+                borderRadius: BorderRadius.circular(size.width * 0.025),
               ),
-              child: Icon(icon, color: Colors.white),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: size.width * 0.06,
+              ),
             ),
-            SizedBox(width: 12),
+            SizedBox(width: size.width * 0.03),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,14 +324,15 @@ class _NewStreamState extends State<NewStream> {
                     style: TextStyle(
                       color: isDark ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
+                      fontSize: size.width * 0.038,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: size.height * 0.004),
                   Text(
                     subtitle,
                     style: TextStyle(
                       color: isDark ? Colors.white70 : Colors.black54,
-                      fontSize: 12,
+                      fontSize: size.width * 0.031,
                     ),
                   ),
                 ],

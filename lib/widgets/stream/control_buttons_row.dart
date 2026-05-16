@@ -326,8 +326,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                   );
                 },
                 child: Icon(Icons.cast_sharp,
-                    size: smallIconSize * 0.8,
-                    color: iconColor),
+                    size: smallIconSize * 0.8, color: iconColor),
               ),
             ),
 
@@ -592,7 +591,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
 }
 class LayoutOption {
   final String titleKey;
-  final String type; // 🔥 أضيفي ده
+  final String type;
 
   LayoutOption({
     required this.titleKey,

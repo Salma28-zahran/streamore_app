@@ -112,6 +112,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
       debugPrint("📡 Status Code: ${response.statusCode}");
       debugPrint("📦 Response Body: ${response.body}");
+      print("TRY LOGIN");
 
       final data = jsonDecode(response.body);
 
@@ -123,7 +124,7 @@ class AuthCubit extends Cubit<AuthStates> {
           final role = data['role'] ?? "";
 
           await StorageHelper.saveToken(token);
-          await StorageHelper.saveEmail(email);
+          await StorageHelper.saveAccount(email);
           await StorageHelper.savePassword(password);
 
           if (userId != null) {
