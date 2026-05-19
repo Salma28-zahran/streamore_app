@@ -6,7 +6,7 @@ import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/drawer/main_drawer.dart';
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
 import 'package:streamore_app/widgets/brand_widgets/background/background.dart';
-import 'package:streamore_app/widgets/banners/show_banners.dart';
+import 'package:streamore_app/widgets/stream/video/show_banners.dart';
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
 import 'package:streamore_app/widgets/brand_widgets/logo/logo.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';

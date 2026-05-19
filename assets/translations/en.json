@@ -276,5 +276,17 @@
   "edit_avatar" : "Edit avatar",
   "remove_person" : "Remove person",
   "starred_comment" : "starred comment",
-  "no_starred_comments" : "no starred comments"
+  "no_starred_comments" : "no starred comments",
+
+  "start_live_stream": "Start a live stream",
+  "live_stream_description": "Lorem ipsum, dolor sit amet consectetur adipisicing elit.",
+  "source": "Source",
+  "live": "Live",
+  "pre_recorded_video": "Pre-recorded video",
+  "add_destination": "Add a destination",
+  "start_streaming": "Start Streaming",
+  "skip_for_now": "Skip for now",
+  "custom_rtmp_note": "Don't see your platform?\nChoose \"Custom RTMP\""
+
+
 }

@@ -71,6 +71,7 @@ class _ParticipantsIndicatorState extends State<ParticipantsIndicator> {
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 6),
+
                     decoration: decoration,
                     child: Text(
                       "${widget.participants.length} Person",
