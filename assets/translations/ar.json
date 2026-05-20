@@ -275,7 +275,18 @@
   "edit_avatar" : "تغير الصورة",
   "remove_person" : "ازالة الشخص ",
   "pinned_comment" : "التعليقات المثبتة",
-  "no_starred_comments" : "لا توجد تعليقات مثبتة"
+  "no_starred_comments" : "لا توجد تعليقات مثبتة",
+
+  "start_live_stream": "ابدأ بث مباشر",
+  "live_stream_description": "لوريم إيبسوم، نص تجريبي يُستخدم في التصميم.",
+  "source": "المصدر",
+  "live": "مباشر",
+  "pre_recorded_video": "فيديو مسجل مسبقًا",
+  "add_destination": "إضافة وجهة",
+  "start_streaming": "ابدأ البث",
+  "skip_for_now": "تخطي الآن",
+  "custom_rtmp_note": "Don't see your platform?\nChoose \"Custom RTMP\""
+
 
 
 

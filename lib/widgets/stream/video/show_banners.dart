@@ -7,11 +7,13 @@ import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
-import 'package:streamore_app/widgets/banners/ParticipantsIndicator.dart';
+import 'package:streamore_app/widgets/stream/video/LiveStreamDialog.dart';
+import 'package:streamore_app/widgets/stream/video/ParticipantsIndicator.dart';
+import 'package:streamore_app/widgets/stream/video/RecordLiveButtons.dart';
 import 'package:streamore_app/widgets/stream/stream_layout_view.dart';
 
-import '../../core/helpers/storage_helper.dart';
-import '../../core/provider/tickers_provider.dart';
+import '../../../core/helpers/storage_helper.dart';
+import '../../../core/provider/tickers_provider.dart';
 
 class ProfileImageWithBanners extends StatefulWidget {
   final double profileImageWidth;
@@ -75,25 +77,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                 height: widget.profileImageHeight,
                 onTap: widget._onProfileImageClick,
               ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ParticipantsIndicator(
-                      participants: ["person1", "person2", "person3", "person4", "person5"],
-                    ),
 
-                    const SizedBox(width: 8),
-
-                    StatusIndicator(
-                      initialStatus: true,
-                    ),
-                  ],
-                ),
-              ),
 /*
               if (widget.isZoomVisible)
                 Positioned(
@@ -113,7 +97,7 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
                         color: Colors.black,
                         child: Center(
                           child: Text(
-                            widget.layout, // 👈 نشوف القيمة الأول
+                            widget.layout,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -124,6 +108,17 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
 
 
  */
+              RecordLiveButtons(
+                onRecordTap: () {
+                  print("Record Clicked");
+                },
+                onLiveTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => const LiveStreamDialog(),
+                  );
+                },
+              ),
               Consumer<MyProvider>(
                 builder: (context, myProvider, child) {
                   if (tickersProvider.shownTickers.isNotEmpty) {
