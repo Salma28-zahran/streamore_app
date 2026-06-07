@@ -166,7 +166,7 @@ class _MyAppState extends State<MyApp> {
       Widget startScreen;
 
       if (state is LogInSuccessState) {
-        startScreen = NewStream();
+        startScreen = StreamScreen();
       } else if (state is AuthInitialState) {
         startScreen = const OnBoardingScreen();
       } else {

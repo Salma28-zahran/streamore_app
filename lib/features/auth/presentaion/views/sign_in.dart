@@ -243,7 +243,7 @@ class _SignInState extends State<SignIn> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        /*
+
                         ElevatedButton(
                           onPressed:
                               state is LogInLoadingState
@@ -278,8 +278,10 @@ class _SignInState extends State<SignIn> {
                                       ),
                                     ),
                         ),
-                        */
+                      ],
+                    ),
 
+/*
                         ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, "/stream");
@@ -288,6 +290,8 @@ class _SignInState extends State<SignIn> {
                         ),
                       ],
                     ),
+
+ */
 
                     const SizedBox(height: 15),
 

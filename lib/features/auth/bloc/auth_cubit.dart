@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:streamore_app/core/constants/api_constants.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 
@@ -15,7 +16,7 @@ class AuthCubit extends Cubit<AuthStates> {
   void register({required String email, required String password}) async {
     emit(RegisterLoadingState());
     Response response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/register/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.register),
         headers: {
           'lang': "en"
         },
@@ -63,7 +64,8 @@ class AuthCubit extends Cubit<AuthStates> {
       print("➡️ activation_code: $activationCode");
 
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/activate/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.activate),
+
         headers: {
           "accept": "*/*",
           "Content-Type": "application/json",
@@ -94,12 +96,15 @@ class AuthCubit extends Cubit<AuthStates> {
   String? loggedInEmail;
   String? loggedInPassword;
 
-  void login({required String email, required String password}) async {
+  void login({
+    required String email,
+    required String password,
+  }) async {
     emit(LogInLoadingState());
 
     try {
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/login/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.login),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -112,41 +117,64 @@ class AuthCubit extends Cubit<AuthStates> {
 
       debugPrint("📡 Status Code: ${response.statusCode}");
       debugPrint("📦 Response Body: ${response.body}");
-      print("TRY LOGIN");
 
       final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (data['Message'] == "Login Success") {
-          final token = data['token'] ?? "";
-          final user = data['user'];
-          final userId = data['userId'];
-          final role = data['role'] ?? "";
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
 
+        /// IMPORTANT
+        /// message بحرف small
+        if (data['message'] == "Login Success") {
+
+          final String token = data['token'] ?? "";
+          final int? userId = data['userId'];
+          final String role = data['role'] ?? "";
+
+          /// Save Token
           await StorageHelper.saveToken(token);
+
+          /// Save Account Data
           await StorageHelper.saveAccount(email);
           await StorageHelper.savePassword(password);
 
+          /// Save UserId
           if (userId != null) {
             await StorageHelper.saveUserId(userId);
+
             debugPrint("🆔 Saved UserId: $userId");
           } else {
-            debugPrint("⚠️ UserId is null → check API response format");
+            debugPrint(
+              "⚠️ UserId is null → check API response format",
+            );
           }
 
-          debugPrint("✅ Login success. Token: $token, Role: $role");
+          debugPrint(
+            "✅ Login success. Token: $token, Role: $role",
+          );
 
           emit(LogInSuccessState());
+
         } else {
-          debugPrint("❌ Login failed: ${data['Message']}");
+
+          debugPrint(
+            "❌ Login failed: ${data['message']}",
+          );
+
           emit(FailedToLogInState());
         }
+
       } else {
+
         debugPrint("❌ Server Error: $data");
+
         emit(FailedToLogInState());
       }
+
     } catch (e) {
+
       debugPrint("❌ Exception: $e");
+
       emit(FailedToLogInState());
     }
   }
@@ -161,7 +189,8 @@ class AuthCubit extends Cubit<AuthStates> {
     try {
       if (token != null && token.isNotEmpty) {
         final response = await http.post(
-          Uri.parse("https://api.streamore.net/api/users/logout/"),
+          Uri.parse(ApiConstants.baseUrl + ApiConstants.logout),
+
           headers: {
             "accept": "*/*",
             "Content-Type": "application/json",
@@ -200,7 +229,8 @@ class AuthCubit extends Cubit<AuthStates> {
 
     try {
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/sendactivate/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.sendActivate),
+
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -232,7 +262,8 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(ResetPasswordLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/resetpassword/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.resetPassword),
+
 
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email}),
@@ -259,7 +290,8 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(VerifyPassCodeLoadingState());
     try {
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/resetpassword-verify/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.verifyResetCode),
+
         body: {
           "email": email,
           "reset_code": code,
@@ -289,7 +321,8 @@ class AuthCubit extends Cubit<AuthStates> {
 
     try {
       final response = await http.post(
-        Uri.parse("https://api.streamore.net/api/users/password-reset-done/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.resetPasswordDone),
+
         headers: {
           "Content-Type": "application/json",
         },
@@ -322,7 +355,8 @@ class AuthCubit extends Cubit<AuthStates> {
     emit(ChangePasswordLoadingState());
     try {
       final response = await http.put(
-        Uri.parse("https://api.streamore.net/api/users/change-password/"),
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.changePassword),
+
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Token $token",
