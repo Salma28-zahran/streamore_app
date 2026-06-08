@@ -33,6 +33,7 @@ class StreamCubit
     try {
       final token =
       await StorageHelper.getToken();
+      print("TOKEN => $token");
 
       final response =
       await http.post(
@@ -63,6 +64,7 @@ class StreamCubit
       );
       print("STATUS => ${response.statusCode}");
       print("BODY => ${response.body}");
+
 
       if (response.statusCode ==
           200 ||

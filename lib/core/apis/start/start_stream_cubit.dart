@@ -10,70 +10,40 @@ import 'start_stream_states.dart';
 class StartStreamCubit extends Cubit<StartStreamStates> {
   StartStreamCubit() : super(StartStreamInitialState());
 
-  Future<void> startStream({
+  Future<Map<String, dynamic>> startStream({
     required int streamId,
     required StartStreamModel model,
   }) async {
-    emit(StartStreamLoadingState());
-
     try {
       final token = await StorageHelper.getToken();
-
-      if (token == null) {
-        emit(StartStreamErrorState(
-          error: "Token not found",
-        ));
-        return;
-      }
 
       final response = await http.post(
         Uri.parse(
           "https://apistreamore.genius-ai.net/api/streams/streams/$streamId/start/",
         ),
-
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",
           "Authorization": "Token $token",
         },
-
-        body: jsonEncode(
-          model.toJson(),
-        ),
+        body: jsonEncode(model.toJson()),
       );
-
-      print("STATUS CODE => ${response.statusCode}");
-      print("BODY => ${response.body}");
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 ||
           response.statusCode == 201) {
+        emit(StartStreamSuccessState(message: "Stream started successfully"));
 
-        emit(
-          StartStreamSuccessState(
-            message: "Stream started successfully",
-          ),
-        );
-
+        return data;
       } else {
-
-        emit(
-          StartStreamErrorState(
-            error:
-            data["error"]?["message"] ??
-                "Failed to start stream",
-          ),
+        throw Exception(
+          data["error"]?["message"] ?? "Failed to start stream",
         );
       }
-
     } catch (e) {
-
-      emit(
-        StartStreamErrorState(
-          error: e.toString(),
-        ),
-      );
+      emit(StartStreamErrorState(error: e.toString()));
+      rethrow;
     }
   }
 }
