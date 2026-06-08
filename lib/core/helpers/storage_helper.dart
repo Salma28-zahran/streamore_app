@@ -1,33 +1,56 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageHelper {
+  static const FlutterSecureStorage _storage =
+  FlutterSecureStorage();
+
+  // Save auth token
   static Future<void> saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("auth_token", token);
+    await _storage.write(
+      key: "auth_token",
+      value: token,
+    );
+
     print('🔑 Token: $token');
   }
 
+  // Get auth token
   static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("auth_token");
+    return await _storage.read(
+      key: "auth_token",
+    );
   }
 
+  // Clear auth token
   static Future<void> clearToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("auth_token");
+    await _storage.delete(
+      key: "auth_token",
+    );
   }
 
-
-  static Future<void> saveInviteToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("invite_token", token);
+  // Save invite token
+  static Future<void> saveInviteToken(
+      String token) async {
+    await _storage.write(
+      key: "invite_token",
+      value: token,
+    );
   }
 
+  // Get invite token
   static Future<String?> getInviteToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("invite_token");
+    return await _storage.read(
+      key: "invite_token",
+    );
   }
 
+  // Optional: clear invite token
+  static Future<void> clearInviteToken() async {
+    await _storage.delete(
+      key: "invite_token",
+    );
+  }
 
   static Future<void> saveEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();

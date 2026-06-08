@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:streamore_app/core/Network/bloc/NetworkCubit.dart';
+import 'package:streamore_app/core/apis/destination/destination_cubit.dart';
+import 'package:streamore_app/core/apis/start/start_stream_cubit.dart';
+import 'package:streamore_app/core/apis/streams/stream_cubit.dart';
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
@@ -32,6 +35,7 @@ import 'package:streamore_app/features/drawer/settings/profile/forget_pass3.dart
 import 'package:streamore_app/features/drawer/settings/profile/profile.dart';
 import 'package:streamore_app/features/drawer/settings/settings.dart'
     show Settings;
+import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
 import 'package:streamore_app/features/new_stream/presentation/views/new_stream.dart';
 import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
 import 'package:streamore_app/features/invite/presentation/views/InviteSetupScreen.dart';
@@ -84,6 +88,22 @@ void main() async {
           BlocProvider<AuthCubit>(
             create: (_) => AuthCubit()..autoLogin(),
           ),
+          BlocProvider(
+            create: (_) => LiveKitCubit(),
+          ),
+
+          BlocProvider(
+            create: (_) => StartStreamCubit(),
+          ),
+
+          BlocProvider(
+            create: (_) => StreamCubit(),
+          ),
+
+          BlocProvider(
+            create: (_) => DestinationCubit(),
+          ),
+
           BlocProvider<DeleteAccountCubit>(
             create: (_) => DeleteAccountCubit(),
           ),
@@ -166,7 +186,7 @@ class _MyAppState extends State<MyApp> {
       Widget startScreen;
 
       if (state is LogInSuccessState) {
-        startScreen = NewStream();
+        startScreen = StreamScreen();
       } else if (state is AuthInitialState) {
         startScreen = const OnBoardingScreen();
       } else {
