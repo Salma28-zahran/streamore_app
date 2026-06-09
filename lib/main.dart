@@ -35,6 +35,7 @@ import 'package:streamore_app/features/drawer/settings/profile/forget_pass3.dart
 import 'package:streamore_app/features/drawer/settings/profile/profile.dart';
 import 'package:streamore_app/features/drawer/settings/settings.dart'
     show Settings;
+import 'package:streamore_app/features/home_screen/presentation/views/home_screen.dart';
 import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
 import 'package:streamore_app/features/new_stream/presentation/views/new_stream.dart';
 import 'package:streamore_app/features/on_boarding/on_boarding_screen.dart';
@@ -186,7 +187,7 @@ class _MyAppState extends State<MyApp> {
       Widget startScreen;
 
       if (state is LogInSuccessState) {
-        startScreen = StreamScreen();
+        startScreen = HomeScreen();
       } else if (state is AuthInitialState) {
         startScreen = const OnBoardingScreen();
       } else {
@@ -242,6 +243,8 @@ class _MyAppState extends State<MyApp> {
           PrivacyPolicy.routeName: (context) => PrivacyPolicy(),
           VerifyPass1.routeName: (context) => VerifyPass1(),
           NewStream.routeName: (context) => NewStream(),
+          HomeScreen.routeName: (context) => HomeScreen(),
+
           StreamGuest.routeName: (context) => StreamGuest(),
           VerifyPass2.routeName: (context) {
             final args = ModalRoute.of(context)!.settings.arguments as String;

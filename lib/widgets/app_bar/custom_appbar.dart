@@ -10,55 +10,92 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
+  Size get preferredSize => const Size.fromHeight(95);
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context).size;
 
     return AppBar(
-      automaticallyImplyLeading: true,
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      title: Image.asset(
-        "assets/images/app_name2.png",
-        height: media.height * 0.05,
-        width: media.width * 0.46,
-      ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: media.width * 0.025,
-          ),
-          child: Stack(
-            children: [
-              Icon(
-                FontAwesomeIcons.bell,
-                color: Theme.of(context).colorScheme.primary,
-                size: media.width * 0.06,
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      toolbarHeight: 70,
+      titleSpacing: 0,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 5,
+          vertical: 2,
+        ),
+        child: Container(
+          height: 62,
+          decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xff03133D)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
               ),
-              if (hasNotification)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: media.width * 0.02,
-                    height: media.width * 0.02,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
             ],
           ),
-        ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: Size.fromHeight(media.height * 0.001),
-        child: Divider(
-          color: Theme.of(context).dividerColor,
-          thickness: media.height * 0.0006,
-          height: media.height * 0.001,
+          child: Row(
+            children: [
+              const SizedBox(width: 8),
+
+              Builder(
+                builder: (context) => IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon:  Icon(
+                    Icons.menu,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    size: 28,
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/app_name2.png",
+                    height: media.height * 0.03,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.bell,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 22,
+                    ),
+                    if (hasNotification)
+                      const Positioned(
+                        right: -2,
+                        top: -2,
+                        child: CircleAvatar(
+                          radius: 4,
+                          backgroundColor: Colors.red,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

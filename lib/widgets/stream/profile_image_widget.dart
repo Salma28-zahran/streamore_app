@@ -48,7 +48,7 @@ class ProfileImageWidget extends StatelessWidget {
               child: videoTrack != null
                   ? VideoTrackRenderer(videoTrack)
                   : Image.asset(
-                "assets/images/profile4.png",
+                "assets/images/profile5.png",
                 fit: BoxFit.cover,
               ),
             ),

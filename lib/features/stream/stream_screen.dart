@@ -80,11 +80,13 @@ class _StreamScreenState extends State<StreamScreen>
       drawer: MainDrawer(),
       appBar: CustomAppBar(hasNotification: false),
 
-      body: GestureDetector(
+      body:
+      GestureDetector(
         onTap: () {
           commentProvider.clearTappedComments();
         },
-        child: Stack(
+        child:
+        Stack(
           children: [
             Column(
               children: [
@@ -110,8 +112,8 @@ class _StreamScreenState extends State<StreamScreen>
                 ControlButtonsRow(
                   currentLayout: currentLayout,
                   onLayoutChanged: (layout) {
-                    setState(() {
-                      currentLayout = layout;
+                   setState(() {
+                     currentLayout = layout;
                     });
                   },
                   micOn: _micOn,

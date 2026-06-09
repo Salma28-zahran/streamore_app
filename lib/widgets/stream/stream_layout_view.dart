@@ -60,7 +60,7 @@ class StreamLayoutView extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
         child: Image.asset(
-          "assets/images/profile4.png",
+          "assets/images/profile5.png",
           fit: BoxFit.cover,
         ),
       ),
