@@ -21,6 +21,7 @@ class _LogoSectionState extends State<LogoSection> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
+
       Provider.of<BackgroundOverlayLogoProvider>(context, listen: false).setLogoImage(picked);
     }
   }
@@ -148,11 +149,15 @@ class _OverlaySectionState extends State<OverlaySection> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      context.read<BackgroundOverlayLogoProvider>().addOverlayImage(pickedFile);
+      final provider = context.read<BackgroundOverlayLogoProvider>();
+
+      provider.addOverlayImage(pickedFile);
+      provider.showOverlayImage(pickedFile);
+
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('No image selected')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No image selected')),
+      );
     }
   }
 
@@ -196,19 +201,26 @@ class _OverlaySectionState extends State<OverlaySection> {
         .toList();
 
     imageBoxes.addAll(
-      List.generate(remainingSlots.clamp(0, 7), (_) => _buildImageBox()),
+      List.generate(remainingSlots.clamp(0, 4), (_) => _buildImageBox()),
     );
 
     return imageBoxes;
   }
 
-  Widget _buildImageBox({XFile? overlayImage, BackgroundOverlayLogoProvider? provider}) {
-    bool isSelected = provider?.selectedOverlayImage == overlayImage;
+  Widget _buildImageBox({
+    XFile? overlayImage,
+    BackgroundOverlayLogoProvider? provider,
+  }) {
+    final isSelected =
+        provider?.selectedOverlayImage?.path == overlayImage?.path;
 
     return GestureDetector(
       onTap: () {
-        if (overlayImage != null) {
-          provider?.showOverlayImage(overlayImage);
+        if (overlayImage == null || provider == null) return;
+        if (isSelected) {
+          provider.clearOverlayImage();
+        } else {
+          provider.showOverlayImage(overlayImage);
         }
       },
       child: Container(
@@ -271,7 +283,7 @@ class _BackgroundSectionState extends State<BackgroundSection> {
   }
 
   List<Widget> _buildImageList(BackgroundOverlayLogoProvider provider) {
-    int remainingSlots = 7 - provider.backgroundImages.length;
+    int remainingSlots = 4 - provider.backgroundImages.length;
 
     List<Widget> imageBoxes =
     provider.backgroundImages
@@ -382,7 +394,7 @@ class _VirtualBackgroundSectionState extends State<VirtualBackgroundSection> {
   }
 
   List<Widget> _buildVirtualList(BackgroundOverlayLogoProvider provider) {
-    int remainingSlots = 7 - provider.virtualBackgrounds.length;
+    int remainingSlots = 4 - provider.virtualBackgrounds.length;
 
     List<Widget> imageBoxes = provider.virtualBackgrounds
         .map((file) => _buildVirtualBox(file: file, provider: provider))

@@ -11,6 +11,8 @@ import 'package:streamore_app/widgets/brand_widgets/brand_theme_buttons.dart';
 import 'package:streamore_app/widgets/brand_widgets/section_header.dart';
 
 class BrandTab extends StatefulWidget {
+  static const String routeName = "/brand";
+
   const BrandTab({super.key});
 
   @override
@@ -94,6 +96,7 @@ class _BrandTabState extends State<BrandTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+SizedBox(height: 20,),
           SectionHeader(
             title: "theme".tr(),
             isVisible: isThemeOptionsVisible,
@@ -355,9 +358,9 @@ class _BrandTabState extends State<BrandTab> {
               )
             ],
           ),
-          const SizedBox(height: 17),
+          const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.only(left: 15),
+            padding: const EdgeInsets.only(left: 3),
             child: Row(
               children: [
                 Transform.scale(
@@ -383,7 +386,7 @@ class _BrandTabState extends State<BrandTab> {
 
 
 
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
         ],
       ),
     );

@@ -60,6 +60,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
     return isSelected ? '${prefix}_selected.png' : '$prefix.png';
   }
 
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -67,6 +68,13 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
     final isDark = myprovider.themeMode == ThemeMode.dark;
     final iconColor = isDark ? Colors.white : const Color(0xFF4A4A4A);
     final double smallIconSize = widget.iconSize * 0.7;
+    final ScrollController _scrollController = ScrollController();
+
+    @override
+    void dispose() {
+      _scrollController.dispose();
+      super.dispose();
+    }
 
     return Padding(
       padding: EdgeInsets.only(
@@ -381,9 +389,11 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Scrollbar(
+                            controller: _scrollController,
                             thumbVisibility: true,
                             radius: const Radius.circular(12),
                             child: ListView.separated(
+                              controller: _scrollController,
                               padding:
                               const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                               itemCount: layouts.length,

@@ -49,6 +49,9 @@ import 'package:streamore_app/features/stream/icons/settings/lay.dart';
 import 'package:streamore_app/features/stream/icons/settings/settings_icon.dart';
 import 'package:streamore_app/features/stream/stream_screen.dart';
 import 'package:streamore_app/features/stream_guest/presentation/views/stream_guest.dart';
+import 'package:streamore_app/features/tabs/brand/brand_tab.dart';
+import 'package:streamore_app/features/tabs/chat/presentaion/views/chat_tab.dart';
+import 'package:streamore_app/features/tabs/people/people_tab.dart';
 import 'package:streamore_app/theme/dark_theme.dart';
 import 'package:streamore_app/theme/light_theme.dart';
 import 'package:streamore_app/theme/theme.dart';
@@ -244,6 +247,10 @@ class _MyAppState extends State<MyApp> {
           VerifyPass1.routeName: (context) => VerifyPass1(),
           NewStream.routeName: (context) => NewStream(),
           HomeScreen.routeName: (context) => HomeScreen(),
+          BrandTab.routeName: (context) => BrandTab(),
+          PeopleTab.routeName:(context)=>PeopleTab(),
+          ChatTab.routeName:(context)=>ChatTab(),
+
 
           StreamGuest.routeName: (context) => StreamGuest(),
           VerifyPass2.routeName: (context) {

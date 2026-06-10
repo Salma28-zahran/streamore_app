@@ -5,6 +5,7 @@ import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/features/tabs/people/people_card.dart';
 
 class PeopleTab extends StatefulWidget {
+  static const String routeName = "/people";
   const PeopleTab({super.key});
 
   @override

@@ -11,6 +11,8 @@ class BackgroundOverlayLogoProvider extends ChangeNotifier {
   List<XFile> _backgroundImages = [];
   XFile? _selectedBackgroundImage;
   bool _isBackgroundVisible = false;
+  bool get hasBackgroundImage =>
+      selectedBackgroundImage != null && isBackgroundVisible;
 
   // ==== Virtual Background Images ====
   List<XFile> _virtualBackgrounds = [];
@@ -76,20 +78,31 @@ class BackgroundOverlayLogoProvider extends ChangeNotifier {
   }
 
   void showOverlayImage(XFile image) {
+    print("Selected Overlay: ${image.path}");
+
     if (_selectedOverlayImage == image) {
       _isOverlayVisible = !_isOverlayVisible;
     } else {
       _selectedOverlayImage = image;
       _isOverlayVisible = true;
     }
+
     notifyListeners();
   }
-
   void toggleOverlayVisibility() {
     _isOverlayVisible = !_isOverlayVisible;
     notifyListeners();
   }
+  void removeOverlay() {
+    _selectedOverlayImage = null;
+    notifyListeners();
+  }
 
+
+  void clearOverlayImage() {
+    _selectedOverlayImage = null;
+    notifyListeners();
+  }
   // ====== Logo Methods ======
   void setLogoImage(XFile? image) {
     _logoImageFile = image;

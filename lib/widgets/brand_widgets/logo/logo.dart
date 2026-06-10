@@ -18,7 +18,7 @@ class _LogoWidgetState extends State<LogoWidget> {
 
         return Positioned(
           top: 20,
-          right: 40,
+          right: 15,
           child: GestureDetector(
             onTap: () {
               provider.toggleLogoVisibility();  // Toggle visibility
