@@ -71,6 +71,7 @@ class ChatMessage {
 }
 
 class ChatTab extends StatefulWidget {
+  static const String routeName = "/chat";
   const ChatTab({super.key});
 
   @override
@@ -393,7 +394,9 @@ class _ChatTabState extends State<ChatTab> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            color: Colors.grey.shade100,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xff0D142A)
+                : Colors.grey.shade100,
             child: Row(
               children: [
                 Expanded(

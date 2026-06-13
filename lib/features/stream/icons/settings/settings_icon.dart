@@ -54,11 +54,7 @@ class _SettingsIconState extends State<SettingsIcon> {
 
     return WillPopScope(
       onWillPop: () async {
-        if (myprovider.orientation == "landscape") {
-          Navigator.pushReplacementNamed(context, "/full_image");
-        } else {
-          Navigator.pop(context);
-        }
+        Navigator.pop(context);
         return false;
       },
       child: Scaffold(
@@ -81,11 +77,9 @@ class _SettingsIconState extends State<SettingsIcon> {
                       size: 16,
                     ),
                     onPressed: () {
-                      if (myprovider.orientation == "landscape") {
-                        Navigator.pushReplacementNamed(context, "/full_image");
-                      } else {
-                        Navigator.pushReplacementNamed(context, "/stream");
-                      }
+
+                        Navigator.pushReplacementNamed(context, "/home");
+
                     },
                   ),
                   const SizedBox(width: 4),

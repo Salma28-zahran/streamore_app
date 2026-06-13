@@ -60,6 +60,7 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
     return isSelected ? '${prefix}_selected.png' : '$prefix.png';
   }
 
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -67,6 +68,13 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
     final isDark = myprovider.themeMode == ThemeMode.dark;
     final iconColor = isDark ? Colors.white : const Color(0xFF4A4A4A);
     final double smallIconSize = widget.iconSize * 0.7;
+    final ScrollController _scrollController = ScrollController();
+
+    @override
+    void dispose() {
+      _scrollController.dispose();
+      super.dispose();
+    }
 
     return Padding(
       padding: EdgeInsets.only(
@@ -84,238 +92,246 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
               children: [
                 GestureDetector(
                   onTap: widget.toggleMic,
-                  child: Icon(
-                    widget.micOn ? Icons.mic_rounded : Icons.mic_off_rounded,
-                    size: smallIconSize * 0.9,
-                    color: iconColor,
+                  child: circleIcon(
+                    context: context,
+                    isOn: widget.micOn,
+                    onIcon: Icons.mic_rounded,
+                    offIcon: Icons.mic_off_rounded,
+                    size: 45,
+                    isSmall: true,
+                    currentMode: myprovider.themeMode,
                   ),
                 ),
-                const SizedBox(width: 2),
-                    GestureDetector(
-                      onTapDown: (TapDownDetails details) async {
-                        final RenderBox overlay =
-                        Overlay.of(context).context.findRenderObject() as RenderBox;
+               // const SizedBox(width: 2),
+                GestureDetector(
+                  onTapDown: (TapDownDetails details) async {
+                    final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
 
-                        await showMenu(
-            context: context,
-            position: RelativeRect.fromRect(
-              details.globalPosition & const Size(40, 40),
-              Offset.zero & overlay.size,
-            ),
-            color: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            items: [
-              PopupMenuItem(
-                enabled: false,
-                padding: EdgeInsets.zero,
-                child: StatefulBuilder(
-                  builder: (context, setInnerState) => Container(
-                    width: MediaQuery.of(context).size.width * 0.72,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 55,
-                          child: VolumeTest(),
-                        ),
-                        const SizedBox(height: 2),
-                        Divider(
-                          height: 6,
-                          color: Colors.grey.withOpacity(0.35),
-                          thickness: 0.5,
-                        ),
-                        const SizedBox(height: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "echo_cancellation".tr(),
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: iconColor,
+                    await showMenu(
+                      context: context,
+                      position: RelativeRect.fromRect(
+                        details.globalPosition & const Size(40, 40),
+                        Offset.zero & overlay.size,
+                      ),
+                      color: Theme.of(context).cardColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      items: [
+                        PopupMenuItem(
+                          enabled: false,
+                          padding: EdgeInsets.zero,
+                          child: StatefulBuilder(
+                            builder: (context, setInnerState) => Container(
+                              width: MediaQuery.of(context).size.width * 0.72,
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  SizedBox(
+                                    height: 55,
+                                    child: VolumeTest(),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Divider(
+                                    height: 6,
+                                    color: Colors.grey.withOpacity(0.35),
+                                    thickness: 0.5,
+                                  ),
+                                  const SizedBox(height: 1),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "echo_cancellation".tr(),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: iconColor,
+                                        ),
+                                      ),
+                                      Transform.scale(
+                                        scaleX: 0.45,
+                                        scaleY: 0.45,
+                                        child: Switch(
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          value: _isEchoCancellation,
+                                          onChanged: (value) {
+                                            setInnerState(() => _isEchoCancellation = value);
+                                            setState(() => _isEchoCancellation = value);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 1),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "noise_suppression".tr(),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: iconColor,
+                                        ),
+                                      ),
+                                      Transform.scale(
+                                        scaleX: 0.45,
+                                        scaleY: 0.45,
+                                        child: Switch(
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          value: _isNoiseSuppression,
+                                          onChanged: (value) {
+                                            setInnerState(() => _isNoiseSuppression = value);
+                                            setState(() => _isNoiseSuppression = value);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            Transform.scale(
-                              scaleX: 0.45,
-                              scaleY: 0.45,
-                              child: Switch(
-                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                value: _isEchoCancellation,
-                                onChanged: (value) {
-                                  setInnerState(() => _isEchoCancellation = value);
-                                  setState(() => _isEchoCancellation = value);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "noise_suppression".tr(),
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: iconColor,
-                              ),
-                            ),
-                            Transform.scale(
-                              scaleX: 0.45,
-                              scaleY: 0.45,
-                              child: Switch(
-                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                value: _isNoiseSuppression,
-                                onChanged: (value) {
-                                  setInnerState(() => _isNoiseSuppression = value);
-                                  setState(() => _isNoiseSuppression = value);
-                                },
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-                        );
-                      },
-                      child: Icon(
-                        Icons.arrow_drop_down,
-                        size: smallIconSize * 0.8,
-                        color: iconColor,
-                      ),
-                    )
-
-                    ],
-            ),
-
-
-            // 📷 CAMERA with dropdown
-            Padding(
-              padding: EdgeInsets.only(right: size.width * 0.03),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: widget.toggleCam,
-                    child: Icon(
-                      widget.camOn ? Icons.camera_alt_rounded : Icons.videocam_off,
-                      size: smallIconSize * 0.9,
-                      color: iconColor,
-                    ),
-                  ),
-
-                  //const SizedBox(width: 2),
-              GestureDetector(
-                onTapDown: (TapDownDetails details) async {
-                  final RenderBox overlay =
-                  Overlay.of(context).context.findRenderObject() as RenderBox;
-
-                  await showMenu(
-                    context: context,
-                    position: RelativeRect.fromRect(
-                      details.globalPosition & const Size(40, 40),
-                      Offset.zero & overlay.size,
-                    ),
-                    color: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    items: [
-                      PopupMenuItem(
-                        enabled: false,
-                        padding: EdgeInsets.only(left: 4),
-                        height: 30,
-                        child: StatefulBuilder(
-                          builder: (context, setInnerState) => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "flip_camera".tr(),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: iconColor,
-                                ),
-                              ),
-                              Transform.scale(
-                                scaleX: 28 / 59,
-                                scaleY: 13 / 34,
-                                child: Switch(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  value: _isOverlayEnabled,
-                                  onChanged: (value) {
-                                    setInnerState(() => _isOverlayEnabled = value);
-                                    setState(() => _isOverlayEnabled = value);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      PopupMenuItem(
-                        enabled: false,
-                        padding: EdgeInsets.only(left: 4),
-                        height: 30,
-
-                        child: StatefulBuilder(
-                          builder: (context, setInnerState) => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "mirror_camera".tr(),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: iconColor,
-                                ),
-                              ),
-                              Transform.scale(
-                                scaleX: 28 / 59,
-                                scaleY: 13 / 34,
-                                child: Switch(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  value: _isOverlayEnabled2,
-                                  onChanged: (value) {
-                                    setInnerState(() => _isOverlayEnabled2 = value);
-                                    setState(() => _isOverlayEnabled2 = value);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                    );
+                  },
                   child: Icon(
                     Icons.arrow_drop_down,
                     size: smallIconSize * 0.8,
                     color: iconColor,
                   ),
-                ),
-              )
+                )
 
               ],
+            ),
+
+
+            // 📷 CAMERA with dropdown
+            Padding(
+              padding: EdgeInsets.only(right: size.width * 0.01),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: widget.toggleCam,
+                    child: circleIcon(
+                      context: context,
+                      isOn: widget.camOn,
+                      onIcon: Icons.camera_alt_rounded,
+                      offIcon: Icons.videocam_off,
+                      size: 50,
+                      isSmall: true,
+                      currentMode: myprovider.themeMode,
+                    ),
+                  ),
+
+                  //const SizedBox(width: 2),
+                  GestureDetector(
+                    onTapDown: (TapDownDetails details) async {
+                      final RenderBox overlay =
+                      Overlay.of(context).context.findRenderObject() as RenderBox;
+
+                      await showMenu(
+                        context: context,
+                        position: RelativeRect.fromRect(
+                          details.globalPosition & const Size(40, 40),
+                          Offset.zero & overlay.size,
+                        ),
+                        color: Theme.of(context).cardColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        items: [
+                          PopupMenuItem(
+                            enabled: false,
+                            padding: EdgeInsets.only(left: 4),
+                            height: 30,
+                            child: StatefulBuilder(
+                              builder: (context, setInnerState) => Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "flip_camera".tr(),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: iconColor,
+                                    ),
+                                  ),
+                                  Transform.scale(
+                                    scaleX: 28 / 59,
+                                    scaleY: 13 / 34,
+                                    child: Switch(
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      value: _isOverlayEnabled,
+                                      onChanged: (value) {
+                                        setInnerState(() => _isOverlayEnabled = value);
+                                        setState(() => _isOverlayEnabled = value);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          PopupMenuItem(
+                            enabled: false,
+                            padding: EdgeInsets.only(left: 4),
+                            height: 30,
+
+                            child: StatefulBuilder(
+                              builder: (context, setInnerState) => Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "mirror_camera".tr(),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: iconColor,
+                                    ),
+                                  ),
+                                  Transform.scale(
+                                    scaleX: 28 / 59,
+                                    scaleY: 13 / 34,
+                                    child: Switch(
+                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      value: _isOverlayEnabled2,
+                                      onChanged: (value) {
+                                        setInnerState(() => _isOverlayEnabled2 = value);
+                                        setState(() => _isOverlayEnabled2 = value);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Icon(
+                        Icons.arrow_drop_down,
+                        size: smallIconSize * 0.8,
+                        color: iconColor,
+                      ),
+                    ),
+                  )
+
+                ],
               ),
             ),
 
             // 📡 CAST
             Padding(
-              padding: EdgeInsets.only(right: size.width * 0.05),
+              padding: EdgeInsets.only(right: size.width * 0.01),
               child: GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -325,14 +341,27 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     builder: (_) => const BottomSheetWidget(),
                   );
                 },
-                child: Icon(Icons.cast_sharp,
-                    size: smallIconSize * 0.8, color: iconColor),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(190),
+                    color: myprovider.themeMode == ThemeMode.dark
+                        ? const Color(0xff212b49)
+                        : const Color(0xff5E5E66),
+                  ),
+                  child: Icon(
+                    Icons.cast_sharp,
+                    color: Theme.of(context).iconTheme.color,
+                    size: 25,
+                  ),
+                ),
               ),
             ),
 
             // 🪪 PROFILE
             Padding(
-              padding: EdgeInsets.only(right: size.width * 0.05),
+              padding: EdgeInsets.only(right: size.width * 0.03),
               child: GestureDetector(
                 onTapDown: (TapDownDetails details) async {
                   final RenderBox overlay =
@@ -360,9 +389,11 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Scrollbar(
+                            controller: _scrollController,
                             thumbVisibility: true,
                             radius: const Radius.circular(12),
                             child: ListView.separated(
+                              controller: _scrollController,
                               padding:
                               const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                               itemCount: layouts.length,
@@ -440,15 +471,18 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     ],
                   );
                   if (result != null) {
-                    widget.onLayoutChanged(result); // 🔥 هنا الصح
+                    widget.onLayoutChanged(result);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
-                  child: Icon(
-                    Icons.person_pin_sharp,
-                    size: smallIconSize * 0.9,                     color: iconColor,
-                  ),
+                  child: buildIcon(
+                  context: context,
+                  icon: Icons.person_pin_sharp,
+                  size: smallIconSize * 1.5,
+                  myprovider: myprovider,
+                  isSmall: true,
+                ),
                 ),
               ),
             ),
@@ -563,23 +597,30 @@ class _ControlButtonsRowState extends State<ControlButtonsRow> {
                     ),
                   );
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Icon(Icons.person_add,
-                      size: smallIconSize * 0.9,
-                      color: iconColor),
-                ),
+                child: buildIcon(
+                context: context,
+                icon: Icons.person_add,
+                size: 50,
+                myprovider: myprovider,
+                isSmall: true,
               ),
             ),
+              ),
+
 
             // ⚙️ SETTINGS
-            Padding(
-              padding: const EdgeInsets.only(right: 10,left: 5),
-              child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, "/settings_icon"),
-                child: Icon(Icons.settings_outlined,
-                    size: smallIconSize * 0.9,
-                    color: iconColor),
+      GestureDetector(
+        onTap: () => Navigator.pushNamed(context, "/settings_icon"),
+        child:
+               Transform.translate(
+                offset: const Offset(-8, 0),
+                child: buildIcon(
+                  context: context,
+                  icon: Icons.settings_outlined,
+                  size: 50,
+                  myprovider: myprovider,
+                  isSmall: false,
+                ),
               ),
             ),
           ],

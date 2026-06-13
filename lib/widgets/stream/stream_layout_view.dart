@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 
 class StreamLayoutView extends StatelessWidget {
   final String layout;
@@ -18,26 +22,26 @@ class StreamLayoutView extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (layout) {
       case 'cropped':
-        return _buildCropped();
+        return _buildCropped(context);
 
       case 'spotlight':
-        return _buildSpotlight();
+        return _buildSpotlight(context);
 
       case 'screen':
-        return _buildScreen();
+        return _buildScreen(context);
 
       case 'pip':
-        return _buildPip();
+        return _buildPip(context);
 
       case 'news':
-        return _buildNews();
+        return _buildNews(context);
 
       case 'cinema':
-        return _buildCinema();
+        return _buildCinema(context);
 
       case 'default':
       default:
-        return _buildDefault();
+        return _buildDefault(context);
     }
   }
 
@@ -54,13 +58,23 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _image() {
+  Widget _image(BuildContext context) {
+    final overlayProvider =
+    context.watch<BackgroundOverlayLogoProvider>();
+
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.asset(
-          "assets/images/profile4.png",
+        child: overlayProvider.selectedOverlayImage != null
+            ? Image.file(
+          File(
+            overlayProvider.selectedOverlayImage!.path,
+          ),
+          fit: BoxFit.cover,
+        )
+            : Image.asset(
+          "assets/images/profile5.png",
           fit: BoxFit.cover,
         ),
       ),
@@ -76,36 +90,36 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildDefault() {
+  Widget _buildDefault(BuildContext context) {
     return _frame(
       child: SizedBox.expand(
-        child: _image(),
+        child: _image(context),
       ),
     );
   }
 
-  Widget _buildCropped() {
+  Widget _buildCropped(BuildContext context) {
     return _frame(
       child: Row(
         children: [
-          Expanded(child: _image()),
+          Expanded(child: _image(context)),
           const SizedBox(width: 4),
-          Expanded(child: _image()),
+          Expanded(child: _image(context)),
         ],
       ),
     );
   }
 
-  Widget _buildScreen() {
+  Widget _buildScreen(BuildContext context) {
     return _frame(
       child: Row(
         children: [
           Expanded(
             child: Column(
               children: [
-                Expanded(child: _image()),
+                Expanded(child: _image(context)),
                 const SizedBox(height: 4),
-                Expanded(child: _image()),
+                Expanded(child: _image(context)),
               ],
             ),
           ),
@@ -119,21 +133,21 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildSpotlight() {
+  Widget _buildSpotlight(BuildContext context) {
     return _frame(
       child: Row(
         children: [
           Expanded(
             flex: 2,
-            child: _image(),
+            child: _image(context),
           ),
           const SizedBox(width: 4),
           Expanded(
             child: Column(
               children: [
-                Expanded(child: _image()),
+                Expanded(child: _image(context)),
                 const SizedBox(height: 4),
-                Expanded(child: _image()),
+                Expanded(child: _image(context)),
               ],
             ),
           ),
@@ -142,12 +156,12 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildNews() {
+  Widget _buildNews(BuildContext context) {
     return _frame(
       child: Row(
         children: [
           Expanded(
-            child: _image(),
+            child: _image(context),
           ),
           const SizedBox(width: 4),
           Expanded(
@@ -158,12 +172,12 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildPip() {
+  Widget _buildPip(BuildContext context) {
     return _frame(
       child: Stack(
         children: [
           Positioned.fill(
-            child: _image(),
+            child: _image(context),
           ),
           Positioned(
             left: 8,
@@ -171,7 +185,7 @@ class StreamLayoutView extends StatelessWidget {
             child: SizedBox(
               width: width * 0.22,
               height: height * 0.28,
-              child: _image(),
+              child: _image(context),
             ),
           ),
         ],
@@ -179,7 +193,7 @@ class StreamLayoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildCinema() {
+  Widget _buildCinema(BuildContext context) {
     return _frame(
       child: Container(
         color: Colors.black,
