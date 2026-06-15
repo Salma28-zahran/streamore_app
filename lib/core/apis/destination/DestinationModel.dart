@@ -15,14 +15,22 @@ class DestinationModel {
     required this.streamUrl,
   });
 
-  factory DestinationModel.fromJson(Map<String, dynamic> json) {
+  factory DestinationModel.fromJson(
+      Map<String, dynamic> json) {
+
+    final data = json['data'] ?? json;
+
     return DestinationModel(
-      id: json['id'],
-      name: json['name'] ?? '',
-      platformType: json['platform_type'] ?? '',
-      rtmpUrl: json['rtmp_url'] ?? '',
-      rtmpKey: json['rtmp_key'] ?? '',
-      streamUrl: json['stream_url'] ?? '',
+      id: data['id'],
+      name: data['name'] ?? '',
+      platformType:
+      data['platform_type'] ?? '',
+      rtmpUrl:
+      data['rtmp_url'] ?? '',
+      rtmpKey:
+      data['rtmp_key'] ?? '',
+      streamUrl:
+      data['stream_url'] ?? '',
     );
   }
 

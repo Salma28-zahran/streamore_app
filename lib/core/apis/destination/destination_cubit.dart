@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:streamore_app/core/apis/destination/DestinationModel.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 
-
 part 'destination_state.dart';
 
 class DestinationCubit extends Cubit<DestinationState> {
@@ -15,7 +14,7 @@ class DestinationCubit extends Cubit<DestinationState> {
   static DestinationCubit get(context) =>
       BlocProvider.of(context);
 
-  Future<void> createDestination({
+  Future<DestinationModel?> createDestination({
     required String name,
     required String platformType,
     required String rtmpUrl,
@@ -24,8 +23,24 @@ class DestinationCubit extends Cubit<DestinationState> {
   }) async {
     emit(CreateDestinationLoading());
 
+    print("\n====================");
+    print("🚀 CREATE DESTINATION START");
+    print("====================");
+
     try {
       final token = await StorageHelper.getToken();
+
+      print("🔑 TOKEN => $token");
+
+      final body = {
+        "name": name,
+        "platform_type": platformType,
+        "rtmp_url": rtmpUrl,
+        "rtmp_key": rtmpKey,
+        "stream_url": streamUrl,
+      };
+
+      print("📦 REQUEST BODY => $body");
 
       final response = await http.post(
         Uri.parse(
@@ -34,41 +49,59 @@ class DestinationCubit extends Cubit<DestinationState> {
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",
-
-          /// لو backend عندكم Bearer
           "Authorization": "Token $token",
         },
-        body: jsonEncode({
-          "name": name,
-          "platform_type": platformType,
-          "rtmp_url": rtmpUrl,
-          "rtmp_key": rtmpKey,
-          "stream_url": streamUrl,
-        }),
+        body: jsonEncode(body),
       );
 
-      final data = jsonDecode(response.body);
+      print("📡 STATUS CODE => ${response.statusCode}");
+      print("📡 RESPONSE BODY => ${response.body}");
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
-        final destination =
-        DestinationModel.fromJson(data);
+      dynamic data;
 
-        emit(
-          CreateDestinationSuccess(destination),
-        );
+      try {
+        data = jsonDecode(response.body);
+        print("📦 DECODED JSON => $data");
+      } catch (e) {
+        print("❌ JSON DECODE FAILED => $e");
+        print("RAW BODY => ${response.body}");
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final destination = DestinationModel.fromJson(data);
+
+          print("✅ DESTINATION PARSED SUCCESS");
+          print("ID => ${destination.id}");
+
+          emit(CreateDestinationSuccess(destination));
+          return destination;
+        } catch (e) {
+          print("❌ MODEL PARSING FAILED => $e");
+          emit(CreateDestinationError("Model parsing failed"));
+          return null;
+        }
       } else {
+        print("❌ API ERROR STATUS => ${response.statusCode}");
+        print("❌ ERROR BODY => ${response.body}");
+
         emit(
           CreateDestinationError(
-            data["error"]?["message"] ??
-                "Something went wrong",
+            (data is Map)
+                ? (data["error"]?["message"]?.toString() ?? "Unknown error")
+                : "Invalid response format",
           ),
         );
+
+        return null;
       }
-    } catch (e) {
-      emit(
-        CreateDestinationError(e.toString()),
-      );
+    } catch (e, stack) {
+      print("🔥 EXCEPTION OCCURRED");
+      print("ERROR => $e");
+      print("STACK => $stack");
+
+      emit(CreateDestinationError(e.toString()));
+      return null;
     }
   }
 }

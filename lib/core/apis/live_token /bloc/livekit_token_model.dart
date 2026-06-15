@@ -5,9 +5,6 @@ class LiveKitTokenModel {
   final String description;
   final String status;
   final String layoutType;
-  final String startedAt;
-  final String endedAt;
-  final String deletedAt;
   final String createdAt;
   final String updatedAt;
   final bool isActive;
@@ -17,6 +14,10 @@ class LiveKitTokenModel {
   final String canArchive;
   final String connectedDestinationsCount;
 
+  /// 🔥 ADD THESE (IMPORTANT)
+  final String? livekitUrl;
+  final String? livekitToken;
+
   LiveKitTokenModel({
     required this.id,
     required this.accountId,
@@ -24,9 +25,6 @@ class LiveKitTokenModel {
     required this.description,
     required this.status,
     required this.layoutType,
-    required this.startedAt,
-    required this.endedAt,
-    required this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
     required this.isActive,
@@ -35,28 +33,30 @@ class LiveKitTokenModel {
     required this.canEnd,
     required this.canArchive,
     required this.connectedDestinationsCount,
+    this.livekitUrl,
+    this.livekitToken,
   });
 
   factory LiveKitTokenModel.fromJson(Map<String, dynamic> json) {
     return LiveKitTokenModel(
       id: json['id'] ?? 0,
       accountId: json['account_id'] ?? 0,
-      name: json['name'] ?? "",
-      description: json['description'] ?? "",
-      status: json['status'] ?? "",
-      layoutType: json['layout_type'] ?? "",
-      startedAt: json['started_at'] ?? "",
-      endedAt: json['ended_at'] ?? "",
-      deletedAt: json['deleted_at'] ?? "",
-      createdAt: json['created_at'] ?? "",
-      updatedAt: json['updated_at'] ?? "",
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      status: json['status'] ?? '',
+      layoutType: json['layout_type'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
       isActive: json['is_active'] ?? false,
-      durationSeconds: json['duration_seconds'] ?? "",
-      canStart: json['can_start'] ?? "",
-      canEnd: json['can_end'] ?? "",
-      canArchive: json['can_archive'] ?? "",
-      connectedDestinationsCount:
-      json['connected_destinations_count'] ?? "",
+      durationSeconds: json['duration_seconds'].toString(),
+      canStart: json['can_start'].toString(),
+      canEnd: json['can_end'].toString(),
+      canArchive: json['can_archive'].toString(),
+      connectedDestinationsCount: json['connected_destinations_count'].toString(),
+
+      /// 🔥 MAP API RESPONSE HERE
+      livekitUrl: json['livekit_url'],
+      livekitToken: json['livekit_token'],
     );
   }
 }
