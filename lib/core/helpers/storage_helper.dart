@@ -134,6 +134,29 @@ class StorageHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(accountsKey);
   }
+  // Save csrf token
+  static Future<void> saveCsrf(String csrf) async {
+    await _storage.write(
+      key: "csrf_token",
+      value: csrf,
+    );
+
+    print('🛡️ CSRF Token: $csrf');
+  }
+
+// Get csrf token
+  static Future<String?> getCsrf() async {
+    return await _storage.read(
+      key: "csrf_token",
+    );
+  }
+
+// Clear csrf token
+  static Future<void> clearCsrf() async {
+    await _storage.delete(
+      key: "csrf_token",
+    );
+  }
 
 
 }

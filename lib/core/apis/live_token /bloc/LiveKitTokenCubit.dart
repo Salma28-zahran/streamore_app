@@ -31,7 +31,7 @@ class LiveKitTokenCubit extends Cubit<LiveKitTokenState> {
           "Accept": "application/json",
           "Content-Type": "application/json",
           "X-CSRFTOKEN": csrfToken,
-          if (authToken != null) "Authorization": "Bearer $authToken",
+          if (authToken != null) "Authorization": "Token $authToken",
         },
         body: jsonEncode({
           "account_id": accountId,
@@ -42,6 +42,8 @@ class LiveKitTokenCubit extends Cubit<LiveKitTokenState> {
       );
 
       final data = jsonDecode(response.body);
+      print("STATUS => ${response.statusCode}");
+      print("BODY => ${response.body}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         emit(LiveKitTokenSuccess(

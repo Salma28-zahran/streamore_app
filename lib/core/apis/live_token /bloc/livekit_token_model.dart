@@ -38,6 +38,8 @@ class LiveKitTokenModel {
   });
 
   factory LiveKitTokenModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? {};
+
     return LiveKitTokenModel(
       id: json['id'] ?? 0,
       accountId: json['account_id'] ?? 0,
@@ -48,15 +50,15 @@ class LiveKitTokenModel {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       isActive: json['is_active'] ?? false,
-      durationSeconds: json['duration_seconds'].toString(),
-      canStart: json['can_start'].toString(),
-      canEnd: json['can_end'].toString(),
-      canArchive: json['can_archive'].toString(),
-      connectedDestinationsCount: json['connected_destinations_count'].toString(),
+      durationSeconds: json['duration_seconds']?.toString() ?? '',
+      canStart: json['can_start']?.toString() ?? '',
+      canEnd: json['can_end']?.toString() ?? '',
+      canArchive: json['can_archive']?.toString() ?? '',
+      connectedDestinationsCount:
+      json['connected_destinations_count']?.toString() ?? '',
 
-      /// 🔥 MAP API RESPONSE HERE
-      livekitUrl: json['livekit_url'],
-      livekitToken: json['livekit_token'],
+      livekitUrl: data['livekit_url'],
+      livekitToken: data['livekit_token'],
     );
   }
 }

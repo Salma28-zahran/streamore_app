@@ -250,7 +250,7 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
             BlocConsumer<StreamFlowCubit, StreamFlowState>(
               listener: (context, state) {
                 if (state is StreamFlowSuccess) {
-                  print(state.message);
+                  print("✅ ${state.message}");
                 }
 
                 if (state is StreamFlowError) {
@@ -259,8 +259,10 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
               },
 
               builder: (context, state) {
+                final isLoading = state is StreamFlowLoading;
+
                 return TextButton(
-                  onPressed: state is StreamFlowLoading
+                  onPressed: isLoading
                       ? null
                       : () {
                     context.read<StreamFlowCubit>().startFullFlow(
@@ -268,17 +270,23 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
                       name: "Test Stream",
                       description: "Testing stream",
                       layoutType: "user",
-                      csrfToken: "YOUR_CSRF",
-                      authToken: "YOUR_TOKEN",
+
+                      /// ❌ بلاش YOUR_CSRF / YOUR_TOKEN
+                      /// خليه يجيبهم من StorageHelper جوه الكيوبت
+                      csrfToken: "",
+                      authToken: "",
                     );
                   },
-                  child: state is StreamFlowLoading
-                      ? const CircularProgressIndicator()
+                  child: isLoading
+                      ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
                       : const Text("START STREAM"),
                 );
               },
-            )
-          ],
+            )          ],
         ),
       ],
     );

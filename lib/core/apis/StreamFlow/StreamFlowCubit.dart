@@ -41,32 +41,19 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
     emit(StreamFlowLoading());
 
     try {
-      print("\n============================");
-      print("🚀 FLOW STARTED");
-      print("============================\n");
+      print("\n🚀 FLOW STARTED");
 
       /// =======================
-      /// STEP 1: STREAM
+      /// STEP 1: CREATE STREAM
       /// =======================
-      print("📡 STEP 1: Creating Stream...");
-
       final stream = await streamCubit.createStream(
         name: name,
         description: description,
         layoutType: layoutType,
       );
 
-      print("📡 STREAM RESPONSE: $stream");
-
-      if (stream == null) {
-        print("❌ STREAM NULL");
-        emit(StreamFlowError("Stream is null"));
-        return;
-      }
-
-      if (stream.id == null) {
-        print("❌ STREAM ID NULL");
-        emit(StreamFlowError("Stream ID is null"));
+      if (stream == null || stream.id == null) {
+        emit(StreamFlowError("Stream creation failed"));
         return;
       }
 
@@ -74,10 +61,8 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       print("✅ STREAM ID => $streamId");
 
       /// =======================
-      /// STEP 2: DESTINATION
+      /// STEP 2: CREATE DESTINATION
       /// =======================
-      print("\n📡 STEP 2: Creating Destination...");
-
       final destination = await destinationCubit.createDestination(
         name: "YouTube",
         platformType: "youtube",
@@ -86,17 +71,8 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
         streamUrl: "https://youtube.com",
       );
 
-      print("📡 DESTINATION RESPONSE: $destination");
-
-      if (destination == null) {
-        print("❌ DESTINATION NULL");
-        emit(StreamFlowError("Destination is null"));
-        return;
-      }
-
-      if (destination.id == null) {
-        print("❌ DESTINATION ID NULL");
-        emit(StreamFlowError("Destination ID is null"));
+      if (destination == null || destination.id == null) {
+        emit(StreamFlowError("Destination failed"));
         return;
       }
 
@@ -106,8 +82,6 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       /// =======================
       /// STEP 3: CONNECT
       /// =======================
-      print("\n📡 STEP 3: Connecting Destination...");
-
       final connect = await connectCubit.connectDestination(
         destinationId: destinationId,
         accountId: accountId,
@@ -117,10 +91,7 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
         streamUrl: "https://youtube.com",
       );
 
-      print("📡 CONNECT RESPONSE: $connect");
-
       if (connect == null) {
-        print("❌ CONNECT FAILED");
         emit(StreamFlowError("Connect failed"));
         return;
       }
@@ -130,17 +101,12 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       /// =======================
       /// STEP 4: ATTACH
       /// =======================
-      print("\n📡 STEP 4: Attaching Destination...");
-
       final attach = await attachCubit.attachDestination(
         streamId: streamId,
         destinationId: destinationId,
       );
 
-      print("📡 ATTACH RESPONSE: $attach");
-
       if (attach == null) {
-        print("❌ ATTACH FAILED");
         emit(StreamFlowError("Attach failed"));
         return;
       }
@@ -148,60 +114,8 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       print("✅ ATTACH SUCCESS");
 
       /// =======================
-      /// STEP 5: LIVEKIT TOKEN
+      /// STEP 5: START STREAM (IMPORTANT)
       /// =======================
-      print("\n📡 STEP 5: LiveKit Token Request...");
-
-      final token = await StorageHelper.getToken();
-      final csrf = await StorageHelper.getCsrf(); // لو موجود
-
-      print("🔥 TOKEN FROM STORAGE => $token");
-      print("🔥 CSRF FROM STORAGE => $csrf");
-
-      await liveKitTokenCubit.createLiveKitToken(
-        streamId: streamId,
-        accountId: accountId,
-        name: name,
-        description: description,
-        layoutType: layoutType,
-        csrfToken: csrf ?? "",   // fallback مهم
-        authToken: token ?? "",
-      );
-      print("🔥 FINAL LIVEKIT INPUTS");
-      print("streamId: $streamId");
-      print("accountId: $accountId");
-      print("csrf: $csrfToken");
-      print("auth: $authToken");
-
-      print("📡 LIVEKIT STATE: ${liveKitTokenCubit.state}");
-
-      final state = liveKitTokenCubit.state;
-
-      if (state is! LiveKitTokenSuccess) {
-        print("❌ LIVEKIT TOKEN FAILED STATE: $state");
-        emit(StreamFlowError("LiveKit token failed"));
-        return;
-      }
-
-      final token = state.data;
-
-      print("📡 LIVEKIT TOKEN MODEL: $token");
-      print("📡 URL: ${token.livekitUrl}");
-      print("📡 TOKEN: ${token.livekitToken}");
-
-      if (token.livekitUrl == null || token.livekitToken == null) {
-        print("❌ LIVEKIT DATA INVALID");
-        emit(StreamFlowError("Invalid LiveKit data"));
-        return;
-      }
-
-      print("✅ LIVEKIT READY");
-
-      /// =======================
-      /// STEP 6: START STREAM
-      /// =======================
-      print("\n📡 STEP 6: Starting Stream...");
-
       final start = await startStreamCubit.startStream(
         streamId: streamId,
         model: StartStreamModel(
@@ -212,37 +126,54 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
         ),
       );
 
-      print("📡 START STREAM RESPONSE: $start");
+      print("📡 START RESPONSE => $start");
 
-      if (start == null) {
-        print("❌ START STREAM FAILED");
+      if (start != true) {
         emit(StreamFlowError("Start stream failed"));
         return;
       }
 
-      print("✅ STREAM STARTED");
+      print("🎬 STREAM STARTED");
 
       /// =======================
-      /// STEP 7: LIVEKIT JOIN
+      /// STEP 6: LIVEKIT TOKEN
       /// =======================
-      print("\n📡 STEP 7: Joining LiveKit...");
+      final auth = await StorageHelper.getToken();
+      final csrf = await StorageHelper.getCsrf();
 
-      await liveKitCubit.init(
-        url: token.livekitUrl!,
-        token: token.livekitToken!,
+      await liveKitTokenCubit.createLiveKitToken(
+        streamId: streamId,
+        accountId: accountId,
+        name: name,
+        description: description,
+        layoutType: layoutType,
+        csrfToken: csrf ?? "",
+        authToken: auth ?? "",
       );
 
-      print("🎉 LIVEKIT JOINED SUCCESSFULLY");
+      final state = liveKitTokenCubit.state;
+
+      if (state is! LiveKitTokenSuccess) {
+        emit(StreamFlowError("LiveKit token failed"));
+        return;
+      }
+
+      final liveKitData = state.data;
+
+      print("✅ LIVEKIT READY");
 
       /// =======================
-      /// SUCCESS
+      /// STEP 7: INIT LIVEKIT (AFTER START ONLY)
       /// =======================
-      print("\n🎉 FLOW COMPLETED SUCCESSFULLY 🎉\n");
+      await liveKitCubit.init(
+        url: liveKitData.livekitUrl!,
+        token: liveKitData.livekitToken!,
+      );
+
+      print("🎉 LIVEKIT CONNECTED");
 
       emit(StreamFlowSuccess("Stream started successfully 🚀"));
-    } catch (e, s) {
-      print("❌ GLOBAL ERROR: $e");
-      print("STACK TRACE: $s");
+    } catch (e) {
       emit(StreamFlowError(e.toString()));
     }
   }

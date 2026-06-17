@@ -1,3 +1,5 @@
+import 'package:streamore_app/core/apis/start/start_stream_model.dart';
+
 abstract class StartStreamStates {}
 
 class StartStreamInitialState extends StartStreamStates {}
@@ -5,10 +7,10 @@ class StartStreamInitialState extends StartStreamStates {}
 class StartStreamLoadingState extends StartStreamStates {}
 
 class StartStreamSuccessState extends StartStreamStates {
-  final String message;
+  final StartStreamModel data;
 
   StartStreamSuccessState({
-    required this.message,
+    required this.data,
   });
 }
 
