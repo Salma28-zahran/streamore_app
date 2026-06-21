@@ -42,6 +42,7 @@ class LiveKitTokenCubit extends Cubit<LiveKitTokenState> {
       );
 
       final data = jsonDecode(response.body);
+
       print("STATUS => ${response.statusCode}");
       print("BODY => ${response.body}");
 

@@ -46,8 +46,7 @@ class HostTokenCubit
           "application/json",
           "Content-Type":
           "application/json",
-          "Authorization":
-          "Bearer $token",
+          "Authorization": "Token $token",
         },
         body: jsonEncode({
           "account_id":
@@ -59,6 +58,8 @@ class HostTokenCubit
           layoutType,
         }),
       );
+      print("HOST TOKEN STATUS => ${response.statusCode}");
+      print("HOST TOKEN BODY => ${response.body}");
 
       final data =
       jsonDecode(

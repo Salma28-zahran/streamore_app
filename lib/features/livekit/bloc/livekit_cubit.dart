@@ -11,7 +11,8 @@ class LiveKitCubit extends Cubit<LiveKitState> {
 
   final List<String> _previousParticipantIds = [];
 
-  /// INIT & CONNECT
+  Room? get room => _room;
+
   Future<void> init({
     required String url,
     required String token,
@@ -19,22 +20,45 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     emit(LiveKitLoading());
 
     try {
-      /// ---------------- PERMISSIONS ----------------
+      print("\n====================");
+      print("🚀 LIVEKIT INIT");
+      print("====================");
+
+      /// PERMISSIONS
       final cam = await Permission.camera.request();
       final mic = await Permission.microphone.request();
 
+      print("📷 CAMERA => ${cam.isGranted}");
+      print("🎤 MIC => ${mic.isGranted}");
+
       if (!cam.isGranted || !mic.isGranted) {
-        emit(LiveKitError("Camera or Microphone permission denied"));
+        emit(
+          LiveKitError(
+            "Camera or Microphone permission denied",
+          ),
+        );
         return;
       }
 
-      /// ---------------- VALIDATE ----------------
+      /// VALIDATE
       if (url.isEmpty || token.isEmpty) {
-        emit(LiveKitError("Empty LiveKit url or token"));
+        emit(
+          LiveKitError(
+            "Empty LiveKit url or token",
+          ),
+        );
         return;
       }
 
-      /// ---------------- ROOM INIT ----------------
+      print("🌍 URL => $url");
+
+      if (token.length > 30) {
+        print("🔑 TOKEN => ${token.substring(0, 30)}...");
+      } else {
+        print("🔑 TOKEN => $token");
+      }
+
+      /// ROOM
       _room = Room(
         roomOptions: const RoomOptions(
           adaptiveStream: true,
@@ -44,15 +68,7 @@ class LiveKitCubit extends Cubit<LiveKitState> {
       _room!.addListener(_onRoomUpdate);
 
       print("🌍 CONNECTING TO LIVEKIT...");
-      print("URL => $url");
 
-      if (token.length > 25) {
-        print("TOKEN => ${token.substring(0, 25)}...");
-      } else {
-        print("TOKEN => $token");
-      }
-
-      /// ---------------- CONNECT ----------------
       await _room!.connect(
         url,
         token,
@@ -63,28 +79,42 @@ class LiveKitCubit extends Cubit<LiveKitState> {
 
       print("✅ CONNECTED TO LIVEKIT");
 
-      /// ---------------- ENABLE DEVICES ----------------
+      try {
+        print("🏠 ROOM NAME => ${_room?.name}");
+      } catch (_) {}
+
       final local = _room!.localParticipant;
+
+      print(
+        "👤 LOCAL PARTICIPANT => ${local?.identity}",
+      );
 
       if (local != null) {
         await local.setCameraEnabled(true);
         await local.setMicrophoneEnabled(true);
+
+        print("📷 CAMERA ENABLED");
+        print("🎤 MIC ENABLED");
       }
 
       _emitParticipants();
-    } catch (e) {
+    } catch (e, s) {
       print("❌ LIVEKIT ERROR => $e");
-      emit(LiveKitError(e.toString()));
+      print(s);
+
+      emit(
+        LiveKitError(
+          e.toString(),
+        ),
+      );
     }
   }
 
-  /// ROOM UPDATE
   void _onRoomUpdate() {
     _handleJoinLeft();
     _emitParticipants();
   }
 
-  /// JOIN / LEFT TRACKING
   void _handleJoinLeft() {
     final room = _room;
     if (room == null) return;
@@ -92,6 +122,7 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     final currentIds = <String>[];
 
     final local = room.localParticipant;
+
     if (local != null) {
       currentIds.add(local.identity);
     }
@@ -117,7 +148,6 @@ class LiveKitCubit extends Cubit<LiveKitState> {
       ..addAll(currentIds);
   }
 
-  /// EMIT PARTICIPANTS
   void _emitParticipants() {
     final room = _room;
     if (room == null) return;
@@ -139,48 +169,61 @@ class LiveKitCubit extends Cubit<LiveKitState> {
     );
   }
 
-  /// TOGGLE MIC
   Future<void> toggleMic() async {
     final local = _room?.localParticipant;
+
     if (local == null) return;
 
     final enabled = local.isMicrophoneEnabled();
+
     await local.setMicrophoneEnabled(!enabled);
+
+    print("🎤 MIC => ${!enabled}");
 
     _emitParticipants();
   }
 
-  /// TOGGLE CAMERA
   Future<void> toggleCamera() async {
     final local = _room?.localParticipant;
+
     if (local == null) return;
 
     final enabled = local.isCameraEnabled();
+
     await local.setCameraEnabled(!enabled);
+
+    print("📷 CAMERA => ${!enabled}");
 
     _emitParticipants();
   }
 
-  /// DISCONNECT
   Future<void> disconnect() async {
     try {
+      print("❌ DISCONNECTING LIVEKIT");
+
       await _room?.disconnect();
+
       _room?.removeListener(_onRoomUpdate);
 
       _room = null;
+
       _previousParticipantIds.clear();
 
       emit(LiveKitInitial());
 
-      print("❌ DISCONNECTED FROM LIVEKIT");
+      print("✅ LIVEKIT DISCONNECTED");
     } catch (e) {
-      emit(LiveKitError("Disconnect failed: $e"));
+      emit(
+        LiveKitError(
+          "Disconnect failed: $e",
+        ),
+      );
     }
   }
 
   @override
-  Future<void> close() {
-    disconnect();
+  Future<void> close() async {
+    await disconnect();
     return super.close();
   }
 }
