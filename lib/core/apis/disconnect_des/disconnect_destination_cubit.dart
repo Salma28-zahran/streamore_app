@@ -48,8 +48,8 @@ class DisconnectDestinationCubit
           "application/json",
           "Content-Type":
           "application/json",
-          "Authorization":
-          "Bearer $token",
+          "Authorization": "Token $token"
+
         },
         body: jsonEncode({
           "account_id":

@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:streamore_app/core/Network/bloc/NetworkCubit.dart';
+import 'package:streamore_app/core/apis/StreamFlow/StreamFlowCubit.dart';
+import 'package:streamore_app/core/apis/connect_des/connect_destination_cubit.dart';
 import 'package:streamore_app/core/apis/destination/destination_cubit.dart';
+import 'package:streamore_app/core/apis/live_token%20/bloc/LiveKitTokenCubit.dart';
 import 'package:streamore_app/core/apis/start/start_stream_cubit.dart';
+import 'package:streamore_app/core/apis/stream_des/stream_destinations_cubit.dart';
 import 'package:streamore_app/core/apis/streams/stream_cubit.dart';
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
@@ -82,6 +86,9 @@ void main() async {
           // BlocProvider(create: (_) => NetworkCubit()),
 
           ChangeNotifierProvider(create: (context) => CommentProvider()),
+          BlocProvider(
+            create: (_) => LiveKitTokenCubit(),
+          ),
           ChangeNotifierProvider(create: (context) => BannersProvider()),
           ChangeNotifierProvider(create: (_) => TickersProvider()),
           ChangeNotifierProvider(
@@ -103,6 +110,12 @@ void main() async {
           BlocProvider(
             create: (_) => StreamCubit(),
           ),
+          BlocProvider(
+            create: (_) => ConnectDestinationCubit(),
+          ),
+          BlocProvider(
+            create: (_) => StreamDestinationsCubit(),
+          ),
 
           BlocProvider(
             create: (_) => DestinationCubit(),
@@ -110,6 +123,20 @@ void main() async {
 
           BlocProvider<DeleteAccountCubit>(
             create: (_) => DeleteAccountCubit(),
+          ),
+
+
+
+          BlocProvider(
+            create: (context) => StreamFlowCubit(
+              streamCubit: context.read<StreamCubit>(),
+              destinationCubit: context.read<DestinationCubit>(),
+              connectCubit: context.read<ConnectDestinationCubit>(),
+              attachCubit: context.read<StreamDestinationsCubit>(),
+              liveKitTokenCubit: context.read<LiveKitTokenCubit>(),
+              startStreamCubit: context.read<StartStreamCubit>(),
+              liveKitCubit: context.read<LiveKitCubit>(),
+            ),
           ),
         ],
         child: MyApp(),

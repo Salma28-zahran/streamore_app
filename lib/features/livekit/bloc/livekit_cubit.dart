@@ -5,182 +5,483 @@ import 'package:permission_handler/permission_handler.dart';
 import 'livekit_state.dart';
 
 class LiveKitCubit extends Cubit<LiveKitState> {
-  LiveKitCubit() : super(LiveKitInitial());
+LiveKitCubit() : super(LiveKitInitial());
 
-  Room? _room;
+Room? _room;
 
-  final List<String> _previousParticipantIds = [];
+final List<String> _previousParticipantIds = [];
 
-  /// INIT & CONNECT
-  Future<void> init({
-    required String url,
-    required String token,
-  }) async {
-    emit(LiveKitLoading());
+Room? get room => _room;
 
-    try {
-      /// ---------------- PERMISSIONS ----------------
-      final cam = await Permission.camera.request();
-      final mic = await Permission.microphone.request();
+Future<void> init({
+required String url,
+required String token,
+}) async {
+emit(LiveKitLoading());
 
-      if (!cam.isGranted || !mic.isGranted) {
-        emit(LiveKitError("Camera or Microphone permission denied"));
-        return;
-      }
+try {
+print('\n====================');
+print('🚀 LIVEKIT INIT');
+print('====================');
 
-      /// ---------------- VALIDATE ----------------
-      if (url.isEmpty || token.isEmpty) {
-        emit(LiveKitError("Empty LiveKit url or token"));
-        return;
-      }
+// =========================================
+// VALIDATE URL AND TOKEN
+// =========================================
+if (url.trim().isEmpty) {
+throw Exception('LiveKit URL is empty');
+}
 
-      /// ---------------- ROOM INIT ----------------
-      _room = Room(
-        roomOptions: const RoomOptions(
-          adaptiveStream: true,
-        ),
-      );
+if (token.trim().isEmpty) {
+throw Exception('LiveKit token is empty');
+}
 
-      _room!.addListener(_onRoomUpdate);
+print('🌍 LIVEKIT URL => $url');
 
-      print("🌍 CONNECTING TO LIVEKIT...");
-      print("URL => $url");
+if (token.length > 30) {
+print(
+'🔑 LIVEKIT TOKEN => '
+'${token.substring(0, 30)}...',
+);
+} else {
+print('🔑 LIVEKIT TOKEN RECEIVED');
+}
 
-      if (token.length > 25) {
-        print("TOKEN => ${token.substring(0, 25)}...");
-      } else {
-        print("TOKEN => $token");
-      }
+// =========================================
+// REMOVE OLD ROOM IF INIT CALLED AGAIN
+// =========================================
+if (_room != null) {
+print('⚠️ OLD ROOM FOUND - DISCONNECTING');
 
-      /// ---------------- CONNECT ----------------
-      await _room!.connect(
-        url,
-        token,
-        connectOptions: const ConnectOptions(
-          autoSubscribe: true,
-        ),
-      );
+try {
+await _clearRoom();
+} catch (e) {
+print('⚠️ OLD ROOM DISCONNECT ERROR => $e');
+}
+}
 
-      print("✅ CONNECTED TO LIVEKIT");
+// =========================================
+// REQUEST CAMERA AND MICROPHONE PERMISSIONS
+// =========================================
+final cameraPermission =
+await Permission.camera.request();
 
-      /// ---------------- ENABLE DEVICES ----------------
-      final local = _room!.localParticipant;
+final microphonePermission =
+await Permission.microphone.request();
 
-      if (local != null) {
-        await local.setCameraEnabled(true);
-        await local.setMicrophoneEnabled(true);
-      }
+print(
+'📷 CAMERA PERMISSION => '
+'${cameraPermission.isGranted}',
+);
 
-      _emitParticipants();
-    } catch (e) {
-      print("❌ LIVEKIT ERROR => $e");
-      emit(LiveKitError(e.toString()));
-    }
-  }
+print(
+'🎤 MICROPHONE PERMISSION => '
+'${microphonePermission.isGranted}',
+);
 
-  /// ROOM UPDATE
-  void _onRoomUpdate() {
-    _handleJoinLeft();
-    _emitParticipants();
-  }
+/*
+       * مهم:
+       * عدم وجود صلاحية الكاميرا أو الميكروفون
+       * لا يمنع دخول غرفة LiveKit.
+       *
+       * التطبيق سيدخل الغرفة أولًا، ثم يشغل
+       * الكاميرا أو الميكروفون حسب الصلاحيات.
+       */
 
-  /// JOIN / LEFT TRACKING
-  void _handleJoinLeft() {
-    final room = _room;
-    if (room == null) return;
+// =========================================
+// CREATE LIVEKIT ROOM OBJECT
+// =========================================
+final newRoom = Room(
+roomOptions: const RoomOptions(
+adaptiveStream: true,
+),
+);
 
-    final currentIds = <String>[];
+_room = newRoom;
 
-    final local = room.localParticipant;
-    if (local != null) {
-      currentIds.add(local.identity);
-    }
+newRoom.addListener(_onRoomUpdate);
 
-    for (final p in room.remoteParticipants.values) {
-      currentIds.add(p.identity);
-    }
+print('🌍 CONNECTING TO LIVEKIT...');
 
-    for (final id in currentIds) {
-      if (!_previousParticipantIds.contains(id)) {
-        print("👤 JOINED => $id");
-      }
-    }
+// =========================================
+// CONNECT TO LIVEKIT ROOM
+//
+// LiveKit creates the room automatically
+// when the first participant joins.
+// =========================================
+await newRoom.connect(
+url,
+token,
+connectOptions: const ConnectOptions(
+autoSubscribe: true,
+),
+);
 
-    for (final id in _previousParticipantIds) {
-      if (!currentIds.contains(id)) {
-        print("👤 LEFT => $id");
-      }
-    }
+print('✅ CONNECTED TO LIVEKIT');
 
-    _previousParticipantIds
-      ..clear()
-      ..addAll(currentIds);
-  }
+print(
+'🏠 ROOM NAME => '
+'${newRoom.name}',
+);
 
-  /// EMIT PARTICIPANTS
-  void _emitParticipants() {
-    final room = _room;
-    if (room == null) return;
+final localParticipant =
+newRoom.localParticipant;
 
-    final local = room.localParticipant;
+if (localParticipant == null) {
+throw Exception(
+'Connected to LiveKit but local participant is null',
+);
+}
 
-    final participants = <Participant>[
-      if (local != null) local,
-      ...room.remoteParticipants.values,
-    ];
+print(
+'👤 LOCAL PARTICIPANT => '
+'${localParticipant.identity}',
+);
 
-    emit(
-      LiveKitConnected(
-        participants: participants,
-        localParticipant: local,
-        isMuted: !(local?.isMicrophoneEnabled() ?? false),
-        isCameraOff: !(local?.isCameraEnabled() ?? false),
-      ),
-    );
-  }
+// =========================================
+// ENABLE CAMERA IF PERMISSION IS GRANTED
+// =========================================
+if (cameraPermission.isGranted) {
+try {
+await localParticipant.setCameraEnabled(true);
 
-  /// TOGGLE MIC
-  Future<void> toggleMic() async {
-    final local = _room?.localParticipant;
-    if (local == null) return;
+print('📷 CAMERA ENABLED');
+} catch (e) {
+/*
+           * فشل تشغيل الكاميرا لا يفصل المستخدم
+           * من الغرفة.
+           */
+print(
+'⚠️ CAMERA ENABLE ERROR => $e',
+);
+}
+} else {
+print(
+'⚠️ CAMERA NOT ENABLED: '
+'PERMISSION DENIED',
+);
+}
 
-    final enabled = local.isMicrophoneEnabled();
-    await local.setMicrophoneEnabled(!enabled);
+// =========================================
+// ENABLE MICROPHONE IF PERMISSION IS GRANTED
+// =========================================
+if (microphonePermission.isGranted) {
+try {
+await localParticipant
+    .setMicrophoneEnabled(true);
 
-    _emitParticipants();
-  }
+print('🎤 MICROPHONE ENABLED');
+} catch (e) {
+/*
+           * فشل تشغيل الميكروفون لا يفصل المستخدم
+           * من الغرفة.
+           */
+print(
+'⚠️ MICROPHONE ENABLE ERROR => $e',
+);
+}
+} else {
+print(
+'⚠️ MICROPHONE NOT ENABLED: '
+'PERMISSION DENIED',
+);
+}
 
-  /// TOGGLE CAMERA
-  Future<void> toggleCamera() async {
-    final local = _room?.localParticipant;
-    if (local == null) return;
+// =========================================
+// EMIT CONNECTED STATE
+// =========================================
+_handleJoinLeft();
+_emitParticipants();
 
-    final enabled = local.isCameraEnabled();
-    await local.setCameraEnabled(!enabled);
+print('✅ LIVEKIT INIT COMPLETED');
+} catch (e, stackTrace) {
+print('❌ LIVEKIT ERROR => $e');
+print('❌ STACK TRACE => $stackTrace');
 
-    _emitParticipants();
-  }
+try {
+await _clearRoom();
+} catch (clearError) {
+print(
+'⚠️ LIVEKIT CLEANUP ERROR => '
+'$clearError',
+);
+}
 
-  /// DISCONNECT
-  Future<void> disconnect() async {
-    try {
-      await _room?.disconnect();
-      _room?.removeListener(_onRoomUpdate);
+if (!isClosed) {
+emit(
+LiveKitError(
+e.toString(),
+),
+);
+}
 
-      _room = null;
-      _previousParticipantIds.clear();
+/*
+       * مهم جدًا:
+       * إرسال الخطأ إلى StreamFlowCubit
+       * حتى لا يكمل إلى Start Stream
+       * ويطبع أن LiveKit اتصل رغم فشل الاتصال.
+       */
+rethrow;
+}
+}
 
-      emit(LiveKitInitial());
+// =========================================
+// ROOM LISTENER
+// =========================================
+void _onRoomUpdate() {
+if (isClosed) return;
 
-      print("❌ DISCONNECTED FROM LIVEKIT");
-    } catch (e) {
-      emit(LiveKitError("Disconnect failed: $e"));
-    }
-  }
+_handleJoinLeft();
+_emitParticipants();
+}
 
-  @override
-  Future<void> close() {
-    disconnect();
-    return super.close();
-  }
+// =========================================
+// DETECT JOINED AND LEFT PARTICIPANTS
+// =========================================
+void _handleJoinLeft() {
+final currentRoom = _room;
+
+if (currentRoom == null) {
+return;
+}
+
+final currentParticipantIds = <String>[];
+
+final localParticipant =
+currentRoom.localParticipant;
+
+if (localParticipant != null) {
+currentParticipantIds.add(
+localParticipant.identity,
+);
+}
+
+for (final participant
+in currentRoom.remoteParticipants.values) {
+currentParticipantIds.add(
+participant.identity,
+);
+}
+
+for (final participantId
+in currentParticipantIds) {
+if (!_previousParticipantIds
+    .contains(participantId)) {
+print(
+'👤 JOINED => $participantId',
+);
+}
+}
+
+for (final participantId
+in _previousParticipantIds) {
+if (!currentParticipantIds
+    .contains(participantId)) {
+print(
+'👤 LEFT => $participantId',
+);
+}
+}
+
+_previousParticipantIds
+..clear()
+..addAll(currentParticipantIds);
+}
+
+// =========================================
+// EMIT PARTICIPANTS TO UI
+// =========================================
+void _emitParticipants() {
+if (isClosed) return;
+
+final currentRoom = _room;
+
+if (currentRoom == null) {
+return;
+}
+
+final localParticipant =
+currentRoom.localParticipant;
+
+/*
+     * لو المستخدم لم يدخل الغرفة فعليًا بعد،
+     * لا نرسل LiveKitConnected.
+     */
+if (localParticipant == null) {
+return;
+}
+
+final participants = <Participant>[
+localParticipant,
+...currentRoom.remoteParticipants.values,
+];
+
+emit(
+LiveKitConnected(
+participants: participants,
+localParticipant: localParticipant,
+isMuted:
+!localParticipant.isMicrophoneEnabled(),
+isCameraOff:
+!localParticipant.isCameraEnabled(),
+),
+);
+}
+
+// =========================================
+// TOGGLE MICROPHONE
+// =========================================
+Future<void> toggleMic() async {
+final localParticipant =
+_room?.localParticipant;
+
+if (localParticipant == null) {
+print(
+'⚠️ CANNOT TOGGLE MIC: '
+'LOCAL PARTICIPANT IS NULL',
+);
+
+return;
+}
+
+try {
+final isEnabled =
+localParticipant.isMicrophoneEnabled();
+
+await localParticipant
+    .setMicrophoneEnabled(!isEnabled);
+
+print(
+'🎤 MICROPHONE ENABLED => '
+'${!isEnabled}',
+);
+
+_emitParticipants();
+} catch (e) {
+print('❌ TOGGLE MIC ERROR => $e');
+
+if (!isClosed) {
+emit(
+LiveKitError(
+'Toggle microphone failed: $e',
+),
+);
+}
+}
+}
+
+// =========================================
+// TOGGLE CAMERA
+// =========================================
+Future<void> toggleCamera() async {
+final localParticipant =
+_room?.localParticipant;
+
+if (localParticipant == null) {
+print(
+'⚠️ CANNOT TOGGLE CAMERA: '
+'LOCAL PARTICIPANT IS NULL',
+);
+
+return;
+}
+
+try {
+final isEnabled =
+localParticipant.isCameraEnabled();
+
+await localParticipant
+    .setCameraEnabled(!isEnabled);
+
+print(
+'📷 CAMERA ENABLED => '
+'${!isEnabled}',
+);
+
+_emitParticipants();
+} catch (e) {
+print('❌ TOGGLE CAMERA ERROR => $e');
+
+if (!isClosed) {
+emit(
+LiveKitError(
+'Toggle camera failed: $e',
+),
+);
+}
+}
+}
+
+// =========================================
+// DISCONNECT FROM LIVEKIT
+// =========================================
+Future<void> disconnect() async {
+try {
+print('❌ DISCONNECTING LIVEKIT');
+
+await _clearRoom();
+
+if (!isClosed) {
+emit(LiveKitInitial());
+}
+
+print('✅ LIVEKIT DISCONNECTED');
+} catch (e, stackTrace) {
+print(
+'❌ LIVEKIT DISCONNECT ERROR => $e',
+);
+
+print(
+'❌ STACK TRACE => $stackTrace',
+);
+
+if (!isClosed) {
+emit(
+LiveKitError(
+'Disconnect failed: $e',
+),
+);
+}
+}
+}
+
+// =========================================
+// CLEAR CURRENT ROOM
+// =========================================
+Future<void> _clearRoom() async {
+final currentRoom = _room;
+
+/*
+     * نخلي القيمة null أولًا حتى لا تستخدم
+     * باقي الدوال Room أثناء عملية الفصل.
+     */
+_room = null;
+
+_previousParticipantIds.clear();
+
+if (currentRoom == null) {
+return;
+}
+
+currentRoom.removeListener(
+_onRoomUpdate,
+);
+
+await currentRoom.disconnect();
+}
+
+// =========================================
+// CLOSE CUBIT
+// =========================================
+@override
+Future<void> close() async {
+try {
+await _clearRoom();
+} catch (e) {
+print(
+'⚠️ LIVEKIT CLOSE ERROR => $e',
+);
+}
+
+return super.close();
+}
 }

@@ -1,27 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart'
-as http;
+import 'package:http/http.dart' as http;
 import 'package:streamore_app/core/apis/streams/stream_state.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 
 import 'stream_model.dart';
 
+class StreamCubit extends Cubit<StreamState> {
+  StreamCubit() : super(StreamInitial());
 
-class StreamCubit
-    extends Cubit<StreamState> {
-  StreamCubit()
-      : super(
-    StreamInitial(),
-  );
-
-  static StreamCubit get(
-      context,
-      ) =>
+  static StreamCubit get(context) =>
       BlocProvider.of(context);
 
-  Future<void> createStream({
+  Future<StreamModel?> createStream({
     required String name,
     required String description,
     required String layoutType,
@@ -33,6 +25,7 @@ class StreamCubit
     try {
       final token =
       await StorageHelper.getToken();
+
       print("TOKEN => $token");
 
       final response =
@@ -41,13 +34,11 @@ class StreamCubit
           'https://apistreamore.genius-ai.net/api/streams/streams/',
         ),
         headers: {
-          "accept":
-          "application/json",
+          "accept": "application/json",
           "Content-Type":
           "application/json",
-
-          /// لو backend Bearer
-          "Authorization": "Token $token",
+          "Authorization":
+          "Token $token",
         },
         body: jsonEncode({
           "name": name,
@@ -62,22 +53,30 @@ class StreamCubit
       jsonDecode(
         response.body,
       );
-      print("STATUS => ${response.statusCode}");
-      print("BODY => ${response.body}");
 
+      print(
+        "STATUS => ${response.statusCode}",
+      );
+      print(
+        "BODY => ${response.body}",
+      );
 
       if (response.statusCode ==
           200 ||
           response.statusCode ==
               201) {
+        final model =
+        StreamModel.fromJson(
+          data,
+        );
+
         emit(
           CreateStreamSuccess(
-            StreamModel
-                .fromJson(
-              data,
-            ),
+            model,
           ),
         );
+
+        return model;
       } else {
         emit(
           CreateStreamError(
@@ -86,6 +85,8 @@ class StreamCubit
                 "Something went wrong",
           ),
         );
+
+        return null;
       }
     } catch (e) {
       emit(
@@ -93,6 +94,8 @@ class StreamCubit
           e.toString(),
         ),
       );
+
+      return null;
     }
   }
 }

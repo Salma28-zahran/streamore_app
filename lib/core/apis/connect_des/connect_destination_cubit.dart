@@ -7,7 +7,6 @@ import 'package:streamore_app/core/helpers/storage_helper.dart';
 
 import 'connect_destination_model.dart';
 
-
 class ConnectDestinationCubit
     extends Cubit<ConnectDestinationState> {
   ConnectDestinationCubit()
@@ -20,7 +19,7 @@ class ConnectDestinationCubit
       ) =>
       BlocProvider.of(context);
 
-  Future<void> connectDestination({
+  Future<ConnectDestinationModel?> connectDestination({
     required int destinationId,
     required int accountId,
     required String name,
@@ -42,14 +41,10 @@ class ConnectDestinationCubit
           'https://apistreamore.genius-ai.net/api/streams/destinations/$destinationId/connect/',
         ),
         headers: {
-          "accept":
-          "application/json",
-          "Content-Type":
-          "application/json",
-
-          /// لو backend عندكم Bearer
+          "accept": "application/json",
+          "Content-Type": "application/json",
           "Authorization":
-          "Bearer $token",
+          "Token $token",
         },
         body: jsonEncode({
           "account_id":
@@ -72,12 +67,17 @@ class ConnectDestinationCubit
           200 ||
           response.statusCode ==
               201) {
+        final model =
+        ConnectDestinationModel
+            .fromJson(data);
+
         emit(
           ConnectDestinationSuccess(
-            ConnectDestinationModel
-                .fromJson(data),
+            model,
           ),
         );
+
+        return model;
       } else {
         emit(
           ConnectDestinationError(
@@ -86,6 +86,8 @@ class ConnectDestinationCubit
                 "Something went wrong",
           ),
         );
+
+        return null;
       }
     } catch (e) {
       emit(
@@ -93,6 +95,8 @@ class ConnectDestinationCubit
           e.toString(),
         ),
       );
+
+      return null;
     }
   }
 }

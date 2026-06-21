@@ -10,10 +10,12 @@ import 'start_stream_states.dart';
 class StartStreamCubit extends Cubit<StartStreamStates> {
   StartStreamCubit() : super(StartStreamInitialState());
 
-  Future<Map<String, dynamic>> startStream({
+  Future<StartStreamModel?> startStream({
     required int streamId,
     required StartStreamModel model,
   }) async {
+    emit(StartStreamLoadingState());
+
     try {
       final token = await StorageHelper.getToken();
 
@@ -29,21 +31,41 @@ class StartStreamCubit extends Cubit<StartStreamStates> {
         body: jsonEncode(model.toJson()),
       );
 
+      print("START URL => ${response.request?.url}");
+      print("START STATUS => ${response.statusCode}");
+      print("START BODY => ${response.body}");
+
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 ||
           response.statusCode == 201) {
-        emit(StartStreamSuccessState(message: "Stream started successfully"));
+        final stream = StartStreamModel.fromJson(data);
 
-        return data;
-      } else {
-        throw Exception(
-          data["error"]?["message"] ?? "Failed to start stream",
+        emit(
+          StartStreamSuccessState(
+            data: stream,
+          ),
         );
+
+        return stream;
       }
+
+      emit(
+        StartStreamErrorState(
+          error: data["error"]?["message"] ??
+              "Failed to start stream",
+        ),
+      );
+
+      return null;
     } catch (e) {
-      emit(StartStreamErrorState(error: e.toString()));
-      rethrow;
+      emit(
+        StartStreamErrorState(
+          error: e.toString(),
+        ),
+      );
+
+      return null;
     }
   }
 }

@@ -3,10 +3,20 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:streamore_app/core/apis/StreamFlow/StreamFlowCubit.dart';
+import 'package:streamore_app/core/apis/StreamFlow/StreamFlowState.dart';
+import 'package:streamore_app/core/apis/connect_des/connect_destination_cubit.dart';
+import 'package:streamore_app/core/apis/connect_des/connect_destination_state.dart';
+import 'package:streamore_app/core/apis/destination/destination_cubit.dart';
+import 'package:streamore_app/core/apis/live_token%20/bloc/LiveKitTokenCubit.dart';
 import 'package:streamore_app/core/apis/start/start_stream_cubit.dart';
 import 'package:streamore_app/core/apis/start/start_stream_model.dart';
+import 'package:streamore_app/core/apis/stream_des/stream_destinations_cubit.dart';
+import 'package:streamore_app/core/apis/streams/stream_cubit.dart';
 import 'package:streamore_app/features/livekit/bloc/LiveKitResponse.dart';
 import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
+
+import '../../../core/apis/live_token /bloc/livekit_token_model.dart' as livekit;
 
 class LiveStreamDialog extends StatefulWidget {
   const LiveStreamDialog({super.key});
@@ -237,24 +247,46 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
               ),
             ),
             SizedBox(height: height * 0.008),
-            TextButton(
-              onPressed: () async {
-                await context.read<LiveKitCubit>().init(
-                  url:
-                  "wss://streaamore-2y89r21s.livekit.cloud",
-                  token:
-                  "eb82cf3424daa4278b10fc0a11025cf648a05548",
+            BlocConsumer<StreamFlowCubit, StreamFlowState>(
+              listener: (context, state) {
+                if (state is StreamFlowSuccess) {
+                  print("✅ ${state.message}");
+                }
+
+                if (state is StreamFlowError) {
+                  print("❌ ${state.error}");
+                }
+              },
+
+              builder: (context, state) {
+                final isLoading = state is StreamFlowLoading;
+
+                return TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                    context.read<StreamFlowCubit>().startFullFlow(
+                      accountId: 4,
+                      name: "Test Stream",
+                      description: "Testing stream",
+                      layoutType: "user",
+
+                      /// ❌ بلاش YOUR_CSRF / YOUR_TOKEN
+                      /// خليه يجيبهم من StorageHelper جوه الكيوبت
+                      csrfToken: "",
+                      authToken: "",
+                    );
+                  },
+                  child: isLoading
+                      ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                      : const Text("START STREAM"),
                 );
               },
-              child: Text(
-                "skip_for_now".tr(),
-                style: TextStyle(
-                  color: const Color(0xFF8EB5E4),
-                  fontSize: width * 0.035,
-                ),
-              ),
-            ),
-          ],
+            )          ],
         ),
       ],
     );

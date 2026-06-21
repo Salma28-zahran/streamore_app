@@ -1,37 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart'
-as http;
+import 'package:http/http.dart' as http;
 import 'package:streamore_app/core/apis/stream_des/stream_destinations_state.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 
 import 'stream_destinations_model.dart';
 
-
-class StreamDestinationsCubit
-    extends Cubit<
-        StreamDestinationsState> {
+class StreamDestinationsCubit extends Cubit<StreamDestinationsState> {
   StreamDestinationsCubit()
       : super(
     StreamDestinationsInitial(),
   );
 
-  static StreamDestinationsCubit
-  get(context) =>
+  static StreamDestinationsCubit get(context) =>
       BlocProvider.of(context);
 
-  Future<void>
-  getStreamDestinations({
-    required int id,
-    required int accountId,
-    required String name,
-    required String description,
-    required String layoutType,
+  Future<StreamDestinationsModel?> attachDestination({
+    required int streamId,
+    required int destinationId,
   }) async {
-    emit(
-      StreamDestinationsLoading(),
-    );
+    emit(StreamDestinationsLoading());
 
     try {
       final token =
@@ -40,44 +29,39 @@ class StreamDestinationsCubit
       final response =
       await http.post(
         Uri.parse(
-          'https://apistreamore.genius-ai.net/api/streams/streams/$id/destinations/',
+          'https://apistreamore.genius-ai.net/api/streams/streams/$streamId/destinations/',
         ),
         headers: {
-          "accept":
-          "application/json",
+          "accept": "application/json",
           "Content-Type":
           "application/json",
           "Authorization":
-          "Bearer $token",
+          "Token $token",
         },
         body: jsonEncode({
-          "account_id":
-          accountId,
-          "name": name,
-          "description":
-          description,
-          "layout_type":
-          layoutType,
+          "destination_id":
+          destinationId,
         }),
       );
 
       final data =
-      jsonDecode(
-        response.body,
-      );
+      jsonDecode(response.body);
 
       if (response.statusCode ==
           200 ||
           response.statusCode ==
               201) {
+        final model =
+        StreamDestinationsModel
+            .fromJson(data);
+
         emit(
           StreamDestinationsSuccess(
-            StreamDestinationsModel
-                .fromJson(
-              data,
-            ),
+            model,
           ),
         );
+
+        return model;
       } else {
         emit(
           StreamDestinationsError(
@@ -86,6 +70,8 @@ class StreamDestinationsCubit
                 "Something went wrong",
           ),
         );
+
+        return null;
       }
     } catch (e) {
       emit(
@@ -93,6 +79,8 @@ class StreamDestinationsCubit
           e.toString(),
         ),
       );
+
+      return null;
     }
   }
 }
