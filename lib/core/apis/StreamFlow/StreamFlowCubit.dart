@@ -10,7 +10,6 @@ import 'package:streamore_app/core/apis/streams/stream_cubit.dart';
 import 'package:streamore_app/core/apis/live_token /bloc/livekit_token_states.dart';
 import 'package:streamore_app/core/helpers/storage_helper.dart';
 import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
-import 'package:streamore_app/features/livekit/bloc/livekit_state.dart';
 
 class StreamFlowCubit extends Cubit<StreamFlowState> {
   StreamFlowCubit({
@@ -99,23 +98,10 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
         token: liveKitData.livekitToken!,
       );
 
-      /// ✅ FIX: liveKitCubit.init() بيستنى لحد ما يخلص تمامًا قبل ما يرجع،
-      /// يعني كل الـ states بتاعته (Loading/Error/Connected) اتعملها emit
-      /// وخلصت قبل ما نوصل هنا. فمفيش داعي نستنى event جديد من الـ stream
-      /// (ده كان بيسبب hang للأبد). إحنا بس بنقرا الـ state الحالي مباشرة.
-      final currentLiveKitState = liveKitCubit.state;
+      print("🎥 LIVEKIT CONNECTED");
 
-      if (currentLiveKitState is LiveKitError) {
-        emit(StreamFlowError("LiveKit connection failed"));
-        return;
-      }
-
-      if (currentLiveKitState is! LiveKitConnected) {
-        emit(StreamFlowError("LiveKit did not reach connected state"));
-        return;
-      }
-
-      print("🎥 LIVEKIT CONNECTED (CONFIRMED)");
+      /// مهم جداً
+      await Future.delayed(const Duration(seconds: 3));
 
       /// =======================
       /// STEP 4: CREATE DESTINATION
