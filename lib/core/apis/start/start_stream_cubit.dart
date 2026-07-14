@@ -19,27 +19,81 @@ class StartStreamCubit extends Cubit<StartStreamStates> {
     try {
       final token = await StorageHelper.getToken();
 
+      if (token == null || token.trim().isEmpty) {
+        emit(
+          StartStreamErrorState(
+            error: "Authentication token is empty",
+          ),
+        );
+
+        return null;
+      }
+
+      final url = Uri.parse(
+        "https://apistreamore.genius-ai.net/"
+            "api/streams/streams/$streamId/start/",
+      );
+
+      final requestBody = model.toJson();
+
+      print("");
+      print("======================================");
+      print("🚀 START STREAM REQUEST");
+      print("======================================");
+
+      print("📺 STREAM ID => $streamId");
+      print("🌍 START URL => $url");
+      print("📦 START REQUEST BODY => $requestBody");
+
       final response = await http.post(
-        Uri.parse(
-          "https://apistreamore.genius-ai.net/api/streams/streams/$streamId/start/",
-        ),
+        url,
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Token $token",
+          "Authorization": "Token ${token.trim()}",
         },
-        body: jsonEncode(model.toJson()),
+        body: jsonEncode(requestBody),
       );
 
-      print("START URL => ${response.request?.url}");
-      print("START STATUS => ${response.statusCode}");
-      print("START BODY => ${response.body}");
+      print("📡 START STATUS => ${response.statusCode}");
+      print("📡 START BODY => ${response.body}");
 
-      final data = jsonDecode(response.body);
+      dynamic decodedData;
+
+      try {
+        decodedData = jsonDecode(response.body);
+      } catch (e) {
+        print("❌ START RESPONSE IS NOT VALID JSON => $e");
+
+        emit(
+          StartStreamErrorState(
+            error:
+            "Invalid response from start stream endpoint",
+          ),
+        );
+
+        return null;
+      }
 
       if (response.statusCode == 200 ||
           response.statusCode == 201) {
-        final stream = StartStreamModel.fromJson(data);
+        if (decodedData is! Map<String, dynamic>) {
+          emit(
+            StartStreamErrorState(
+              error: "Unexpected start stream response format",
+            ),
+          );
+
+          return null;
+        }
+
+        final stream = StartStreamModel.fromJson(
+          decodedData,
+        );
+
+        print("✅ STREAM STARTED SUCCESSFULLY");
+        print("📺 STREAM STATUS => ${stream.status}");
+        print("🟢 IS ACTIVE => ${stream.isActive}");
 
         emit(
           StartStreamSuccessState(
@@ -50,15 +104,51 @@ class StartStreamCubit extends Cubit<StartStreamStates> {
         return stream;
       }
 
+      String errorMessage = "Failed to start stream";
+
+      if (decodedData is Map<String, dynamic>) {
+        final error = decodedData["error"];
+
+        if (error is Map<String, dynamic>) {
+          errorMessage =
+              error["message"]?.toString() ??
+                  errorMessage;
+
+          final details = error["details"];
+
+          if (details != null) {
+            print("❌ START ERROR DETAILS => $details");
+          }
+
+          print(
+            "❌ START ERROR CODE => ${error["code"]}",
+          );
+        } else if (error != null) {
+          errorMessage = error.toString();
+        } else if (decodedData["message"] != null) {
+          errorMessage =
+              decodedData["message"].toString();
+        }
+      }
+
+      print("❌ START STREAM FAILED");
+      print("❌ ERROR MESSAGE => $errorMessage");
+
       emit(
         StartStreamErrorState(
-          error: data["error"]?["message"] ??
-              "Failed to start stream",
+          error: errorMessage,
         ),
       );
 
       return null;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("");
+      print("======================================");
+      print("❌ START STREAM EXCEPTION");
+      print("======================================");
+      print("❌ ERROR => $e");
+      print("📚 STACK TRACE => $stackTrace");
+
       emit(
         StartStreamErrorState(
           error: e.toString(),

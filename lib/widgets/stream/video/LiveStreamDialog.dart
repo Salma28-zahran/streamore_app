@@ -1,22 +1,9 @@
-import 'dart:convert';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:streamore_app/core/apis/StreamFlow/StreamFlowCubit.dart';
 import 'package:streamore_app/core/apis/StreamFlow/StreamFlowState.dart';
-import 'package:streamore_app/core/apis/connect_des/connect_destination_cubit.dart';
-import 'package:streamore_app/core/apis/connect_des/connect_destination_state.dart';
-import 'package:streamore_app/core/apis/destination/destination_cubit.dart';
-import 'package:streamore_app/core/apis/live_token%20/bloc/LiveKitTokenCubit.dart';
-import 'package:streamore_app/core/apis/start/start_stream_cubit.dart';
-import 'package:streamore_app/core/apis/start/start_stream_model.dart';
-import 'package:streamore_app/core/apis/stream_des/stream_destinations_cubit.dart';
-import 'package:streamore_app/core/apis/streams/stream_cubit.dart';
-import 'package:streamore_app/features/livekit/bloc/LiveKitResponse.dart';
-import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
-
-import '../../../core/apis/live_token /bloc/livekit_token_model.dart' as livekit;
 
 class LiveStreamDialog extends StatefulWidget {
   const LiveStreamDialog({super.key});
@@ -27,61 +14,214 @@ class LiveStreamDialog extends StatefulWidget {
 
 class _LiveStreamDialogState extends State<LiveStreamDialog> {
   String selectedSource = "live".tr();
+
   bool isDestinationPage = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // ❌ removed getLiveKitData (was undefined)
+  // ============================================================
+  // FACEBOOK STREAM DATA
+  // ============================================================
+
+  /// Facebook Server URL / RTMP URL
+  static const String facebookRtmpUrl =
+      "rtmps://live-api-s.facebook.com:443/rtmp/";
+
+  /// حطي هنا Facebook Stream Key جديد وحقيقي
+  ///
+  /// مهم:
+  /// لا تضعي المفتاح القديم الذي تم كشفه
+  /// ولا تنشريه في GitHub أو Logs
+  static const String facebookRtmpKey =
+      "FB-27150077064693389-0-Ab40U6T6oT__Da-9UBN6lFQJ";
+
+  /// Facebook destination URL
+  static const String facebookStreamUrl =
+      "https://www.facebook.com";
+
+  // ============================================================
+  // START FULL FACEBOOK STREAM FLOW
+  // ============================================================
+
+  Future<void> _startFullStream(BuildContext context) async {
+    final flowCubit = context.read<StreamFlowCubit>();
+
+    // منع تشغيل الـ flow مرتين
+    if (flowCubit.state is StreamFlowLoading) {
+      debugPrint("⚠️ STREAM FLOW ALREADY RUNNING");
+      return;
+    }
+
+    // ==========================================================
+    // VALIDATE FACEBOOK RTMP URL
+    // ==========================================================
+
+    if (facebookRtmpUrl.trim().isEmpty) {
+      debugPrint("❌ FACEBOOK RTMP URL IS EMPTY");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Facebook RTMP URL is empty",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    // ==========================================================
+    // VALIDATE FACEBOOK STREAM KEY
+    // ==========================================================
+
+    if (facebookRtmpKey.trim().isEmpty) {
+      debugPrint("❌ FACEBOOK STREAM KEY IS EMPTY");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Facebook Stream Key is empty",
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    debugPrint("");
+    debugPrint("======================================");
+    debugPrint("🚀 STARTING FACEBOOK FULL FLOW");
+    debugPrint("======================================");
+
+    // لا نطبع الـ Stream Key لأنه Secret
+    debugPrint("🌍 FACEBOOK RTMP URL => $facebookRtmpUrl");
+    debugPrint("🔑 FACEBOOK STREAM KEY => RECEIVED");
+
+    // ==========================================================
+    // CALL STREAM FLOW CUBIT
+    // ==========================================================
+
+    await flowCubit.startFullFlow(
+      // مهم:
+      // استبدلي الرقم ده بعدين بالـ Account ID الحقيقي
+      accountId: 3,
+
+      name: "Test Facebook Stream",
+
+      description: "Testing Facebook live stream",
+
+      layoutType: "user",
+
+      // لو فاضي StreamFlowCubit هيجيبه من StorageHelper
+      csrfToken: "",
+
+      // لو فاضي StreamFlowCubit هيجيبه من StorageHelper
+      authToken: "",
+
+      facebookRtmpUrl: facebookRtmpUrl.trim(),
+
+      facebookRtmpKey: facebookRtmpKey.trim(),
+
+      facebookStreamUrl: facebookStreamUrl.trim(),
+    );
   }
+
+  // ============================================================
+  // BUILD
+  // ============================================================
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     final width = size.width;
     final height = size.height;
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark =
+        Theme.of(context).brightness == Brightness.dark;
 
-    final textColor = isDark ? Colors.white : Colors.black;
-    final secondaryTextColor = isDark ? Colors.white70 : Colors.black87;
+    final textColor =
+    isDark ? Colors.white : Colors.black;
 
-    return Dialog(
-      insetPadding: EdgeInsets.symmetric(
-        horizontal: width * 0.045,
-      ),
-      backgroundColor: isDark ? const Color(0xFF071332) : Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(width * 0.045),
-      ),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(width * 0.045),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF071332) : Colors.white,
-          borderRadius: BorderRadius.circular(width * 0.045),
-          border: Border.all(color: const Color(0xFF17356E)),
-        ),
-        child: isDestinationPage
-            ? _buildDestinationPage(
-          context,
-          width,
-          height,
-          isDark,
-          textColor,
-          secondaryTextColor,
-        )
-            : _buildLivePage(
-          context,
-          width,
-          height,
-          isDark,
-          textColor,
-          secondaryTextColor,
-        ),
-      ),
+    final secondaryTextColor =
+    isDark ? Colors.white70 : Colors.black87;
+
+    return BlocConsumer<StreamFlowCubit, StreamFlowState>(
+      listener: (context, state) {
+        if (state is StreamFlowSuccess) {
+          debugPrint("✅ ${state.message}");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+        }
+
+        if (state is StreamFlowError) {
+          debugPrint("❌ ${state.error}");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: width * 0.045,
+          ),
+          backgroundColor: isDark
+              ? const Color(0xFF071332)
+              : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              width * 0.045,
+            ),
+          ),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(
+              width * 0.045,
+            ),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF071332)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(
+                width * 0.045,
+              ),
+              border: Border.all(
+                color: const Color(0xFF17356E),
+              ),
+            ),
+            child: isDestinationPage
+                ? _buildDestinationPage(
+              context,
+              width,
+              height,
+              isDark,
+              textColor,
+              secondaryTextColor,
+            )
+                : _buildLivePage(
+              context,
+              width,
+              height,
+              isDark,
+              textColor,
+              secondaryTextColor,
+              state,
+            ),
+          ),
+        );
+      },
     );
   }
+
+  // ============================================================
+  // LIVE PAGE
+  // ============================================================
 
   Widget _buildLivePage(
       BuildContext context,
@@ -90,60 +230,36 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
       bool isDark,
       Color textColor,
       Color secondaryTextColor,
+      StreamFlowState state,
       ) {
+    final isLoading = state is StreamFlowLoading;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// Header
+        // ======================================================
+        // HEADER
+        // ======================================================
+
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
-                onTap: () async {
-                  try {
-                    print("🔥 START STREAM CLICKED");
-
-                    final response =
-                    await context.read<StartStreamCubit>().startStream(
-                      streamId: 4,
-                      model: StartStreamModel(
-                        accountId: 1,
-                        name: "My Stream",
-                        description: "Testing",
-                        layoutType: "user",
-                      ),
-                    );
-
-                    /// ✅ الحل الصحيح: التعامل مع response.data أو response مباشرة
-                    final dataMap = response as Map<String, dynamic>;
-
-                    final model = LiveKitResponse.fromJson(
-                      dataMap['data'] ?? dataMap,
-                    );
-
-                    await context.read<LiveKitCubit>().init(
-                      url: model.livekitUrl,
-                      token: model.livekitToken,
-                    );
-
-                    print("✅ LIVE STARTED");
-                  } catch (e) {
-                    print("❌ STREAM ERROR => $e");
-                  }
-                },
-                child: Text(
-                  "start_live_stream".tr(),
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: width * 0.055,
-                    fontWeight: FontWeight.w700,
-                  ),
+              child: Text(
+                "start_live_stream".tr(),
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: width * 0.055,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: isLoading
+                  ? null
+                  : () {
+                Navigator.pop(context);
+              },
               child: Icon(
                 Icons.close,
                 color: secondaryTextColor,
@@ -153,7 +269,9 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
           ],
         ),
 
-        SizedBox(height: height * 0.01),
+        SizedBox(
+          height: height * 0.01,
+        ),
 
         Text(
           "live_stream_description".tr(),
@@ -163,134 +281,228 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
           ),
         ),
 
-        SizedBox(height: height * 0.028),
+        SizedBox(
+          height: height * 0.028,
+        ),
+
+        // ======================================================
+        // SOURCE
+        // ======================================================
 
         Text(
           "source".tr(),
           style: TextStyle(
-            color: isDark ? Colors.white54 : Colors.black54,
+            color: isDark
+                ? Colors.white54
+                : Colors.black54,
             fontSize: width * 0.038,
             fontWeight: FontWeight.w600,
           ),
         ),
 
-        SizedBox(height: height * 0.018),
+        SizedBox(
+          height: height * 0.018,
+        ),
 
         Wrap(
           spacing: width * 0.045,
+          runSpacing: height * 0.01,
           children: [
-            _radioOption("live".tr(), textColor, width),
-            _radioOption("pre_recorded_video".tr(), textColor, width),
+            _radioOption(
+              "live".tr(),
+              textColor,
+              width,
+            ),
+            _radioOption(
+              "pre_recorded_video".tr(),
+              textColor,
+              width,
+            ),
           ],
         ),
 
-        SizedBox(height: height * 0.03),
+        SizedBox(
+          height: height * 0.03,
+        ),
 
-        Column(
-          children: [
-            Center(
-              child: SizedBox(
-                width: width * 0.50,
-                height: height * 0.055,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF1D6EFF)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(width * 0.03),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isDestinationPage = true;
-                    });
-                  },
-                  icon: Icon(Icons.add,
-                      color: const Color(0xFF1D6EFF), size: width * 0.05),
-                  label: Text(
-                    "add_destination".tr(),
-                    style: TextStyle(
-                      color: const Color(0xFF1D6EFF),
-                      fontSize: width * 0.038,
-                    ),
-                  ),
+        // ======================================================
+        // FACEBOOK DESTINATION INFO
+        // ======================================================
+
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(
+            width * 0.035,
+          ),
+          decoration: BoxDecoration(
+            color: isDark
+                ? const Color(0xFF0D1E45)
+                : const Color(0xFFF5F8FF),
+            borderRadius: BorderRadius.circular(
+              width * 0.03,
+            ),
+            border: Border.all(
+              color: const Color(0xFF17356E),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: width * 0.11,
+                height: width * 0.11,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF1877F2),
+                ),
+                child: Icon(
+                  Icons.facebook,
+                  color: Colors.white,
+                  size: width * 0.07,
                 ),
               ),
-            ),
-            SizedBox(height: height * 0.012),
-            Center(
-              child: SizedBox(
-                width: width * 0.50,
-                height: height * 0.055,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1D6EFF),
-                  ),
-                  onPressed: () async {
-                    await context.read<StartStreamCubit>().startStream(
-                      streamId: 4,
-                      model: StartStreamModel(
-                        accountId: 1,
-                        name: "My Stream",
-                        description: "Testing",
-                        layoutType: "user",
+
+              SizedBox(
+                width: width * 0.03,
+              ),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Facebook",
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: width * 0.043,
+                        fontWeight: FontWeight.w700,
                       ),
-                    );
-                  },
-                  child: Text(
-                    "start_streaming".tr(),
-                    style: TextStyle(
-                      fontSize: width * 0.038,
-                      color: Colors.white,
                     ),
+                    SizedBox(
+                      height: height * 0.004,
+                    ),
+                    Text(
+                      "RTMP destination ready",
+                      style: TextStyle(
+                        color: secondaryTextColor,
+                        fontSize: width * 0.032,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(
+          height: height * 0.025,
+        ),
+
+        // ======================================================
+        // ADD DESTINATION BUTTON
+        // ======================================================
+
+        Center(
+          child: SizedBox(
+            width: width * 0.55,
+            height: height * 0.055,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(
+                  color: Color(0xFF1D6EFF),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    width * 0.03,
                   ),
                 ),
               ),
+              onPressed: isLoading
+                  ? null
+                  : () {
+                setState(() {
+                  isDestinationPage = true;
+                });
+              },
+              icon: Icon(
+                Icons.add,
+                color: const Color(0xFF1D6EFF),
+                size: width * 0.05,
+              ),
+              label: Text(
+                "add_destination".tr(),
+                style: TextStyle(
+                  color: const Color(0xFF1D6EFF),
+                  fontSize: width * 0.038,
+                ),
+              ),
             ),
-            SizedBox(height: height * 0.008),
-            BlocConsumer<StreamFlowCubit, StreamFlowState>(
-              listener: (context, state) {
-                if (state is StreamFlowSuccess) {
-                  print("✅ ${state.message}");
-                }
+          ),
+        ),
 
-                if (state is StreamFlowError) {
-                  print("❌ ${state.error}");
-                }
+        SizedBox(
+          height: height * 0.014,
+        ),
+
+        // ======================================================
+        // START STREAM BUTTON
+        // ======================================================
+
+        Center(
+          child: SizedBox(
+            width: width * 0.55,
+            height: height * 0.06,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                const Color(0xFF1D6EFF),
+                disabledBackgroundColor:
+                const Color(0xFF1D6EFF)
+                    .withOpacity(0.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    width * 0.03,
+                  ),
+                ),
+              ),
+              onPressed: isLoading
+                  ? null
+                  : () async {
+                await _startFullStream(context);
               },
-
-              builder: (context, state) {
-                final isLoading = state is StreamFlowLoading;
-
-                return TextButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                    context.read<StreamFlowCubit>().startFullFlow(
-                      accountId: 4,
-                      name: "Test Stream",
-                      description: "Testing stream",
-                      layoutType: "user",
-
-                      /// ❌ بلاش YOUR_CSRF / YOUR_TOKEN
-                      /// خليه يجيبهم من StorageHelper جوه الكيوبت
-                      csrfToken: "",
-                      authToken: "",
-                    );
-                  },
-                  child: isLoading
-                      ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                      : const Text("START STREAM"),
-                );
-              },
-            )          ],
+              child: isLoading
+                  ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+                  : Text(
+                "start_streaming".tr(),
+                style: TextStyle(
+                  fontSize: width * 0.038,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
+
+  // ============================================================
+  // DESTINATION PAGE
+  // ============================================================
 
   Widget _buildDestinationPage(
       BuildContext context,
@@ -302,7 +514,8 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
       ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -316,26 +529,136 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
+
+            TextButton(
+              onPressed: () {
                 setState(() {
                   isDestinationPage = false;
                 });
               },
-              child: Text("back".tr()),
+              child: Text(
+                "back".tr(),
+              ),
             ),
+
             GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Icon(Icons.close, color: secondaryTextColor),
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.close,
+                color: secondaryTextColor,
+              ),
             ),
           ],
+        ),
+
+        SizedBox(
+          height: height * 0.025,
+        ),
+
+        // ======================================================
+        // FACEBOOK OPTION
+        // ======================================================
+
+        InkWell(
+          borderRadius: BorderRadius.circular(
+            width * 0.035,
+          ),
+          onTap: () {
+            setState(() {
+              isDestinationPage = false;
+            });
+          },
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(
+              width * 0.04,
+            ),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF0D1E45)
+                  : const Color(0xFFF5F8FF),
+              borderRadius: BorderRadius.circular(
+                width * 0.035,
+              ),
+              border: Border.all(
+                color: const Color(0xFF1877F2),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: width * 0.12,
+                  height: width * 0.12,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF1877F2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.facebook,
+                    color: Colors.white,
+                    size: width * 0.075,
+                  ),
+                ),
+
+                SizedBox(
+                  width: width * 0.035,
+                ),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Facebook",
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: height * 0.004,
+                      ),
+
+                      Text(
+                        "Stream using RTMP",
+                        style: TextStyle(
+                          color: secondaryTextColor,
+                          fontSize: width * 0.033,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                  color: Color(0xFF1877F2),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
   }
 
-  Widget _radioOption(String value, Color textColor, double width) {
-    final isSelected = selectedSource == value;
+  // ============================================================
+  // RADIO OPTION
+  // ============================================================
+
+  Widget _radioOption(
+      String value,
+      Color textColor,
+      double width,
+      ) {
+    final isSelected =
+        selectedSource == value;
 
     return GestureDetector(
       onTap: () {
@@ -351,14 +674,17 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
             height: width * 0.045,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF1D6EFF)),
+              border: Border.all(
+                color: const Color(0xFF1D6EFF),
+              ),
             ),
             child: isSelected
                 ? Center(
               child: Container(
                 width: width * 0.022,
                 height: width * 0.022,
-                decoration: const BoxDecoration(
+                decoration:
+                const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color(0xFF1D6EFF),
                 ),
@@ -366,8 +692,17 @@ class _LiveStreamDialogState extends State<LiveStreamDialog> {
             )
                 : null,
           ),
-          SizedBox(width: width * 0.02),
-          Text(value, style: TextStyle(color: textColor)),
+
+          SizedBox(
+            width: width * 0.02,
+          ),
+
+          Text(
+            value,
+            style: TextStyle(
+              color: textColor,
+            ),
+          ),
         ],
       ),
     );

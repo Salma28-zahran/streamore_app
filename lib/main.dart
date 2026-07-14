@@ -9,6 +9,7 @@ import 'package:streamore_app/core/Network/bloc/NetworkCubit.dart';
 import 'package:streamore_app/core/apis/StreamFlow/StreamFlowCubit.dart';
 import 'package:streamore_app/core/apis/connect_des/connect_destination_cubit.dart';
 import 'package:streamore_app/core/apis/destination/destination_cubit.dart';
+import 'package:streamore_app/core/apis/host_token/host_token_cubit.dart' show HostTokenCubit;
 import 'package:streamore_app/core/apis/live_token%20/bloc/LiveKitTokenCubit.dart';
 import 'package:streamore_app/core/apis/start/start_stream_cubit.dart';
 import 'package:streamore_app/core/apis/stream_des/stream_destinations_cubit.dart';
@@ -120,12 +121,13 @@ void main() async {
           BlocProvider(
             create: (_) => DestinationCubit(),
           ),
-
           BlocProvider<DeleteAccountCubit>(
             create: (_) => DeleteAccountCubit(),
           ),
 
-
+          BlocProvider(
+            create: (_) => HostTokenCubit(),
+          ),
 
           BlocProvider(
             create: (context) => StreamFlowCubit(
@@ -133,7 +135,7 @@ void main() async {
               destinationCubit: context.read<DestinationCubit>(),
               connectCubit: context.read<ConnectDestinationCubit>(),
               attachCubit: context.read<StreamDestinationsCubit>(),
-              liveKitTokenCubit: context.read<LiveKitTokenCubit>(),
+              hostTokenCubit: context.read<HostTokenCubit>(),
               startStreamCubit: context.read<StartStreamCubit>(),
               liveKitCubit: context.read<LiveKitCubit>(),
             ),

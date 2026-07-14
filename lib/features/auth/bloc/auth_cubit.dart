@@ -13,41 +13,182 @@ import 'package:streamore_app/features/auth/bloc/auth_states.dart';
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(AuthInitialState());
 
-  void register({required String email, required String password}) async {
+  void register({
+    required String email,
+    required String password,
+  }) async {
+    debugPrint("========================================");
+    debugPrint("🚀 REGISTER STARTED");
+    debugPrint("📧 Email: $email");
+    debugPrint("🔐 Password length: ${password.length}");
+    debugPrint("========================================");
+
     emit(RegisterLoadingState());
-    Response response = await http.post(
-        Uri.parse(ApiConstants.baseUrl + ApiConstants.register),
+    debugPrint("⏳ RegisterLoadingState emitted");
+
+    try {
+      final url = ApiConstants.baseUrl + ApiConstants.register;
+
+      debugPrint("🌐 Request URL: $url");
+      debugPrint("📤 Sending POST request...");
+      debugPrint("📦 Request body:");
+      debugPrint({
+        'email': email,
+        'password': password,
+      }.toString());
+
+      debugPrint("📋 Request headers:");
+      debugPrint({
+        'lang': 'en',
+      }.toString());
+
+      final Response response = await http.post(
+        Uri.parse(url),
         headers: {
-          'lang': "en"
+          'lang': 'en',
         },
         body: {
           'email': email,
           'password': password,
-        });
+        },
+      );
 
-    var responseBody = jsonDecode(response.body);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      print(responseBody);
-      emit(RegisterSuccessState());
-    } else {
-      print(responseBody);
+      debugPrint("========================================");
+      debugPrint("📥 RESPONSE RECEIVED");
+      debugPrint("📊 Status Code: ${response.statusCode}");
+      debugPrint("📋 Response Headers: ${response.headers}");
+      debugPrint("📄 Raw Response Body: ${response.body}");
+      debugPrint("========================================");
 
-      final errorMessage =
-          responseBody['message'] ?? responseBody['error'] ?? "Unknown error";
+      dynamic responseBody;
 
-      emit(FailedToRegisterState(message: errorMessage));
+      try {
+        debugPrint("🔄 Trying to decode response body...");
+
+        responseBody = jsonDecode(response.body);
+
+        debugPrint("✅ JSON decoded successfully");
+        debugPrint("📦 Decoded Response:");
+        debugPrint(responseBody.toString());
+      } catch (jsonError, stackTrace) {
+        debugPrint("❌ JSON DECODE ERROR");
+        debugPrint("⚠️ Error: $jsonError");
+        debugPrint("📍 StackTrace:");
+        debugPrint(stackTrace.toString());
+        debugPrint("📄 Original response body:");
+        debugPrint(response.body);
+
+        emit(
+          FailedToRegisterState(
+            message: "Invalid server response",
+          ),
+        );
+
+        return;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint("========================================");
+        debugPrint("✅ REGISTER SUCCESS");
+        debugPrint("📊 Status Code: ${response.statusCode}");
+        debugPrint("📦 Response Body: $responseBody");
+        debugPrint("========================================");
+
+        emit(RegisterSuccessState());
+
+        debugPrint("🎉 RegisterSuccessState emitted");
+      } else {
+        debugPrint("========================================");
+        debugPrint("❌ REGISTER FAILED");
+        debugPrint("📊 Status Code: ${response.statusCode}");
+        debugPrint("📦 Response Body: $responseBody");
+
+        final errorMessage =
+            responseBody['message'] ??
+                responseBody['error'] ??
+                "Unknown error";
+
+        debugPrint("⚠️ Error Message: $errorMessage");
+        debugPrint("========================================");
+
+        emit(
+          FailedToRegisterState(
+            message: errorMessage.toString(),
+          ),
+        );
+
+        debugPrint("❌ FailedToRegisterState emitted");
+      }
+    } catch (error, stackTrace) {
+      debugPrint("========================================");
+      debugPrint("🔥 UNEXPECTED REGISTER ERROR");
+      debugPrint("⚠️ Error: $error");
+      debugPrint("📍 StackTrace:");
+      debugPrint(stackTrace.toString());
+      debugPrint("========================================");
+
+      emit(
+        FailedToRegisterState(
+          message: error.toString(),
+        ),
+      );
     }
   }
+
   Future<void> autoLogin() async {
-    final token = await StorageHelper.getToken();
-    if (token != null && token.isNotEmpty) {
-      final userId = await StorageHelper.getUserId();
-      debugPrint("🔑 Token found → auto login success");
-      debugPrint("👤 Logged in User ID: $userId");
-      emit(LogInSuccessState());
-    } else {
-      debugPrint("🚪 No token → go to onboarding/login");
+    debugPrint("========================================");
+    debugPrint("🚀 AUTO LOGIN STARTED");
+    debugPrint("========================================");
+
+    try {
+      debugPrint("🔍 Trying to get token from StorageHelper...");
+
+      final token = await StorageHelper.getToken();
+
+      debugPrint("✅ Token read operation completed");
+      debugPrint(
+        "🔑 Token value: ${token == null ? 'NULL' : token.isEmpty ? 'EMPTY' : token}",
+      );
+
+      if (token != null && token.isNotEmpty) {
+        debugPrint("✅ Valid token found");
+        debugPrint("🔑 Token length: ${token.length}");
+
+        debugPrint("🔍 Trying to get User ID...");
+
+        final userId = await StorageHelper.getUserId();
+
+        debugPrint("✅ User ID read operation completed");
+        debugPrint("👤 User ID: $userId");
+
+        debugPrint("🔐 Token found → auto login success");
+
+        emit(LogInSuccessState());
+
+        debugPrint("✅ LogInSuccessState emitted");
+      } else {
+        debugPrint("========================================");
+        debugPrint("🚪 NO VALID TOKEN FOUND");
+        debugPrint("🔑 Token is null: ${token == null}");
+        debugPrint("🔑 Token is empty: ${token?.isEmpty}");
+        debugPrint("➡️ Going to onboarding/login");
+        debugPrint("========================================");
+
+        emit(AuthInitialState());
+
+        debugPrint("✅ AuthInitialState emitted");
+      }
+    } catch (error, stackTrace) {
+      debugPrint("========================================");
+      debugPrint("🔥 AUTO LOGIN ERROR");
+      debugPrint("⚠️ Error: $error");
+      debugPrint("📍 StackTrace:");
+      debugPrint(stackTrace.toString());
+      debugPrint("========================================");
+
       emit(AuthInitialState());
+
+      debugPrint("🚪 AuthInitialState emitted because of error");
     }
   }
 

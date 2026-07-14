@@ -8,9 +8,17 @@ class StartStreamModel {
   final String? status;
   final String? startedAt;
   final String? endedAt;
+  final String? deletedAt;
   final String? createdAt;
   final String? updatedAt;
+
   final bool? isActive;
+
+  final dynamic durationSeconds;
+  final dynamic canStart;
+  final dynamic canEnd;
+  final dynamic canArchive;
+  final dynamic connectedDestinationsCount;
 
   StartStreamModel({
     required this.accountId,
@@ -21,9 +29,15 @@ class StartStreamModel {
     this.status,
     this.startedAt,
     this.endedAt,
+    this.deletedAt,
     this.createdAt,
     this.updatedAt,
     this.isActive,
+    this.durationSeconds,
+    this.canStart,
+    this.canEnd,
+    this.canArchive,
+    this.connectedDestinationsCount,
   });
 
   Map<String, dynamic> toJson() {
@@ -35,7 +49,9 @@ class StartStreamModel {
     };
   }
 
-  factory StartStreamModel.fromJson(Map<String, dynamic> json) {
+  factory StartStreamModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return StartStreamModel(
       id: json["id"],
       accountId: json["account_id"] ?? 0,
@@ -45,9 +61,16 @@ class StartStreamModel {
       status: json["status"],
       startedAt: json["started_at"],
       endedAt: json["ended_at"],
+      deletedAt: json["deleted_at"],
       createdAt: json["created_at"],
       updatedAt: json["updated_at"],
       isActive: json["is_active"],
+      durationSeconds: json["duration_seconds"],
+      canStart: json["can_start"],
+      canEnd: json["can_end"],
+      canArchive: json["can_archive"],
+      connectedDestinationsCount:
+      json["connected_destinations_count"],
     );
   }
 }
