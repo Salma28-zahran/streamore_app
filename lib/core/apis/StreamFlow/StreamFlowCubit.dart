@@ -31,6 +31,10 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
   final StartStreamCubit startStreamCubit;
   final LiveKitCubit liveKitCubit;
 
+  // ============================================================
+  // START FULL FLOW
+  // ============================================================
+
   Future<void> startFullFlow({
     required int accountId,
     required String name,
@@ -40,33 +44,58 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
     required String authToken,
     required String facebookRtmpUrl,
     required String facebookRtmpKey,
-    String facebookStreamUrl = "https://www.facebook.com",
+    String facebookStreamUrl = 'https://www.facebook.com',
   }) async {
-    // ============================================================
-    // PREVENT DUPLICATE FLOW
-    // ============================================================
-
     if (state is StreamFlowLoading) {
-      print("⚠️ STREAM FLOW ALREADY RUNNING");
+      print('⚠️ STREAM FLOW ALREADY RUNNING');
       return;
     }
 
     emit(StreamFlowLoading());
 
-    try {
-      print("");
-      print("======================================");
-      print("🚀 FACEBOOK STREAM FLOW STARTED");
-      print("======================================");
+    bool canvasPublished = false;
 
-      // ============================================================
+    try {
+      print('');
+      print('======================================');
+      print('🚀 FACEBOOK STREAM FLOW STARTED');
+      print('======================================');
+
+      // ==========================================================
       // VALIDATION
-      // ============================================================
+      // ==========================================================
+
+      if (accountId <= 0) {
+        emit(
+          StreamFlowError(
+            'Invalid account ID',
+          ),
+        );
+        return;
+      }
+
+      if (name.trim().isEmpty) {
+        emit(
+          StreamFlowError(
+            'Stream name is empty',
+          ),
+        );
+        return;
+      }
+
+      if (layoutType.trim().isEmpty) {
+        emit(
+          StreamFlowError(
+            'Layout type is empty',
+          ),
+        );
+        return;
+      }
 
       if (facebookRtmpUrl.trim().isEmpty) {
         emit(
           StreamFlowError(
-            "Facebook RTMP URL is empty",
+            'Facebook RTMP URL is empty',
           ),
         );
         return;
@@ -75,137 +104,185 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       if (facebookRtmpKey.trim().isEmpty) {
         emit(
           StreamFlowError(
-            "Facebook Stream Key is empty",
+            'Facebook Stream Key is empty',
           ),
         );
         return;
       }
 
-      if (accountId <= 0) {
-        emit(
-          StreamFlowError(
-            "Invalid account ID",
-          ),
-        );
-        return;
-      }
+      print('✅ BASIC VALIDATION PASSED');
 
-      print("✅ BASIC VALIDATION PASSED");
-
-      // ============================================================
+      // ==========================================================
       // AUTH TOKEN
-      // ============================================================
+      // ==========================================================
 
-      final finalAuthToken = authToken.trim().isNotEmpty
-          ? authToken.trim()
-          : (await StorageHelper.getToken()) ?? "";
+      String finalAuthToken = authToken.trim();
 
-      if (finalAuthToken.trim().isEmpty) {
+      if (finalAuthToken.isEmpty) {
+        finalAuthToken =
+            (await StorageHelper.getToken())?.trim() ?? '';
+      }
+
+      if (finalAuthToken.isEmpty) {
         emit(
           StreamFlowError(
-            "Auth token is empty",
+            'Auth token is empty',
           ),
         );
         return;
       }
 
-      print("✅ AUTH TOKEN FOUND");
+      print('✅ AUTH TOKEN FOUND');
+      print('👤 REQUESTED ACCOUNT ID => $accountId');
 
       if (csrfToken.trim().isNotEmpty) {
-        print("✅ CSRF TOKEN PROVIDED");
+        print('✅ CSRF TOKEN PROVIDED');
       } else {
-        print("ℹ️ CSRF TOKEN NOT PROVIDED");
+        print('ℹ️ CSRF TOKEN NOT PROVIDED');
       }
 
-      // ============================================================
+      // ==========================================================
       // STEP 1: CREATE STREAM
-      // POST /api/streams/streams/
-      // ============================================================
+      // ==========================================================
 
-      print("");
-      print("======================================");
-      print("1️⃣ CREATING STREAM...");
-      print("======================================");
+      print('');
+      print('======================================');
+      print('1️⃣ CREATING STREAM...');
+      print('======================================');
 
-      final stream = await streamCubit.createStream(
-        name: name,
-        description: description,
-        layoutType: layoutType,
+      final dynamic stream =
+      await streamCubit.createStream(
+        name: name.trim(),
+        description: description.trim(),
+        layoutType: layoutType.trim(),
       );
 
       if (stream == null) {
         emit(
           StreamFlowError(
-            "Stream creation failed",
+            'Stream creation failed',
           ),
         );
         return;
       }
 
-      final streamId = _extractStreamId(stream);
+      final int? streamId =
+      _extractStreamId(stream);
 
       if (streamId == null || streamId <= 0) {
-        print("❌ STREAM ID NOT FOUND");
-
         emit(
           StreamFlowError(
-            "Stream ID not found in create stream response",
+            'Stream ID not found in create stream response',
           ),
         );
-
         return;
       }
 
-      print("✅ STREAM CREATED");
-      print("🆔 STREAM ID => $streamId");
+      final int? responseAccountId =
+      _extractAccountId(stream);
 
-      // ============================================================
+      final int finalAccountId =
+          responseAccountId ?? accountId;
+
+      if (finalAccountId <= 0) {
+        emit(
+          StreamFlowError(
+            'Valid stream account ID not found',
+          ),
+        );
+        return;
+      }
+
+      print('✅ STREAM CREATED');
+      print('🆔 STREAM ID => $streamId');
+      print('👤 REQUESTED ACCOUNT ID => $accountId');
+      print(
+        '👤 STREAM RESPONSE ACCOUNT ID => '
+            '${responseAccountId ?? 'NOT FOUND'}',
+      );
+      print(
+        '✅ FINAL ACCOUNT ID => $finalAccountId',
+      );
+
+      if (responseAccountId != null &&
+          responseAccountId != accountId) {
+        print('');
+        print(
+          '⚠️ REQUESTED ACCOUNT ID DIFFERS '
+              'FROM STREAM ACCOUNT ID',
+        );
+        print(
+          '⚠️ REQUESTED ACCOUNT ID => $accountId',
+        );
+        print(
+          '⚠️ STREAM ACCOUNT ID => $responseAccountId',
+        );
+        print(
+          '✅ CONTINUING WITH STREAM ACCOUNT ID '
+              '=> $finalAccountId',
+        );
+      }
+
+      // ==========================================================
       // STEP 2: CREATE FACEBOOK DESTINATION
-      // POST /api/streams/destinations/
-      // ============================================================
+      // ==========================================================
 
-      print("");
-      print("======================================");
-      print("2️⃣ CREATING FACEBOOK DESTINATION...");
-      print("======================================");
+      print('');
+      print('======================================');
+      print('2️⃣ CREATING FACEBOOK DESTINATION...');
+      print('======================================');
 
-      final destination = await destinationCubit.createDestination(
-        name: "Facebook",
-        platformType: "facebook",
+      final destination =
+      await destinationCubit.createDestination(
+        name: 'Facebook',
+        platformType: 'facebook',
         rtmpUrl: facebookRtmpUrl.trim(),
         rtmpKey: facebookRtmpKey.trim(),
         streamUrl: facebookStreamUrl.trim(),
       );
 
-      if (destination == null || destination.id == null) {
+      if (destination == null) {
         emit(
           StreamFlowError(
-            "Facebook destination creation failed",
+            'Facebook destination creation failed',
           ),
         );
         return;
       }
 
-      final destinationId = destination.id!;
+      final int? destinationId = destination.id;
 
-      print("✅ FACEBOOK DESTINATION CREATED");
-      print("🆔 DESTINATION ID => $destinationId");
+      if (destinationId == null ||
+          destinationId <= 0) {
+        emit(
+          StreamFlowError(
+            'Invalid Facebook destination ID',
+          ),
+        );
+        return;
+      }
 
-      // ============================================================
-      // STEP 3: CONNECT FACEBOOK DESTINATION
-      // POST /api/streams/destinations/{id}/connect/
-      // ============================================================
+      print('✅ FACEBOOK DESTINATION CREATED');
+      print('🆔 DESTINATION ID => $destinationId');
 
-      print("");
-      print("======================================");
-      print("3️⃣ CONNECTING FACEBOOK DESTINATION...");
-      print("======================================");
+      // ==========================================================
+      // STEP 3: CONNECT DESTINATION
+      // ==========================================================
 
-      final connect = await connectCubit.connectDestination(
+      print('');
+      print('======================================');
+      print('3️⃣ CONNECTING FACEBOOK DESTINATION...');
+      print('======================================');
+
+      print('🆔 DESTINATION ID => $destinationId');
+      print('👤 ACCOUNT ID => $finalAccountId');
+
+      final dynamic connect =
+      await connectCubit.connectDestination(
         destinationId: destinationId,
-        accountId: accountId,
-        name: name,
-        platformType: "facebook",
+        accountId: finalAccountId,
+        name: name.trim(),
+        platformType: 'facebook',
         rtmpKey: facebookRtmpKey.trim(),
         streamUrl: facebookStreamUrl.trim(),
       );
@@ -213,25 +290,28 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       if (connect == null) {
         emit(
           StreamFlowError(
-            "Connect Facebook destination failed",
+            'Connect Facebook destination failed',
           ),
         );
         return;
       }
 
-      print("✅ FACEBOOK DESTINATION CONNECTED");
+      print('✅ FACEBOOK DESTINATION CONNECTED');
 
-      // ============================================================
-      // STEP 4: ATTACH DESTINATION TO STREAM
-      // POST /api/streams/streams/{id}/destinations/
-      // ============================================================
+      // ==========================================================
+      // STEP 4: ATTACH DESTINATION
+      // ==========================================================
 
-      print("");
-      print("======================================");
-      print("4️⃣ ATTACHING FACEBOOK DESTINATION...");
-      print("======================================");
+      print('');
+      print('======================================');
+      print('4️⃣ ATTACHING FACEBOOK DESTINATION...');
+      print('======================================');
 
-      final attach = await attachCubit.attachDestination(
+      print('📺 STREAM ID => $streamId');
+      print('🔗 DESTINATION ID => $destinationId');
+
+      final dynamic attach =
+      await attachCubit.attachDestination(
         streamId: streamId,
         destinationId: destinationId,
       );
@@ -239,116 +319,109 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       if (attach == null) {
         emit(
           StreamFlowError(
-            "Attach Facebook destination failed",
+            'Attach Facebook destination failed',
           ),
         );
         return;
       }
 
-      print("✅ FACEBOOK DESTINATION ATTACHED");
-      print("📺 STREAM ID => $streamId");
-      print("🔗 DESTINATION ID => $destinationId");
+      print('✅ FACEBOOK DESTINATION ATTACHED');
 
-      // ============================================================
+      // ==========================================================
       // STEP 5: GET HOST TOKEN
-      // POST /api/streams/streams/{id}/host-token/
-      //
-      // مهم:
-      // هنا نستخدم HostTokenCubit
-      // ولا نطلب Guest Token
-      // ============================================================
+      // ==========================================================
 
-      print("");
-      print("======================================");
-      print("5️⃣ GETTING HOST TOKEN...");
-      print("======================================");
+      print('');
+      print('======================================');
+      print('5️⃣ GETTING HOST TOKEN...');
+      print('======================================');
 
-      // ============================================================
-// STEP 5: GET HOST TOKEN
-// ============================================================
-
-      print("");
-      print("======================================");
-      print("5️⃣ GETTING HOST TOKEN...");
-      print("======================================");
+      print('📺 STREAM ID => $streamId');
+      print('👤 ACCOUNT ID => $finalAccountId');
 
       await hostTokenCubit.getHostToken(
         id: streamId,
-        accountId: accountId,
-        name: name,
-        description: description,
-        layoutType: layoutType,
+        accountId: finalAccountId,
+        name: name.trim(),
+        description: description.trim(),
+        layoutType: layoutType.trim(),
       );
 
-      final hostState = hostTokenCubit.state;
+      final HostTokenState hostState =
+          hostTokenCubit.state;
 
       if (hostState is HostTokenError) {
-        print(
-          "❌ HOST TOKEN ERROR => ${hostState.error}",
-        );
-
         emit(
           StreamFlowError(
             hostState.error,
           ),
         );
-
         return;
       }
 
       if (hostState is! HostTokenSuccess) {
         emit(
           StreamFlowError(
-            "Failed to get host token",
+            'Failed to get host token',
           ),
         );
-
         return;
       }
 
       final hostModel = hostState.model;
 
-      final liveKitToken =
+      final String liveKitToken =
       hostModel.livekitToken.trim();
 
-      final liveKitUrl =
+      final String liveKitUrl =
       hostModel.livekitUrl.trim();
 
-      final roomName =
+      final String roomName =
       hostModel.roomName.trim();
 
       if (liveKitToken.isEmpty) {
         emit(
           StreamFlowError(
-            "Host LiveKit token is empty",
+            'Host LiveKit token is empty',
           ),
         );
-
         return;
       }
 
       if (liveKitUrl.isEmpty) {
         emit(
           StreamFlowError(
-            "Host LiveKit URL is empty",
+            'Host LiveKit URL is empty',
           ),
         );
-
         return;
       }
 
-      print("✅ HOST TOKEN RECEIVED");
-      print("🌍 LIVEKIT URL => $liveKitUrl");
-      print("🏠 ROOM NAME => $roomName");
+      if (roomName.isEmpty) {
+        emit(
+          StreamFlowError(
+            'LiveKit room name is empty',
+          ),
+        );
+        return;
+      }
 
-// ============================================================
-// CONNECT TO LIVEKIT AS HOST
-// ============================================================
+      print('✅ HOST TOKEN RECEIVED');
+      print('🌍 LIVEKIT URL => $liveKitUrl');
+      print('🏠 ROOM NAME => $roomName');
+      print(
+        '🔑 LIVEKIT TOKEN => '
+            '${_hideSensitiveValue(liveKitToken)}',
+      );
 
-      print("");
-      print("======================================");
-      print("🎥 CONNECTING TO LIVEKIT AS HOST...");
-      print("======================================");
+      // ==========================================================
+      // CONNECT TO LIVEKIT
+      // ==========================================================
+
+      print('');
+      print('======================================');
+      print('🎥 CONNECTING TO LIVEKIT AS HOST...');
+      print('======================================');
 
       await liveKitCubit.init(
         url: liveKitUrl,
@@ -361,171 +434,541 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
       if (participant == null) {
         emit(
           StreamFlowError(
-            "LiveKit local host participant not found",
+            'LiveKit local host participant not found',
           ),
         );
-
         return;
       }
 
-      print("✅ CONNECTED TO LIVEKIT AS HOST");
+      final String connectedRoomName =
+          liveKitCubit.room?.name?.trim() ?? '';
 
+      print('✅ CONNECTED TO LIVEKIT AS HOST');
       print(
-        "👤 HOST PARTICIPANT => "
-            "${participant.identity}",
+        '👤 HOST PARTICIPANT => '
+            '${participant.identity}',
+      );
+      print(
+        '🏠 EXPECTED ROOM => '
+            '$roomName',
+      );
+      print(
+        '🏠 CONNECTED ROOM => '
+            '$connectedRoomName',
       );
 
-      final isCameraOn =
-      participant.isCameraEnabled();
+      if (connectedRoomName.isEmpty) {
+        emit(
+          StreamFlowError(
+            'Connected LiveKit room name is empty',
+          ),
+        );
+        return;
+      }
 
-      final isMicOn =
-      participant.isMicrophoneEnabled();
+      if (connectedRoomName != roomName) {
+        emit(
+          StreamFlowError(
+            'Connected to wrong LiveKit room. '
+                'Expected: $roomName, '
+                'actual: $connectedRoomName',
+          ),
+        );
+        return;
+      }
 
-      print(
-        "📷 HOST CAMERA STATUS => $isCameraOn",
-      );
+      // ==========================================================
+      // CHECK CAMERA
+      // ==========================================================
 
-      print(
-        "🎤 HOST MICROPHONE STATUS => $isMicOn",
-      );
+      final bool isCameraOn;
+
+      try {
+        isCameraOn =
+            participant.isCameraEnabled();
+      } catch (error, stackTrace) {
+        print(
+          '❌ CAMERA STATUS CHECK FAILED => $error',
+        );
+        print(
+          '📚 STACK TRACE => $stackTrace',
+        );
+
+        emit(
+          StreamFlowError(
+            'Failed to check host camera status',
+          ),
+        );
+        return;
+      }
+
+      // ==========================================================
+      // CHECK MICROPHONE
+      // ==========================================================
+
+      final bool isMicOn;
+
+      try {
+        isMicOn =
+            participant.isMicrophoneEnabled();
+      } catch (error, stackTrace) {
+        print(
+          '❌ MICROPHONE STATUS CHECK FAILED => $error',
+        );
+        print(
+          '📚 STACK TRACE => $stackTrace',
+        );
+
+        emit(
+          StreamFlowError(
+            'Failed to check host microphone status',
+          ),
+        );
+        return;
+      }
+
+      print('');
+      print('======================================');
+      print('🎥 HOST MEDIA STATUS');
+      print('======================================');
+
+      print('📷 HOST CAMERA STATUS => $isCameraOn');
+      print('🎤 HOST MICROPHONE STATUS => $isMicOn');
 
       if (!isCameraOn) {
         emit(
           StreamFlowError(
-            "Host camera not published",
+            'Host camera not published',
           ),
         );
-
         return;
       }
 
       if (!isMicOn) {
         emit(
           StreamFlowError(
-            "Host microphone not published",
+            'Host microphone not published',
           ),
         );
-
         return;
       }
 
       print(
-        "✅ HOST CAMERA AND MICROPHONE PUBLISHED",
+        '✅ HOST CAMERA AND MICROPHONE PUBLISHED',
       );
 
-      // ============================================================
-      // STEP 6: START FACEBOOK STREAM
-      // POST /api/streams/streams/{id}/start/
-      // ============================================================
+      // ==========================================================
+      // PUBLISH CANVAS BEFORE /START/
+      // ==========================================================
 
-      print("");
-      print("======================================");
-      print("6️⃣ STARTING FACEBOOK STREAM...");
-      print("======================================");
+      print('');
+      print('======================================');
+      print('🖥️ PUBLISHING CANVAS TRACK...');
+      print('======================================');
 
-      final started = await startStreamCubit.startStream(
-        streamId: streamId,
-        model: StartStreamModel(
-          accountId: accountId,
-          name: name,
-          description: description,
-          layoutType: layoutType,
-        ),
-      );
+      canvasPublished =
+      await liveKitCubit.publishCanvasTrack();
 
-      if (started == null) {
-        print("❌ START FACEBOOK STREAM FAILED");
+      if (!canvasPublished) {
+        print('❌ CANVAS TRACK PUBLISH FAILED');
 
         emit(
           StreamFlowError(
-            "Start Facebook stream failed",
+            'Failed to publish broadcast-canvas track',
           ),
         );
-
         return;
       }
 
-      print("");
-      print("======================================");
-      print("🎬 FACEBOOK STREAM STARTED SUCCESSFULLY");
-      print("======================================");
+      final canvasPublication =
+      participant.getTrackPublicationByName(
+        LiveKitCubit.canvasTrackName,
+      );
+
+      if (canvasPublication == null) {
+        print(
+          '❌ broadcast-canvas NOT FOUND '
+              'AFTER PUBLISH',
+        );
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-canvas track not found '
+                'after publishing',
+          ),
+        );
+        return;
+      }
+
+      if (canvasPublication.muted) {
+        print('❌ broadcast-canvas IS MUTED');
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-canvas track is muted',
+          ),
+        );
+        return;
+      }
+
+      if (canvasPublication.name !=
+          LiveKitCubit.canvasTrackName) {
+        print(
+          '❌ WRONG CANVAS NAME => '
+              '${canvasPublication.name}',
+        );
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'Wrong canvas track name. '
+                'Expected ${LiveKitCubit.canvasTrackName}, '
+                'received ${canvasPublication.name}',
+          ),
+        );
+        return;
+      }
+
+      print('');
+      print('✅ BROADCAST CANVAS TRACK READY');
+      print(
+        '🎬 CANVAS NAME => '
+            '${canvasPublication.name}',
+      );
+      print(
+        '🎬 CANVAS SOURCE => '
+            '${canvasPublication.source}',
+      );
+      print(
+        '🆔 CANVAS SID => '
+            '${canvasPublication.sid}',
+      );
+      print(
+        '🔇 CANVAS MUTED => '
+            '${canvasPublication.muted}',
+      );
+
+      final broadcastAudioPublication =
+      participant.getTrackPublicationByName(
+        LiveKitCubit.broadcastAudioTrackName,
+      );
+
+      if (broadcastAudioPublication == null) {
+        print(
+          '❌ broadcast-audio TRACK NOT FOUND',
+        );
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-audio track not found '
+                'after publishing',
+          ),
+        );
+        return;
+      }
+
+      if (broadcastAudioPublication.muted) {
+        print(
+          '❌ broadcast-audio TRACK IS MUTED',
+        );
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-audio track is muted',
+          ),
+        );
+        return;
+      }
+
+      if (broadcastAudioPublication.name !=
+          LiveKitCubit.broadcastAudioTrackName) {
+        print(
+          '❌ WRONG AUDIO NAME => '
+              '${broadcastAudioPublication.name}',
+        );
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'Wrong audio track name. '
+                'Expected '
+                '${LiveKitCubit.broadcastAudioTrackName}, '
+                'received '
+                '${broadcastAudioPublication.name}',
+          ),
+        );
+        return;
+      }
+
+      print('');
+      print('✅ BROADCAST AUDIO TRACK READY');
+      print(
+        '🎤 AUDIO NAME => '
+            '${broadcastAudioPublication.name}',
+      );
+      print(
+        '🎤 AUDIO SOURCE => '
+            '${broadcastAudioPublication.source}',
+      );
+      print(
+        '🆔 AUDIO SID => '
+            '${broadcastAudioPublication.sid}',
+      );
+      print(
+        '🔇 AUDIO MUTED => '
+            '${broadcastAudioPublication.muted}',
+      );
+
+      print('');
+      print('======================================');
+      print('📦 FINAL TRACKS BEFORE START REQUEST');
+      print('======================================');
+
+      for (final publication
+      in participant.trackPublications.values) {
+        print(
+          '• name=${publication.name} '
+              '| source=${publication.source} '
+              '| sid=${publication.sid} '
+              '| muted=${publication.muted}',
+        );
+      }
+
+      print('');
+      print(
+        '⏳ WAITING FOR LIVEKIT SERVER '
+            'PROPAGATION...',
+      );
+
+      await Future.delayed(
+        const Duration(seconds: 3),
+      );
+
+      final finalCanvasCheck =
+      participant.getTrackPublicationByName(
+        LiveKitCubit.canvasTrackName,
+      );
+
+      final finalAudioCheck =
+      participant.getTrackPublicationByName(
+        LiveKitCubit.broadcastAudioTrackName,
+      );
+
+      if (finalCanvasCheck == null ||
+          finalCanvasCheck.muted) {
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-canvas disappeared '
+                'before start request',
+          ),
+        );
+        return;
+      }
+
+      if (finalAudioCheck == null ||
+          finalAudioCheck.muted) {
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'broadcast-audio disappeared '
+                'before start request',
+          ),
+        );
+        return;
+      }
+
+      print('✅ LIVEKIT TRACKS STILL AVAILABLE');
+      print(
+        '🎬 FINAL CANVAS => '
+            '${finalCanvasCheck.name}',
+      );
+      print(
+        '🎤 FINAL AUDIO => '
+            '${finalAudioCheck.name}',
+      );
+
+      // ==========================================================
+      // STEP 6: START FACEBOOK STREAM
+      // ==========================================================
+
+      print('');
+      print('======================================');
+      print('6️⃣ STARTING FACEBOOK STREAM...');
+      print('======================================');
+
+      print('📺 STREAM ID => $streamId');
+      print('👤 ACCOUNT ID => $finalAccountId');
+      print('🔗 DESTINATION ID => $destinationId');
+      print('🏠 ROOM NAME => $roomName');
+      print(
+        '👤 HOST PARTICIPANT => '
+            '${participant.identity}',
+      );
+      print(
+        '🎬 CANVAS TRACK => '
+            '${finalCanvasCheck.name}',
+      );
+      print(
+        '🎤 AUDIO TRACK => '
+            '${finalAudioCheck.name}',
+      );
+
+      final StartStreamModel startModel =
+      StartStreamModel(
+        accountId: finalAccountId,
+        name: name.trim(),
+        description: description.trim(),
+        layoutType: layoutType.trim(),
+      );
+
+      final dynamic started =
+      await startStreamCubit.startStream(
+        streamId: streamId,
+        model: startModel,
+      );
+
+      if (started == null) {
+        print('❌ START FACEBOOK STREAM FAILED');
+
+        await liveKitCubit.stopCanvasTrack();
+        canvasPublished = false;
+
+        emit(
+          StreamFlowError(
+            'Start Facebook stream failed',
+          ),
+        );
+        return;
+      }
+
+      // ==========================================================
+      // SUCCESS
+      // ==========================================================
+
+      print('');
+      print('======================================');
+      print('🎬 FACEBOOK STREAM STARTED SUCCESSFULLY');
+      print('======================================');
+
+      print('📺 STREAM ID => $streamId');
+      print('👤 ACCOUNT ID => $finalAccountId');
+      print('🔗 DESTINATION ID => $destinationId');
+      print('🏠 ROOM NAME => $roomName');
+      print(
+        '👤 HOST PARTICIPANT => '
+            '${participant.identity}',
+      );
+      print(
+        '🎬 CANVAS TRACK => '
+            '${finalCanvasCheck.name}',
+      );
+      print(
+        '🎤 AUDIO TRACK => '
+            '${finalAudioCheck.name}',
+      );
 
       emit(
         StreamFlowSuccess(
-          "Facebook stream started successfully 🚀",
+          'Facebook stream started successfully 🚀',
         ),
       );
-    } catch (e, stackTrace) {
-      print("");
-      print("======================================");
-      print("❌ FACEBOOK FLOW ERROR");
-      print("======================================");
+    } catch (error, stackTrace) {
+      print('');
+      print('======================================');
+      print('❌ FACEBOOK FLOW ERROR');
+      print('======================================');
 
-      print("❌ ERROR => $e");
-      print("📚 STACK TRACE => $stackTrace");
+      print('❌ ERROR => $error');
+      print('📚 STACK TRACE => $stackTrace');
 
-      emit(
-        StreamFlowError(
-          e.toString(),
-        ),
-      );
+      if (canvasPublished) {
+        try {
+          await liveKitCubit.stopCanvasTrack();
+        } catch (_) {}
+      }
+
+      if (!isClosed) {
+        emit(
+          StreamFlowError(
+            error.toString(),
+          ),
+        );
+      }
     }
   }
 
-  // ==============================================================
+  // ============================================================
   // EXTRACT STREAM ID
-  // ==============================================================
+  // ============================================================
 
-  int? _extractStreamId(dynamic stream) {
+  int? _extractStreamId(
+      dynamic stream,
+      ) {
     if (stream == null) {
       return null;
     }
 
-    // Map
     if (stream is Map) {
-      final value = stream['id'];
+      final int? id =
+      _parsePositiveInt(
+        stream['id'],
+      );
 
-      if (value is int) {
-        return value;
+      if (id != null) {
+        return id;
       }
 
-      return int.tryParse(
-        value?.toString() ?? "",
-      );
+      final dynamic data =
+      stream['data'];
+
+      if (data != null && data != stream) {
+        return _extractStreamId(
+          data,
+        );
+      }
     }
 
-    // Object property: stream.id
     try {
       final dynamic object = stream;
-      final value = object.id;
 
-      if (value is int) {
-        return value;
-      }
-
-      final parsed = int.tryParse(
-        value?.toString() ?? "",
+      final int? id =
+      _parsePositiveInt(
+        object.id,
       );
 
-      if (parsed != null) {
-        return parsed;
+      if (id != null) {
+        return id;
       }
     } catch (_) {}
 
-    // Object toJson()
     try {
       final dynamic object = stream;
-      final json = object.toJson();
+      final dynamic json = object.toJson();
 
-      if (json is Map) {
-        final value = json['id'];
-
-        if (value is int) {
-          return value;
-        }
-
-        return int.tryParse(
-          value?.toString() ?? "",
+      if (json != null && json != stream) {
+        return _extractStreamId(
+          json,
         );
       }
     } catch (_) {}
@@ -533,322 +976,117 @@ class StreamFlowCubit extends Cubit<StreamFlowState> {
     return null;
   }
 
-  // ==============================================================
-  // EXTRACT HOST CREDENTIALS FROM HOST TOKEN STATE
-  // ==============================================================
+  // ============================================================
+  // EXTRACT ACCOUNT ID
+  // ============================================================
 
-  _HostLiveKitCredentials? _extractHostCredentialsFromState(
-      dynamic hostState,
+  int? _extractAccountId(
+      dynamic stream,
       ) {
-    if (hostState == null) {
+    if (stream == null) {
       return null;
     }
 
-    dynamic model;
+    if (stream is Map) {
+      final int? snakeCase =
+      _parsePositiveInt(
+        stream['account_id'],
+      );
 
-    // ------------------------------------------------------------
-    // Try: state.model
-    // ------------------------------------------------------------
+      if (snakeCase != null) {
+        return snakeCase;
+      }
+
+      final int? camelCase =
+      _parsePositiveInt(
+        stream['accountId'],
+      );
+
+      if (camelCase != null) {
+        return camelCase;
+      }
+
+      final dynamic data =
+      stream['data'];
+
+      if (data != null && data != stream) {
+        return _extractAccountId(
+          data,
+        );
+      }
+    }
 
     try {
-      model = hostState.model;
+      final dynamic object = stream;
+
+      final int? value =
+      _parsePositiveInt(
+        object.accountId,
+      );
+
+      if (value != null) {
+        return value;
+      }
     } catch (_) {}
 
-    // ------------------------------------------------------------
-    // Try: state.data
-    // ------------------------------------------------------------
+    try {
+      final dynamic object = stream;
+      final dynamic json = object.toJson();
 
-    if (model == null) {
-      try {
-        model = hostState.data;
-      } catch (_) {}
+      if (json != null && json != stream) {
+        return _extractAccountId(
+          json,
+        );
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  // ============================================================
+  // PARSE POSITIVE INTEGER
+  // ============================================================
+
+  int? _parsePositiveInt(
+      dynamic value,
+      ) {
+    if (value == null) {
+      return null;
     }
 
-    // ------------------------------------------------------------
-    // Try: state.hostTokenModel
-    // ------------------------------------------------------------
-
-    if (model == null) {
-      try {
-        model = hostState.hostTokenModel;
-      } catch (_) {}
+    if (value is int) {
+      return value > 0 ? value : null;
     }
 
-    // ------------------------------------------------------------
-    // Try extracting directly from state itself
-    // ------------------------------------------------------------
-
-    if (model == null) {
-      model = hostState;
-    }
-
-    return _extractHostCredentials(
-      model,
-      depth: 0,
+    final int? parsed =
+    int.tryParse(
+      value.toString().trim(),
     );
-  }
 
-  // ==============================================================
-  // RECURSIVE HOST CREDENTIALS EXTRACTOR
-  // ==============================================================
-
-  _HostLiveKitCredentials? _extractHostCredentials(
-      dynamic source, {
-        required int depth,
-      }) {
-    if (source == null) {
+    if (parsed == null || parsed <= 0) {
       return null;
     }
 
-    // منع recursion لا نهائي
-    if (depth > 5) {
-      return null;
-    }
-
-    String? token;
-    String? url;
-    String? roomName;
-
-    // ============================================================
-    // CASE 1: SOURCE IS MAP
-    // ============================================================
-
-    if (source is Map) {
-      token = _firstNonEmptyString([
-        source['livekit_token'],
-        source['liveKitToken'],
-        source['livekitToken'],
-        source['token'],
-      ]);
-
-      url = _firstNonEmptyString([
-        source['livekit_url'],
-        source['liveKitUrl'],
-        source['livekitUrl'],
-        source['url'],
-      ]);
-
-      roomName = _firstNonEmptyString([
-        source['room_name'],
-        source['roomName'],
-      ]);
-
-      // لو وجدنا token + url
-      if (token != null && url != null) {
-        return _HostLiveKitCredentials(
-          token: token,
-          url: url,
-          roomName: roomName,
-        );
-      }
-
-      // ----------------------------------------------------------
-      // Nested structures
-      // ----------------------------------------------------------
-
-      final nestedCandidates = [
-        source['data'],
-        source['host_token'],
-        source['hostToken'],
-        source['model'],
-        source['result'],
-      ];
-
-      for (final candidate in nestedCandidates) {
-        final credentials = _extractHostCredentials(
-          candidate,
-          depth: depth + 1,
-        );
-
-        if (credentials != null) {
-          return credentials;
-        }
-      }
-    }
-
-    // ============================================================
-    // CASE 2: OBJECT PROPERTIES
-    // ============================================================
-
-    try {
-      final dynamic object = source;
-
-      token = _firstNonEmptyString([
-        object.livekitToken,
-      ]);
-    } catch (_) {}
-
-    if (token == null) {
-      try {
-        final dynamic object = source;
-
-        token = _firstNonEmptyString([
-          object.liveKitToken,
-        ]);
-      } catch (_) {}
-    }
-
-    if (url == null) {
-      try {
-        final dynamic object = source;
-
-        url = _firstNonEmptyString([
-          object.livekitUrl,
-        ]);
-      } catch (_) {}
-    }
-
-    if (url == null) {
-      try {
-        final dynamic object = source;
-
-        url = _firstNonEmptyString([
-          object.liveKitUrl,
-        ]);
-      } catch (_) {}
-    }
-
-    if (roomName == null) {
-      try {
-        final dynamic object = source;
-
-        roomName = _firstNonEmptyString([
-          object.roomName,
-        ]);
-      } catch (_) {}
-    }
-
-    if (token != null && url != null) {
-      return _HostLiveKitCredentials(
-        token: token,
-        url: url,
-        roomName: roomName,
-      );
-    }
-
-    // ============================================================
-    // CASE 3: OBJECT.toJson()
-    // ============================================================
-
-    try {
-      final dynamic object = source;
-      final json = object.toJson();
-
-      final credentials = _extractHostCredentials(
-        json,
-        depth: depth + 1,
-      );
-
-      if (credentials != null) {
-        return credentials;
-      }
-    } catch (_) {}
-
-    // ============================================================
-    // CASE 4: NESTED OBJECT PROPERTIES
-    // ============================================================
-
-    final nestedObjects = <dynamic>[];
-
-    try {
-      final dynamic object = source;
-      nestedObjects.add(object.data);
-    } catch (_) {}
-
-    try {
-      final dynamic object = source;
-      nestedObjects.add(object.hostToken);
-    } catch (_) {}
-
-    try {
-      final dynamic object = source;
-      nestedObjects.add(object.model);
-    } catch (_) {}
-
-    for (final nested in nestedObjects) {
-      final credentials = _extractHostCredentials(
-        nested,
-        depth: depth + 1,
-      );
-
-      if (credentials != null) {
-        return credentials;
-      }
-    }
-
-    return null;
+    return parsed;
   }
 
-  // ==============================================================
-  // EXTRACT HOST TOKEN ERROR MESSAGE
-  // ==============================================================
+  // ============================================================
+  // HIDE TOKEN
+  // ============================================================
 
-  String _extractHostTokenErrorMessage(
-      dynamic hostState,
+  String _hideSensitiveValue(
+      String value,
       ) {
-    if (hostState == null) {
-      return "Host token failed";
+    final String trimmed = value.trim();
+
+    if (trimmed.isEmpty) {
+      return 'EMPTY';
     }
 
-    try {
-      final dynamic state = hostState;
-      final message = state.message?.toString();
-
-      if (message != null &&
-          message.trim().isNotEmpty) {
-        return message.trim();
-      }
-    } catch (_) {}
-
-    try {
-      final dynamic state = hostState;
-      final error = state.error?.toString();
-
-      if (error != null &&
-          error.trim().isNotEmpty) {
-        return error.trim();
-      }
-    } catch (_) {}
-
-    return "Host token failed";
-  }
-
-  // ==============================================================
-  // FIRST NON-EMPTY STRING
-  // ==============================================================
-
-  String? _firstNonEmptyString(
-      List<dynamic> values,
-      ) {
-    for (final value in values) {
-      if (value == null) {
-        continue;
-      }
-
-      final stringValue = value.toString().trim();
-
-      if (stringValue.isNotEmpty &&
-          stringValue.toLowerCase() != "null") {
-        return stringValue;
-      }
+    if (trimmed.length <= 20) {
+      return '***';
     }
 
-    return null;
+    return '${trimmed.substring(0, 20)}...';
   }
-}
-
-// ================================================================
-// PRIVATE HOST LIVEKIT CREDENTIALS
-// ================================================================
-
-class _HostLiveKitCredentials {
-  const _HostLiveKitCredentials({
-    required this.token,
-    required this.url,
-    this.roomName,
-  });
-
-  final String token;
-  final String url;
-  final String? roomName;
 }

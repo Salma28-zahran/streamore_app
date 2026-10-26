@@ -157,6 +157,32 @@ class StorageHelper {
       key: "csrf_token",
     );
   }
+  static Future<void> saveAccountId(int accountId) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt(
+      'account_id',
+      accountId,
+    );
+
+    print('🏦 Account ID saved => $accountId');
+  }
+
+  static Future<int?> getAccountId() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getInt(
+      'account_id',
+    );
+  }
+
+  static Future<void> clearAccountId() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.remove(
+      'account_id',
+    );
+  }
 
 
 }

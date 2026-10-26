@@ -1,12 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/banners_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/features/livekit/bloc/livekit_cubit.dart';
+import 'package:streamore_app/features/livekit/bloc/livekit_state.dart';
 import 'package:streamore_app/features/tabs/brand/brand_utils/font_utils.dart';
+import 'package:streamore_app/widgets/stream/profile_image_widget.dart';
 import 'package:streamore_app/widgets/stream/video/LiveStreamDialog.dart';
 import 'package:streamore_app/widgets/stream/video/ParticipantsIndicator.dart';
 import 'package:streamore_app/widgets/stream/video/RecordLiveButtons.dart';
@@ -71,11 +75,27 @@ class _ProfileImageWithBannersState extends State<ProfileImageWithBanners> {
             clipBehavior: Clip.none,
             children: [
 
-              StreamLayoutView(
-                layout: widget.layout,
-                width: widget.profileImageWidth,
-                height: widget.profileImageHeight,
-                onTap: widget._onProfileImageClick,
+              BlocBuilder<LiveKitCubit, LiveKitState>(
+                builder: (context, state) {
+                  if (state is LiveKitConnected) {
+                    return ProfileImageWidget(
+                      isZoomVisible: widget.isZoomVisible,
+                      profileImageWidth: widget.profileImageWidth,
+                      profileImageHeight: widget.profileImageHeight,
+                      onZoomClick: widget._onZoomIconClick,
+                      onProfileClick: widget._onProfileImageClick,
+                      participant:
+                      context.read<LiveKitCubit>().room!.localParticipant!,                      themeOverlay: const SizedBox.shrink(),
+                    );
+                  }
+
+                  return StreamLayoutView(
+                    layout: widget.layout,
+                    width: widget.profileImageWidth,
+                    height: widget.profileImageHeight,
+                    onTap: widget._onProfileImageClick,
+                  );
+                },
               ),
 
 /*

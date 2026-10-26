@@ -2,85 +2,111 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/comment_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
+
 import 'package:streamore_app/features/drawer/main_drawer.dart';
+
 import 'package:streamore_app/widgets/app_bar/custom_appbar.dart';
-import 'package:streamore_app/widgets/brand_widgets/background/background.dart';
-import 'package:streamore_app/widgets/brand_widgets/background/overlay.dart';
 import 'package:streamore_app/widgets/brand_widgets/logo/logo.dart';
+
 import 'package:streamore_app/widgets/permissions/camera/camera-permission.dart';
 import 'package:streamore_app/widgets/permissions/mic/mic-permission.dart';
+
 import 'package:streamore_app/widgets/stream/ExpandToolsWidget.dart';
 import 'package:streamore_app/widgets/stream/comment_overlay_widget.dart';
 import 'package:streamore_app/widgets/stream/control_buttons_row.dart';
-import '../../../../widgets/stream/video/show_banners.dart';
-import 'package:provider/provider.dart';
-import 'package:streamore_app/core/provider/my_provider.dart';
+import 'package:streamore_app/widgets/stream/video/mobile_studio_webview.dart';
+import 'package:streamore_app/widgets/stream/video/show_banners.dart';
+
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
 
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+  });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() =>
+      _HomeScreenState();
 }
 
-bool _micOn = true;
-bool _camOn = true;
-bool isZoomVisible = false;
-int? userId;
-
 class _HomeScreenState extends State<HomeScreen> {
-  String currentLayout = 'default';
+  bool _micOn = true;
+  bool _camOn = true;
+  bool _isZoomVisible = false;
+
+  String _currentLayout = 'default';
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final bool isSmall = size.width < 360;
-    final double iconSize = isSmall ? 44.0 : 50.0;
+    final Size size =
+        MediaQuery.of(context).size;
 
-    final myprovider = Provider.of<MyProvider>(context);
-    Provider.of<CommentProvider>(context);
+    final bool isSmall =
+        size.width < 360;
 
+    final double iconSize =
+    isSmall ? 44.0 : 50.0;
 
-    final myProvider = Provider.of<MyProvider>(context);
+    final MyProvider myProvider =
+    context.watch<MyProvider>();
+
+    context.watch<CommentProvider>();
+
     final double profileImageWidth =
-    myProvider.orientation == "landscape"
-        ? size.width * 0.9425
-        : size.width * 0.9425;
+        size.width * 0.9425;
 
     final double profileImageHeight =
-    myProvider.orientation == "landscape"
+    myProvider.orientation == 'landscape'
         ? size.height * 0.28
         : size.height * 0.44;
 
     return Consumer<BackgroundOverlayLogoProvider>(
-      builder: (context, provider, child) {
-        final hasBackgroundImage = provider.selectedBackgroundImage != null &&
-            provider.isBackgroundVisible;
+      builder: (
+          BuildContext context,
+          BackgroundOverlayLogoProvider provider,
+          Widget? child,
+          ) {
+        final bool hasBackgroundImage =
+            provider.selectedBackgroundImage != null &&
+                provider.isBackgroundVisible;
 
         return Scaffold(
           backgroundColor: hasBackgroundImage
               ? Colors.transparent
-              : Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xff222222)
-                  : Colors.white,
+              : Theme.of(context).brightness ==
+              Brightness.dark
+              ? const Color(0xff222222)
+              : Colors.white,
           drawer: MainDrawer(),
           appBar: const CustomAppBar(
             hasNotification: false,
           ),
           body: Stack(
             children: [
+              // ===================================================
+              // BACKGROUND
+              // ===================================================
+
               if (hasBackgroundImage)
                 Positioned.fill(
                   child: Image.file(
-                    File(provider.selectedBackgroundImage!.path),
+                    File(
+                      provider
+                          .selectedBackgroundImage!
+                          .path,
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
+
+              // ===================================================
+              // MAIN CONTENT
+              // ===================================================
 
               Column(
                 children: [
@@ -90,63 +116,128 @@ class _HomeScreenState extends State<HomeScreen> {
                       left: 8,
                       right: 8,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Stack(
+                    child: Center(
+                      child: SizedBox(
+                        width: profileImageWidth,
+                        height:
+                        profileImageHeight + 15,
+                        child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
-                            ProfileImageWithBanners(
-                              isZoomVisible: isZoomVisible,
-                              profileImageWidth: profileImageWidth,
-                              profileImageHeight: profileImageHeight,
-                              onZoomIconClick: _onZoomIconClick,
-                              onProfileImageClick: _onProfileImageClick,
-                              layout: currentLayout,
-                            ),
-                            LogoWidget(),
+                            // =====================================
+                            // FLUTTER STUDIO
+                            // =====================================
 
+                            ProfileImageWithBanners(
+                              isZoomVisible:
+                              _isZoomVisible,
+                              profileImageWidth:
+                              profileImageWidth,
+                              profileImageHeight:
+                              profileImageHeight,
+                              onZoomIconClick:
+                              _onZoomIconClick,
+                              onProfileImageClick:
+                              _onProfileImageClick,
+                              layout:
+                              _currentLayout,
+                            ),
+
+                            // =====================================
+                            // LOGO
+                            // =====================================
+
+                             LogoWidget(),
+
+                            // =====================================
+                            // WEB CANVAS COMPOSITOR
+                            //
+                            // موجود داخل الصفحة لكنه لا يغطي
+                            // استوديو Flutter.
+                            // =====================================
+
+                            const Positioned(
+                              top: 0,
+                              left: 0,
+                              width: 2,
+                              height: 2,
+                              child: IgnorePointer(
+                                ignoring: true,
+                                child: Opacity(
+                                  opacity: 0.01,
+                                  child:
+                                  MobileStudioWebView(),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
+
                   const Spacer(),
+
+                  // =================================================
+                  // CONTROL BUTTONS
+                  // =================================================
+
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 40),
+                      padding:
+                      const EdgeInsets.only(
+                        bottom: 40,
+                      ),
                       child: ControlButtonsRow(
-                        currentLayout: currentLayout,
-                        onLayoutChanged: (layout) {
+                        currentLayout:
+                        _currentLayout,
+                        onLayoutChanged: (
+                            String layout,
+                            ) {
                           setState(() {
-                            currentLayout = layout;
+                            _currentLayout =
+                                layout;
                           });
                         },
                         micOn: _micOn,
                         camOn: _camOn,
                         iconSize: iconSize,
                         isSmall: isSmall,
-                        toggleMic: () =>
-                            requestMicPermission(context, _toggleMic),
-                        toggleCam: () =>
-                            requestCameraPermission(context, _toggleCamera),
+                        toggleMic: () {
+                          requestMicPermission(
+                            context,
+                            _toggleMic,
+                          );
+                        },
+                        toggleCam: () {
+                          requestCameraPermission(
+                            context,
+                            _toggleCamera,
+                          );
+                        },
                       ),
                     ),
                   ),
                 ],
               ),
 
-              /// ExpandTools فوق كل حاجة
-              Positioned(
+              // ===================================================
+              // EXPANDED TOOLS
+              // ===================================================
+
+              const Positioned(
                 left: 0,
                 right: 0,
                 bottom: 110,
-                child: const ExpandToolsWidget(),
+                child: ExpandToolsWidget(),
               ),
 
-             // BackgroundWidget(),
+              // ===================================================
+              // COMMENTS OVERLAY
+              // ===================================================
 
-
-              if (myProvider.isOverlayEnabled) CommentOverlayWidget(),
+              if (myProvider.isOverlayEnabled)
+                const CommentOverlayWidget(),
             ],
           ),
         );
@@ -156,12 +247,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onProfileImageClick() {
     setState(() {
-      isZoomVisible = !isZoomVisible;
+      _isZoomVisible =
+      !_isZoomVisible;
     });
   }
 
   void _onZoomIconClick() {
-    Navigator.pushNamed(context, '/full_image');
+    Navigator.pushNamed(
+      context,
+      '/full_image',
+    );
   }
 
   void _toggleMic() {

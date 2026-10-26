@@ -271,6 +271,32 @@ class AuthCubit extends Cubit<AuthStates> {
           final String token = data['token'] ?? "";
           final int? userId = data['userId'];
           final String role = data['role'] ?? "";
+          final List<dynamic> accounts =
+          data['accounts'] is List
+              ? data['accounts'] as List<dynamic>
+              : <dynamic>[];
+
+          final int? accountId =
+          accounts.isNotEmpty &&
+              accounts.first is Map &&
+              accounts.first['id'] != null
+              ? int.tryParse(
+            accounts.first['id'].toString(),
+          )
+              : null;
+          if (accountId != null && accountId > 0) {
+            await StorageHelper.saveAccountId(
+              accountId,
+            );
+
+            debugPrint(
+              '🏦 Saved Account ID: $accountId',
+            );
+          } else {
+            debugPrint(
+              '❌ Account ID not found in login response',
+            );
+          }
 
           /// Save Token
           await StorageHelper.saveToken(token);

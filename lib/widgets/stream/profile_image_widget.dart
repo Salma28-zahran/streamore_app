@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:livekit_client/livekit_client.dart'
-    show VideoTrackRenderer, Participant, TrackType, VideoTrack;
+import 'package:livekit_client/livekit_client.dart';
 import 'package:provider/provider.dart';
 import 'package:streamore_app/core/provider/background-overlay-logo_provider.dart';
 import 'package:streamore_app/core/provider/my_provider.dart';
-import 'package:collection/collection.dart';
 
 class ProfileImageWidget extends StatelessWidget {
   final bool isZoomVisible;
@@ -30,21 +28,20 @@ class ProfileImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("ProfileImageWidget Rebuild");
-    final videoTrack = participant.trackPublications.values
-        .where((p) => p.kind == TrackType.VIDEO && p.track != null)
-        .map((p) => p.track)
-        .whereType<VideoTrack>()
-        .firstOrNull;
-
-    final provider = context.watch<MyProvider>();
-    final overlayProvider =
-    context.watch<BackgroundOverlayLogoProvider>();
-    print("videoTrack = $videoTrack");
-    print(
-      "overlay = ${overlayProvider.selectedOverlayImage?.path}",
+    final cameraPublication =
+    participant.getTrackPublicationBySource(
+      TrackSource.camera,
     );
 
+    final VideoTrack? cameraTrack =
+    cameraPublication?.track is VideoTrack
+        ? cameraPublication!.track as VideoTrack
+        : null;
+
+    final provider = context.watch<MyProvider>();
+
+    final overlayProvider =
+    context.watch<BackgroundOverlayLogoProvider>();
 
     return Stack(
       children: [
@@ -52,22 +49,27 @@ class ProfileImageWidget extends StatelessWidget {
           onTap: onProfileClick,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(7),
-
             child: SizedBox(
-            width: profileImageWidth,
-            height: profileImageHeight,
-            child: videoTrack != null
-                ? VideoTrackRenderer(videoTrack)
-                : overlayProvider.selectedOverlayImage != null
-                ? Image.file(
-              File(overlayProvider.selectedOverlayImage!.path),
-              fit: BoxFit.cover,
-            )
-                : Image.asset(
-              "assets/images/profile5.png",
-              fit: BoxFit.cover,
+              width: profileImageWidth,
+              height: profileImageHeight,
+              child: cameraTrack != null
+                  ? VideoTrackRenderer(
+                cameraTrack,
+              )
+                  : overlayProvider.selectedOverlayImage != null
+                  ? Image.file(
+                File(
+                  overlayProvider
+                      .selectedOverlayImage!
+                      .path,
+                ),
+                fit: BoxFit.cover,
+              )
+                  : Image.asset(
+                'assets/images/profile5.png',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
           ),
         ),
 
